@@ -1,0 +1,206 @@
+%======================================================================
+%  Supplementary Figures
+%
+%  Renumbered globally in order of appearance. Local -> global:
+%    pretraining    S1,S2   -> S1,S2
+%    origin         S1-S10  -> S3-S12
+%    interpretation S1-S7   -> S13-S19
+%
+%  Every figure here is a complete, assembled supplementary figure. The
+%  artifacts' per-panel "Component"/"standalone panel" cards are not
+%  reproduced, and the per-half *_oriT / *_oriV sources of the origin
+%  composites are not used -- only the stitched versions. See
+%  CONVERSION_NOTES.md.
+%
+%  Captions open directly with the description (no bold lead sentence), per
+%  the GPN-Star supplementary convention. \fitfig caps height as well as
+%  width so nothing runs off the page.
+%
+%  Snapshot 2026-08-28.
+%======================================================================
+
+\section*{Supplementary Figures}
+
+% ================= from the pretraining artifact =====================
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/figS1_combined}
+\caption{
+The IMG/PR collection, corpus construction, cluster hierarchy, and diversity-aware sampling. Panels \textbf{a}, \textbf{c} and \textbf{d} describe the full IMG/PR collection (699,973 sequences, 214,950 PTUs); the remaining panels describe the 693,638-sequence training corpus after quality filtering and the two-species holdout. Panel titles are given here rather than on the artwork. \textbf{a}, Host phyla by plasmid-sequence count (log scale) --- the twelve largest plus an aggregate "other phyla" bar (49 phyla in all; 40\% of sequences carry a host assignment). \textbf{b}, Sequences removed at each filtering step (log scale); 99.1\% of the collection is retained. \textbf{c}, Concentration of diversity: cumulative fraction of dereplicated sequences (solid) and of sub-PTUs (dashed) against the cumulative fraction of PTUs, ranked and shaded by category (Major / Moderate / Unique); a small minority of PTUs accounts for most of the collection. \textbf{d}, Length distribution of the full collection (log-scaled); the dashed lines mark the 2,048 bp minimum and the 10.1 kb median, and the sub-2,048 bp sequences the filter removes are visible to the left. \textbf{e}, Completeness (complete vs incomplete) and topology (linear / direct- or inverted-terminal-repeat) annotations. \textbf{f}, Number of PTUs against sub-PTUs per PTU (both log); 81\% of PTUs resolve to a single sub-PTU, the largest to 735. \textbf{g}, Cluster-size distributions at the two identity levels --- dereplication (99\% ANI) and sub-PTU (95\% ANI). \textbf{h}, Distribution of expected Major-PTU allocations (mean 1.42, range 1.08--3.15, none at the floor). \textbf{i}, The Major-PTU allocation $a_i$ against sub-PTU count $n_i$: it grows sublinearly as $n^{2/3}$ (dashed), floored at one representative and capped at the 95th percentile of sub-PTU count ($Q_{0.95} = 10$ sub-PTUs), giving an expected-allocation ceiling of 3.15 representatives per epoch.
+}
+\label{fig:supp-corpus}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/figS2_windowing}
+\caption{
+Sequence preprocessing and windowing. \textbf{Complete plasmids} (top): for sequences annotated as containing a direct terminal repeat (DTR), one terminal copy is removed when detected; every putatively complete sequence is then circularized by appending 1,024 bp of its own flanking context to each end and tiled into 2,048 bp windows at a stride of 1,024 bp (half-overlapping). \textbf{Linear sequences and fragments} (bottom): placeholder padding is added, the tiling start is offset at random, and the padding is stripped so terminal windows stay short and are re-padded at tokenization. Window offsets are regenerated at each epoch boundary, and every sequence is windowed in both its forward and reverse-complement orientation.
+}
+\label{fig:supp-windowing}
+\end{figure}
+
+
+\clearpage
+% ================= from the origin artifact ==========================
+% NOTE: figures S3, S4 and S5 below are raster-only in the source artifact
+% (no PDF exists for supp_inference_pipeline, supp_similarity_clustermap_oriT
+% or supp_similarity_clustermap_oriV). They are copied in as-is, unedited.
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_inference_pipeline.png}
+\caption{
+Genome-wide origin discovery with \model. A query plasmid is annotated into coding sequences and intergenic regions (IGRs). Each IGR is tiled into overlapping 512 bp windows that frozen \model embeddings and the trained probe score for origin overlap; the per-window scores are pooled at the 75th percentile (or the maximum if the IGR has five or fewer windows) and converted per split into one ensemble score per IGR. Ranking a plasmid's IGRs by that score gives its candidate origin-containing regions --- the workflow applied genome-wide across IMG/PR and the source of the predictions used downstream (\secref{sec:genomewide}).
+}
+\label{fig:supp-pipeline}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_similarity_clustermap_oriT.png}
+\caption{
+\emph{oriT} origin similarity structure and the similarity-aware cross-validation parts. Pairwise local-alignment similarity ($1 -$ EMBOSS-water distance) between the 112 curated \emph{oriT} origins, hierarchically clustered by Ward linkage. The left colour strip marks each origin's cross-validation part (Part 1--5). Highly similar blocks generally fall within a single part; after reinsertion of 25 GraphPart-removed origins the split is similarity-aware rather than a strict homology partition (partitioning detail in \nameref{sec:methods}).
+}
+\label{fig:supp-clustermap-orit}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_similarity_clustermap_oriV.png}
+\caption{
+\emph{oriV} origin similarity structure and the homology-partitioned cross-validation parts. Pairwise local-alignment similarity ($1 -$ EMBOSS-water distance) between the 224 curated \emph{oriV} origins, hierarchically clustered by Ward linkage; individual origin names are omitted for legibility. The left colour strip marks each origin's GraphPart-assigned cross-validation part (Part 1--5). Highly similar blocks fall within a single part, and all 224 origins were retained without reinsertion --- the full \emph{oriV} version of the \fref{fig:origin}a partitioning (detail in \nameref{sec:methods}).
+}
+\label{fig:supp-clustermap-oriv}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_region_tracks_8}
+\caption{
+Calibrated window-probability tracks for additional origin-containing regions. Eight held-out examples --- four \emph{oriT} (\textbf{a}--\textbf{d}, left) and four \emph{oriV} (\textbf{e}--\textbf{h}, right) --- scored by the \model probe: calibrated per-window probability (red, left axis) along a 512 bp window stepped at 16 bp, with the annotated origin shaded orange, flanking coding sequence grey, and the per-window origin overlap (blue dashed, right axis). The green line is the 75th-percentile region score used for ranking. Same tracks and legend as \fref{fig:origin}e.
+}
+\label{fig:supp-tracks8}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_win_layer}
+\caption{
+Probe layer selection by validation AUPRC. Window-level AUPRC for every probed layer of each pretrained embedder (per-split mean bars over per-split heatmaps, best-val layer outlined); \textbf{a}, \emph{oriT}; \textbf{b}, \emph{oriV}. Each embedder's reported probe uses the single layer maximizing mean validation AUPRC across both tasks --- \model \texttt{blocks.60}, Evo2-1B/7B \texttt{blocks.15.mlp.l3}, Evo2-40B \texttt{blocks.16.mlp.l3}, PlasmidGPT \texttt{h.3}. Selection uses validation columns only; because parts rotate, each part is validation in one split and test in another. GPN reporting considered layers 60--72.
+}
+\label{fig:supp-layer}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_win_prcurves}
+\caption{
+Per-split window-level precision--recall curves. Precision--recall curves for every method, one small multiple per similarity-aware cross-validation split; \textbf{a}, \emph{oriT}; \textbf{b}, \emph{oriV}. The AUPRC ranking summarized in \fref{fig:origin}b holds split by split, not only on average; the random-ranker floor is the positive-window prevalence (0.048).
+}
+\label{fig:supp-prcurves}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_win_reliability}
+\caption{
+Window-probability calibration. Reliability of the isotonic-calibrated window probabilities, one curve per method per cross-validation split (quantile bins), with per-split Brier score and expected calibration error (ECE); \textbf{a}, \emph{oriT}; \textbf{b}, \emph{oriV}. Per-run isotonic regression, fit on validation logits, places all methods on a common, well-behaved probability scale before ensembling and region aggregation.
+}
+\label{fig:supp-reliability}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_reg_forest}
+\caption{
+Region-level ranking by mAP and Recall@1. Region-ranking performance in the \fref{fig:origin}d layout for the two ranking metrics not shown there --- mean average precision (mAP) and Recall@1 --- for every method (large dot, mean across five splits; small dots, per-split; the mean is printed beside each row); \textbf{a}, \emph{oriT}; \textbf{b}, \emph{oriV}. Precision@1 is the main-text metric (\fref{fig:origin}d). P@1 and R@1 are not identical when a plasmid has more than one positive region; mAP is per-plasmid average precision, not mean reciprocal rank.
+}
+\label{fig:supp-regforest}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_reg_maplen}
+\caption{
+Region-level performance versus plasmid length. mAP, Precision@1 and Recall@1 stratified by plasmid-length bin ($<$10, 10--50, 50--100, $\geq$100 kb) for the pretrained models (one dot per split; the printed value is the macro mean across splits); \textbf{a}, \emph{oriT}; \textbf{b}, \emph{oriV}. Ranking accuracy is broadly stable across the length range; the $\geq$100 kb bin holds the fewest plasmids and shows the widest split spread.
+}
+\label{fig:supp-maplen}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/supp_reg_reftool}
+\caption{
+Per-split region-ranking metrics. Per-split mAP, precision@1 and recall@1 for every method (heatmap; columns are the five folds and their mean); \textbf{a}, \emph{oriT}; \textbf{b}, \emph{oriV}. The alignment reference tool (oriTfinder2 / OriV-Finder) is shown for both database regimes --- training-fold only versus training + validation --- differing by $\leq$ 0.007 (\emph{oriT}) and $\leq$ 0.002 (\emph{oriV}), so the leakage-clean regime used in \fref{fig:origin}d costs the reference tools essentially nothing.
+}
+\label{fig:supp-reftool}
+\end{figure}
+
+
+\clearpage
+% ============= from the interpretation artifact ======================
+
+\begin{figure}[h]
+    \centering
+    \fitfig[0.66]{figures/figS1_orit}
+\caption{
+Categorical-Jacobian maps at four additional origins of transfer. Marks as in \fref{fig:interpretation}; checkpoint \texttt{v3\_noflex\_375k} throughout. \textbf{a}, pHTbeta (AB183714.1, [30395,30564)), which carries both repeat classes in one frame: the direct repeats DR1--DR3 are associated with a broad parallel off-diagonal band across the left half, and the inverted repeats IR1 and IR2 with isolated anti-diagonal patterns in the right quarter. A further anti-diagonal pattern near position 30,480 corresponds to no annotated element. \textbf{b}, p838B-R (MH618673.1, [30124,30215)), whose logo track is densely occupied across the crop. Both GenBank-curated inverted repeats show anti-diagonal patterns: IR2 compact, IR1 larger and more diffuse, consistent with the record's own description of IR1 as imperfect. \textbf{c}, NAH7 (CP096582.1, [20737,20852)), where the four inverted repeats are supported unequally: IR4 and IR3 give clear crosses and IR1 a cross with pronounced corner intensity, whereas IR2 shows essentially no anti-diagonal signal despite being a perfect palindrome in the reading frame used --- a frame selected to maximize arm self-complementarity, so this negative is conditional on that choice. IR1 and IR4 are reported as required for transfer; IR2 and IR3 are not. \textbf{d}, R388 (NC\_028464.1, [16069,16296)), the TrwABC relaxosome region: all four inverted repeats resolve as anti-diagonal crosses, and the integration host factor site \emph{ihfA}, drawn on the second annotation lane, lies nested inside IR3. IR4 is the reported binding site for the TrwA \emph{sbaB} operator.
+}
+\label{fig:supp-orit-maps}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig[0.60]{figures/figS2_oriv}
+\caption{
+Categorical-Jacobian maps at four origins of replication spanning three architectural classes. Marks as in \fref{fig:interpretation}; checkpoint \texttt{v3\_noflex\_375k} throughout. \textbf{a}, RK2 (BN000925.1, [12366,12534)), from the essential iteron cluster through the four DnaA boxes: iterons I9--I5 are associated with a regular parallel off-diagonal band at the iteron period, while the DnaA boxes D1--D4 show smaller on-diagonal blocks with little off-diagonal signal between them. \textbf{b}, pECTm80 $\gamma$-\emph{oriV} (NC\_015472.1, [2000,2194)), where six tandem copies of a consensus motif are associated with several resolved parallel off-diagonal bands. The repeats and the AT-rich interval at the right are heuristic computational annotations, obtained by consensus scanning and local base-composition measurement rather than experimental mapping; the interval's label on this frozen panel reflects a motif assignment the project has since retracted, and only its AT-richness should be read from it. \textbf{c}, pGNB2 (DQ460733.1, [6170,6478)), which combines both classes: the tandem iterons DR1--DR4 are associated with a dense parallel off-diagonal lattice in the right third, and the inverted repeats IR1 and IR2 with compact anti-diagonal patterns at the left. DR1--DR3 are deposited GenBank calls; DR4 is drawn at 22 bp, an analytical extension of a 6 bp deposited call to the period of the other three. \textbf{d}, the single-strand origin of \emph{Bacillus subtilis} plasmid pTA1040 (NC\_001764.1, [5184,5304)), four stem-loops of this \emph{palT2}-family origin, each associated with an anti-diagonal pattern. These are literature dyad symmetries relocated against the deposited sequence by minimum-edit-distance search, with edit distances of 1 to 5 over 18 bp; the source's fifth loop, which it describes as the most constrained, is not shown. No thermodynamic prediction is displayed on this panel, so it is not a structural control.
+}
+\label{fig:supp-oriv-maps}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig[0.64]{figures/figS3_promoter}
+\caption{
+Dependency patterns at four selected $\sigma^{70}$ promoters. Four hand-selected promoters with their $-$35 and $-$10 boxes, Shine--Dalgarno sequence and the start of the coding sequence. Box overlays mark annotated extents and the $-$35$\times$$-$10 and Shine--Dalgarno$\times$start-codon positions; they are annotation-driven, not model detections. \textbf{a}, \emph{cop} (NZ\_LR135434.1, [2251,2350); mean information content 0.937; checkpoint \texttt{v3\_noflex\_295k}). \textbf{b}, \emph{ycbr} (NC\_018878.1, [87909,88021); mean information content 0.468; a minus-strand gene, so along the displayed genomic axis its elements appear in the order coding sequence, Shine--Dalgarno, $-$10, $-$35; checkpoint \texttt{v3\_noflex\_295k}). \textbf{c}, \emph{sacaa} (IMGPR\_plasmid\_640048390\_000001, [27668,27762); mean information content 0.385), where both boxes also project extended vertical and horizontal signal across the crop. \textbf{d}, the pHTbeta ORF32 promoter (AB183714.1, [30597,30706)), whose boxes were placed by exact substring search for the canonical consensus rather than by the motif scan. In all four, off-diagonal signal is present between the two boxes across spacings of 17--18 bp, the Shine--Dalgarno region carries a dense on-diagonal block, and the coding sequence shows periodic on-diagonal beading at codon spacing. Mean information content is computed over a 300 bp scan interval, not over the displayed crop. Checkpoint \texttt{v3\_noflex\_375k} for \textbf{c} and \textbf{d}.
+}
+\label{fig:supp-promoter}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig[0.50]{figures/figS4_crispr}
+\caption{
+Periodic direct-repeat arrays show lattice-like dependency patterns. Four CRISPR arrays, included as evidence that the direct-repeat association extends beyond origins to long periodic arrays; they are not origin machinery and carry no implication for \emph{oriT} or \emph{oriV} biology. Every mark drawn is a direct repeat called by CRISPRCasFinder 4.2.30 under definition G; no spacer glyphs and no model-detected array extension are shown. These are selected illustrative examples, not a systematic evaluation: six arrays were rendered and four are shown, and one omission was made on the basis of the model output (below). Checkpoint \texttt{v3\_noflex\_375k} throughout. \textbf{a}, the pKLM Type III-A array (JX524189.1, [8606,9798); 16 repeats, evidence level 4), the best-corroborated case: GenBank independently annotates the full \emph{cas10}/\emph{csm2}--\emph{6}/\emph{cas6}/\emph{cas1} operon and the same sixteen repeats. The repeats are associated with a periodic lattice of off-diagonal blocks at the repeat spacing. This record is a linear partial sequence and the 2,048 bp window is flush with its 3$'$ end, leaving the last repeat only \textasciitilde{}120 bp of downstream context, so the weaker signal over the terminal repeats has context truncation as a competing explanation and is not interpreted biologically. \textbf{b}, the PA83 Type IV-A array (CP017294.1, [295736,295900); 3 repeats) from an experimentally validated system, whose published 29 bp repeat is an exact reverse-complement match to the consensus called here; its three repeats show a complete $3\times3$ lattice. This accession's array calls were produced by the CRISPRCasFinder web service rather than the local pipeline, so its caller settings are not recorded. \textbf{c}, the pZA1-2\_02 orphan array (CP063551.1, [42103,42765); 3 + 5 repeats), which has no neighbouring \emph{cas} genes and which the caller reports as two adjacent arrays separated by 143 bp; they share an identical repeat consensus, but treating them as one biological array is an interpretation, not a validated call. The first three repeats are associated with intense mutual signal, the downstream five with weaker signal, and the two groups show little signal across the gap. \textbf{d}, the pNDM-MAR array B (JN420336.1, [240006,240233); 4 repeats), whose repeat core resembles the Type IV-A architecture in \textbf{b}; its four repeats show a complete $4\times4$ lattice. This array has evidence level 1 and no independent validation.
+}
+\label{fig:supp-crispr}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/figS5_umap_feature}
+\caption{
+Embedding projection coloured by coarse functional annotation. Two-dimensional UMAP of frozen \model embeddings over 308,478 non-overlapping 10 bp tiles from 40 origin-enriched Enterobacterales plasmids, each tile embedded from its own 2,048 bp context and averaged over forward and reverse-complement inputs (\nameref{sec:methods}). Each point is one tile, coloured by its annotation: intergenic (blue), coding sequence (orange), origin of vegetative replication (red), origin of transfer (green) and non-coding RNA (purple). Labels are assigned by overlap across the whole tile, and origin calls are curated BLAST hits that replace PlasAnn's own. Coding and intergenic tiles occupy largely distinct regions, and the two origin classes and non-coding RNA are associated with compact regions within the intergenic territory. No separation metric or classifier was computed, so this is an association rather than a demonstrated separation, and the cohort is origin-enriched by construction. Annotations were not used during pretraining or in fitting the projection; they were used to filter ambiguous tiles and to colour the points.
+}
+\label{fig:supp-umap-feature}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/figS6_umap_detailed}
+\caption{
+The same projection at finer annotation granularity. The projection of \suppfref{fig:supp-umap-feature}, recoloured by a finer vocabulary in which coding sequences are split by functional category: conjugation, non-conjugative DNA mobility, plasmid maintenance/replication/regulation, toxin--antitoxin systems, antibiotic resistance, metal and biocide resistance, stress response, virulence and defence, metabolism, and unclassified open reading frames, alongside the intergenic, origin and non-coding RNA classes of \suppfref{fig:supp-umap-feature}. Several coding categories are associated with contiguous regions of the projection. As in \suppfref{fig:supp-umap-feature}, no separation metric was computed.
+}
+\label{fig:supp-umap-detailed}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/figS7_umap_gc}
+\caption{
+The same projection coloured by GC content. The projection of \suppfref{fig:supp-umap-feature}, recoloured by the GC content of each 10 bp tile on a continuous scale from 0 to 1; with a ten-base denominator only eleven values are attainable, and no binning is applied. GC varies smoothly across the projection, with high- and low-GC tiles associated with different regions of both the coding and the intergenic territories. GC was not supplied as an annotation, but base composition was necessarily present in the model's input, so this is not a property withheld from the model. Because the projection varies strongly with composition, GC may contribute to the annotation-associated structure in \suppfrefs{fig:supp-umap-feature}{fig:supp-umap-detailed}.
+}
+\label{fig:supp-umap-gc}
+\end{figure}

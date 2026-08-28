@@ -1,0 +1,223 @@
+%======================================================================
+%  Supplementary Methods -- origin classification (paper section 3)
+%
+%  Source artifact: artifact_origin/page.html, section#methods,
+%  snapshot 2026-08-28. Nine subsections, transcribed verbatim.
+%  The artifact carries no display equations and no citation markers; every
+%  named tool below has a "% TODO cite:" at its first mention in this file
+%  or in 03_origin.tex.
+%======================================================================
+
+\subsection*{Reference origin curation}
+
+\emph{oriT} references were compiled from three sources: the oriTDB2
+% TODO cite: oriTDB2.
+database, six consensus \emph{oriT} sequences from an \emph{oriT}-diversity
+study,
+% TODO cite: the oriT-diversity study (six consensus oriTs).
+and 87 experimentally validated \emph{oriT}s from an
+\emph{oriT}-transfer-network study.
+% TODO cite: the oriT-transfer-network study (87 validated oriTs).
+Experimental oriTDB2 entries were manually curated against literature
+coordinates (for example oriT\_pIP421 extended from 7 to 194 bp spanning
+IHF1--IR3, oriT\_CloDF13 from 13 to 661 bp), and two entries were
+reclassified from bioinformatic to experimental. Bioinformatic-predicted
+\emph{oriT}s were retained only if they were not exact sequence or identifier
+duplicates of the experimental set and were $\geq$15 bp (2,860 sequences).
+These 2,860 bioinformatic entries were not used as BLAST queries for
+classifier labels. The final experimental set of 142 sequences was reduced to
+\textbf{112} by MMseqs2
+% TODO cite: MMseqs2.
+clustering (minimum sequence identity 90\%, coverage 90\%, coverage-mode =
+shorter). \emph{oriV} references (452 sequences from the OriV-Finder
+database) were deduplicated identically to \textbf{224} sequences.
+
+\subsection*{Plasmid databases and origin detection}
+
+Origins were located in two plasmid collections: PLSDB
+% TODO cite: PLSDB.
+(filtered to $\geq$ 2,000 bp) and IMG/PR \cite{camargo2024img}.
+Representative selection used a 95\% ANI, 95\% unidirectional
+alignment-fraction grouping (\texttt{ani95\_af95\_one\_direct}), which is
+distinct from the 99\% ANI dereplication columns. Reference origins were
+aligned to plasmid genomes with BLASTN (word size 7, dust filtering off),
+pre-filtered at 50\% subject coverage and then retained at $\geq$ 80\%
+identity and $\geq$ 80\% subject coverage; overlapping hits were merged and
+the longest-span alignment kept per plasmid. After PLSDB selection, IMG/PR
+candidates matching a selected PLSDB plasmid at ANI $\geq$95\% and
+max(alignment fraction) $\geq$95\% (skani \cite{shaw2023fast}) were excluded.
+
+\subsection*{Intergenic regions and plasmid selection}
+
+Coding sequences were predicted with Pyrodigal-gv
+% TODO cite: Pyrodigal-gv.
+in metagenomic mode; intergenic regions were the complement of all CDS
+intervals with a minimum length of 50 bp, and plasmids with fewer than three
+qualifying intergenic regions were excluded. For each origin, overlap with
+all intersecting intergenic regions was summed; the origin was retained if
+that total was $\geq$ 50\% of the origin length, and every intersecting
+region was then emitted. Only plasmids in which all detected origins met this
+intergenic criterion were retained. Within each 95\% ANI grouping the
+median-genome-length plasmid was taken as the representative, and for each
+unique origin the top five plasmids by alignment quality (percent identity
+$\times$ percent coverage) were kept; all origins of any selected plasmid
+were retained to preserve multi-origin plasmids, and plasmids with more than
+five origins were excluded as suspected assembly artefacts. For IMG/PR,
+plasmids carrying frequently observed origins (occurrence above the mean + 1
+s.d.) were required to be annotated as putatively complete, and for
+\emph{oriT} to additionally carry mobilization genes; PLSDB plasmids were
+assumed complete.
+
+\subsection*{Homology-partitioned cross-validation splits}
+
+To limit similarity leakage, parts were defined at the level of the origin
+sequences, not the plasmids. All-against-all pairwise similarity was computed
+with EMBOSS Water
+% TODO cite: EMBOSS Water / Smith-Waterman.
+(Smith--Waterman, gap open 10, gap extend 0.5) on both the forward and
+reverse-complement orientations, keeping the higher-scoring alignment;
+distance was $1 - (\text{identity}/100)$, with pairs below 70\% identity or
+50\% coverage set to the maximum distance. GraphPart
+% TODO cite: GraphPart.
+partitioned the origins into five parts at a similarity threshold of 0.3 with
+no post-hoc node moving during partitioning. For \emph{oriT}, GraphPart
+retained 87 of 112 origins; the 25 removed origins were reinserted into the
+part of their nearest assigned neighbour (ties to the smaller part), giving
+final part sizes 26/23/23/21/19. After reinsertion, some cross-part pairs
+fall inside the nominal 0.3 distance, so the \emph{oriT} split is
+similarity-aware rather than strictly homology-separated. \emph{oriV}
+retained all 224 origins with part sizes 46/46/44/44/44. Plasmids inherited
+their part through their origins, and plasmids whose origins fell in
+different parts were removed (retained selected plasmids: \emph{oriT} 381/399
+PLSDB and 457/464 IMG/PR; \emph{oriV} 563/688 PLSDB and 582/686 IMG/PR). Each
+cross-validation split trains on three parts, validates on one, and tests on
+one (for split \emph{N}, part \emph{N}$-$1 tests and part \emph{N}
+validates).
+
+\subsection*{Windowing and class imbalance}
+
+The window dataset combined PLSDB and IMG/PR at the intergenic-region,
+origin-annotation and genome levels. Genomes were tiled into 512 bp windows
+at a 256 bp step for training-set construction. Each window was assigned to
+its maximum-overlap intergenic region; windows that overlapped only CDS were
+discarded. A window was labelled positive when it overlapped an annotated
+origin by $\geq$ 50\% of min(origin length, 512 bp) or by $\geq$ 256 bp.
+Partial-origin windows below both thresholds were removed. Where a positive
+intergenic region on a chromosome had no grid-positive window, a single
+origin-centred window was inserted. Reverse-complement augmentation then
+duplicated every retained window. The evaluated population is therefore this
+filtered intergenic-window set, not every sliding window on the plasmid.
+Region-level neg:pos was $\approx$ 50:1 (\emph{oriT}) and $\approx$ 20:1
+(\emph{oriV}) before downsampling. Negatives were then selected
+deterministically within each part: plasmids below the target ratio
+contributed all negatives, and plasmids above it contributed nearest
+negatives, ordered by distance to the closest positive window, in round-robin
+until the part reached exactly 20:1. The reported training runs used a fixed
+positive-class loss weight of 20$\times$ for both tasks.
+
+\subsection*{Sequence embedders and probes}
+
+Four families of frozen feature extractors were compared. Evo2 (base) at
+three scales --- 1B, 7B and 40B parameters --- supplied embeddings from hook
+\texttt{blocks.\{i\}.mlp.l3} over probed layer ranges of 10--24, 10--31 and
+10--22 respectively; \model supplied embeddings from layers 36--72
+(\texttt{blocks.\{i\}}); a non-pretrained one-hot nucleotide encoding served
+as the from-scratch baseline; and PlasmidGPT (a BPE transformer pretrained on
+engineered Addgene
+% TODO cite: Addgene.
+plasmids) served as a negative control. PlasmidGPT token hidden states were
+upsampled to nucleotide resolution by repeating each token vector across the
+nucleotides spanned in the tokenizer offset mapping. Contextual embedders
+received extra flanking bases in the forward pass (768 bp per side for
+\model; 3,840 bp per side for Evo2 and PlasmidGPT, as set by the embedding
+orchestration), discarded before saving, so each 512 bp window yielded
+exactly 512 embedding vectors, with all layers of interest extracted in one
+pass and cached. On the contextual embeddings a mean-pooled MLP probe emitted
+one logit per window; on one-hot sequence a convolutional probe (CNN and
+residual CNN; hidden 64, kernel 16, dropout 0.15) integrated context
+spatially before emitting a logit.
+
+\subsection*{Training and layer selection}
+
+Probes were trained with five-fold cross-validation at the origin level
+(GraphPart parts mapped to five plasmid parts; for split \emph{N}, part
+\emph{N}$-$1 tests, part \emph{N} validates, the remaining three train), with
+five stochastic runs per (embedder, layer, split) and no explicit Python,
+NumPy or PyTorch seeds, giving 25 probes per (embedder, layer). The loss was
+BCE-with-logits with the positive class up-weighted by a fixed factor of
+20$\times$ for both tasks; a per-window loss-weight mechanism exists but was
+disabled in the reported runs (all per-window weights were 1). Optimization
+used AdamW
+% TODO cite: AdamW.
+(learning rate $5\times10^{-4}$, weight decay 0.01) with cosine annealing
+over 30 epochs and mixed precision, at batch size 256. Gradient accumulation
+remained at its default of one and was not used as an active technique. The
+best epoch per run was selected by validation AUPRC rather than validation
+loss, and both the held-out test and validation logits at that epoch were
+persisted so calibration could be fit after training. For each (embedder,
+probe) the reported layer was the one maximizing validation AUPRC averaged
+over both tasks, with each task's value itself the mean over the five splits.
+Layer selection therefore uses only validation columns, but because parts
+rotate, each part is a validation set in one split and a test set in another.
+Reporting considered GPN layers 60--72 even though probes were trained on
+36--72; the selected layers were \model \texttt{blocks.60}, Evo2-1B/7B
+\texttt{blocks.15.mlp.l3}, Evo2-40B \texttt{blocks.16.mlp.l3}, and PlasmidGPT
+\texttt{h.3}. All PlasmidGPT layers were swept and its best layer still
+underperformed the from-scratch CNN.
+
+\subsection*{Calibration and region aggregation}
+
+Raw logits under class imbalance are poorly calibrated and not comparable
+across runs, splits or embedders. Each probe's logits were mapped to
+probabilities by isotonic regression
+% TODO cite: isotonic regression / calibration.
+(\texttt{Isotonic\allowbreak Regression(\allowbreak out\_of\_\allowbreak bounds=\allowbreak"clip")})
+fit on that probe's own
+validation logits. For region-level inference, each strand's logits were
+calibrated first and the corresponding forward and reverse-complement
+probabilities were then averaged. The five per-run probability vectors per
+(embedder, layer, split) were averaged by arithmetic-mean soft voting. For
+region-level scoring, per-region window probabilities were aggregated with
+\texttt{percentile-75} --- the 75th percentile when a region has more than
+five windows, otherwise the maximum --- and a second isotonic calibrator was
+fit per split on those aggregated validation scores. This aggregator is a
+plain percentile and does not require adjacent windows or a contiguous span
+of evidence. Extra inference span beyond the intergenic interval was
+estimated as inference-region length minus intergenic length, not by direct
+CDS intersection. After isotonic regression both the 75th and 95th
+percentiles are well calibrated on the reliability diagrams; the 75th
+percentile spreads probability mass more smoothly across the ranking range.
+
+% NOTE: the artifact titles this subsection simply "Inference", which collides
+% with the pretraining Methods' own "Inference" heading above. Kept verbatim
+% rather than renamed; disambiguate at the author's discretion.
+\subsection*{Inference}
+
+At inference, intergenic regions were tiled into 512 bp windows at a 16 bp
+stride, denser than the 256 bp training step used only for example
+construction, and each region was embedded on both the forward and
+reverse-complement strands. For the window-level benchmark, the forward and
+reverse-complement of each window were treated as independent samples through
+the probe and its per-run calibrator. For region-level discovery, the two
+strands' calibrated probabilities were averaged so each genomic window
+contributed one value to aggregation. Regions longer than the embedder's
+maximum length were padded symmetrically to a multiple of that length, split
+into non-overlapping chunks, embedded, concatenated, and trimmed back to the
+original region; chunk order was reversed on the reverse-complement strand.
+Context is added around the overall padded region rather than independently
+around every chunk. Genome-wide application used standalone \model: five
+calibrated runs within each of five splits (25 probes), per-split region
+calibration, then an unweighted mean across splits. That mean is an ensemble
+score, not a globally recalibrated probability. The Evo2-7B $+$ \model
+ensemble was evaluated only as a benchmark combination.
+
+Novelty protocol. Held-out positive windows were stratified by BLASTN
+similarity to that split's training positives. Similarity is percent identity
+$\times$ query coverage / 100; windows with score $\leq$20 are novel and
+those with score $>$20 are training-similar. Forward and reverse-complement
+probabilities were averaged before scoring. All positives were retained;
+negatives were sampled without replacement at 20:1 over 200 deterministic
+draws; average precision was computed per split and macro-averaged. The BLAST
+tables used for this stratification are not regenerated in the current
+repository, so the claim is limited to the operational score threshold rather
+than to the absence of any homolog.

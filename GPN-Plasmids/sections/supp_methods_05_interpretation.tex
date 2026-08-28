@@ -1,0 +1,248 @@
+%======================================================================
+%  Supplementary Methods -- model interpretation (paper section 5)
+%
+%  Source artifact: artifact_interpretation/page.html, section#methods,
+%  snapshot 2026-08-28. Seven subsections, transcribed verbatim.
+%  The five ".eq" divs are rendered here as real display math; nothing else
+%  in the wording was changed. The method-writeups/*.md files in that tree
+%  are stale and contradict this text -- they were not used.
+%======================================================================
+
+\subsection*{Masked-logit inference}
+
+For a given plasmid, per-position predictive distributions were obtained by
+masking each position in turn and recording the model's output logits over
+the nucleotide vocabulary, using a 2,048 bp context window centred on the
+masked position. Windows are extracted circularly for replicons annotated as
+circular; none of the windows displayed here in fact crosses the origin of
+its deposited sequence. Because the encoder is not explicitly strand-symmetric,
+logits were computed independently for the forward sequence and for its
+reverse complement, with reverse-complement predictions re-mapped to
+forward-strand coordinates, and the two were averaged in logit space before
+the softmax.
+
+\subsection*{Positional information content}
+
+To summarize how sharply the model's predictive distribution is concentrated
+at each position, logits were converted to probabilities by softmax after
+forward/reverse-complement averaging, and information content was computed as
+the Kullback--Leibler divergence of the predicted distribution from a uniform
+background over the four bases,
+
+\[
+\mathrm{IC}(i) = \sum_b p_{i,b}\,\log_2\!\left(\frac{p_{i,b}}{0.25}\right)
+\;\in\; [0,2]\ \text{bits}.
+\]
+
+High-IC positions are those at which the model's prediction is sharply
+concentrated on one base given its context; low-IC positions are
+near-uniform. Information content is a property of the model's output
+relative to the stated background and is not a measure of evolutionary
+conservation or of biological importance. Per-base contributions
+$p_{i,b}\cdot\mathrm{IC}(i)$ set letter heights in the logo tracks.
+
+\subsection*{Functional annotation of plasmids}
+
+Structural and functional annotations for each plasmid were generated with
+PlasAnn,
+% TODO cite: PlasAnn -- the entry islam2026plasann has been added to
+% songlab.bib from the artifact's ref.bib, but the artifact carries no
+% citation marker here. Insert \cite{islam2026plasann} if wanted.
+run on the assembled nucleotide sequence for each accession and read from
+cached per-accession outputs. For the projections shown here the annotation
+track was built as follows. PlasAnn's own origin-of-transfer and
+origin-of-replication calls were removed and replaced outright by curated
+BLAST-derived \emph{oriT} and \emph{oriV} hits for that accession (45 and 85
+hits respectively across the cohort), with no further quality filtering at
+this step. Mobile-element and replicon-associated calls were discarded rather
+than demoted, so their footprint becomes intergenic only where no surviving
+feature covers it. Remaining features were mapped onto consecutive 10 bp
+tiles, a feature claiming every tile its span touches; a tile touched by two
+or more distinct feature types was labelled ambiguous and removed before the
+projection was fitted, and tiles touched by nothing were labelled intergenic.
+Ambiguity is therefore resolved by exclusion, not by a priority ranking: a
+priority hierarchy exists in the codebase but is bypassed on this path.
+Interval operations use bioframe.
+% TODO cite: bioframe.
+Annotations were used after embedding generation, for tile filtering,
+colouring and interpretation, and at no point as supervision.
+
+\subsection*{Locus curation and coordinate verification}
+
+All intervals in this section are 0-based half-open; figure axes are labelled
+in 1-based genomic coordinates, so an axis reads one greater than the
+interval start. The two main-figure loci were taken from their primary
+literature --- the pSC101 minimal origin from BAL 31 deletion analysis, and
+the pIGRK \emph{oriT1} region from deletion and conjugation assays ---
+% TODO cite: the pSC101 and pIGRK primary sources.
+and every feature was then located by exact literal substring search against
+the downloaded FASTA sequence rather than transcribed from a published
+figure; each motif matched exactly once.
+
+Supplementary loci come from mixed sources, and the class of evidence differs
+between them. Features at p838B-R, pGNB2 and the pKLM array are taken from
+the deposited GenBank curation; features at pHTbeta, NAH7 and R388 are from
+primary literature, with coordinates relocated against the deposited
+sequence.
+% TODO cite: the pHTbeta, NAH7, R388, pTA1040 and PA83 locus sources.
+Four departures are recorded explicitly. The pECTm80 direct repeats and
+AT-rich interval are heuristic computational annotations from a consensus
+scan and a local base-composition measurement, not experimentally mapped
+features. The pGNB2 fourth iteron is drawn at 22 bp, an analytical extension
+of a 6 bp deposited call to the tandem period of the other three, which it
+matches at 77\% identity. The NAH7 reading frame was selected to maximize arm
+self-complementarity before plotting, so observations at that locus are
+conditional on that choice. The pTA1040 stem-loops are literature dyad
+symmetries relocated by minimum-edit-distance search, with edit distances of
+1 to 5 over 18 bp; four of the source's five loops are shown, the omitted one
+being that the source describes as the most constrained.
+
+The $\sigma^{70}$ promoter panels are selected examples, not a benchmark.
+Three (\emph{cop}, \emph{ycbr}, \emph{sacaa}) are hand-picked from a
+genome-wide motif scan; their drawn $-$35, $-$10 and Shine--Dalgarno boxes
+are scan hits, while the box-pair coupling boxes and the coding-sequence box
+are annotation overlays. The pHTbeta ORF32 panel is not from that scan: its
+boxes were placed by exact substring search for the canonical consensus
+upstream of the start codon, and are therefore expected-position overlays.
+CRISPR arrays were called with CRISPRCasFinder
+% TODO cite: CRISPRCasFinder.
+and only its direct-repeat calls are drawn --- no spacer glyphs and no
+model-detected array extension. The caller's 1-based-inclusive Start/End were
+converted as (Start$-$1, End) and the conversion verified against
+JX524189.1's own GenBank repeat features, which match on all sixteen repeats.
+The four displayed arrays are selected from six that were rendered; the
+selection was made partly on the basis of the model output, and the omitted
+cases are identified in the Supplementary legend.
+
+\subsection*{Categorical Jacobian}
+
+To measure the pairwise sequence dependencies the frozen model carries within
+a window, we computed a categorical Jacobian and reduced it to a dependency
+map, following the construction used to extract co-evolutionary signal from
+protein and genomic language models.
+% TODO cite: the categorical-Jacobian construction.
+The quantity is a finite difference over discrete substitutions, not a
+continuous derivative, and not a measurement of physical contact or
+evolutionary covariation. Let $x \in \{\mathrm{A,C,G,T}\}^{L}$ be the
+reference sequence of a fixed $L = 2{,}048$ bp context, let $x^{i \to a}$
+denote $x$ with position $i$ replaced by allele $a$, and let
+$f_{j,b}(\cdot)$ be the model's output logit for allele $b$ at position $j$.
+Substituting every position with every allele gives the four-dimensional
+tensor
+
+\[
+J_{i,a,j,b} = f_{j,b}\!\left(x^{i \to a}\right) - f_{j,b}(x),
+\qquad i,j \in [L];\;\; a,b \in \{\mathrm{A,C,G,T}\}.
+\]
+
+The tensor is then centred along each of its four axes in turn,
+
+\[
+\tilde{J} = (1 - M_i)(1 - M_a)(1 - M_j)(1 - M_b)\,J,
+\]
+
+where $M_d$ replaces the tensor by its mean along axis $d$; the four
+operators commute, so the order is immaterial. Centring along $b$ subtracts
+the position-$j$ log-normalizer, so each entry of $\tilde{J}$ is a log
+probability ratio of the form
+$\log\!\left[P(n_j = b \mid n_i = a) / P(n_j = b \mid n_i = x_i)\right]$ up to
+a constant in $b$, and centring along $a$ removes the corresponding reference
+offset. The $4 \times 4$ allele block at each pair of positions is reduced to
+a scalar dependency score by its Frobenius norm, which weights every allele
+pair rather than any single one:
+
+\[
+C_{ij} = \bigl\lVert \tilde{J}_{i,\cdot,j,\cdot} \bigr\rVert_F
+= \Bigl(\textstyle\sum_{a,b} \tilde{J}^{\,2}_{i,a,j,b}\Bigr)^{1/2}.
+\]
+
+The matrix is symmetrized and its diagonal zeroed, and an average-product
+correction is then applied, which removes the background contributed by
+generically high-signal positions:
+
+\[
+S = \tfrac{1}{2}\!\left(C + C^{\mathsf{T}}\right), \quad S_{ii} = 0;
+\qquad
+S^{\mathrm{APC}}_{ij} = S_{ij} - \frac{S_{i\cdot}\,S_{\cdot j}}{S_{\cdot\cdot}}.
+\]
+
+where $S_{i\cdot}$ and $S_{\cdot j}$ are the row and column sums of $S$ and
+$S_{\cdot\cdot}$ its grand sum. The diagonal is zeroed before this correction
+and not restored afterwards, so displayed diagonal entries carry the
+correction term alone. No positions are masked in this computation: each
+perturbed input carries a genuine alternative nucleotide at position $i$ and
+the full observed sequence elsewhere. Unlike the per-position logit tracks
+described above, the Jacobian is computed from a single forward-orientation
+pass and is not averaged with the reverse complement, and no
+reverse-complement concordance control is shown. An alternative reduction,
+taking the largest signed entry of each allele block, exists in the same code
+path but was not used for any panel shown here.
+
+Maps were aligned to genomic coordinates and cropped to the locus for
+display, with the annotation and logo tracks drawn in the same coordinate
+frame. Each panel is scaled to its own crop, with the lower limit at the crop
+minimum and the upper limit at its 99th percentile rather than its maximum.
+Two consequences follow and are relied on throughout: absolute intensities
+are not comparable between panels, and the diverging colour map is not
+centred on zero, so a mid-scale colour does not indicate the absence of
+dependency.
+
+\subsection*{Contextual sequence embeddings and dimensionality reduction}
+
+Each plasmid was divided into consecutive, non-overlapping 10 bp tiles. For
+each tile, the unmasked 2,048 bp context centred on it was passed through the
+frozen model, the final encoder layer's hidden states at the tile's own ten
+centre positions were averaged, and the forward-strand and reverse-complement
+results were averaged in turn, giving one embedding per tile. The cohort is
+40 Enterobacterales plasmids selected for curated \emph{oriT} and \emph{oriV}
+BLAST hits and genus-weighted for diversity; it is origin-enriched by
+construction and is not a representative sample of plasmids. This yielded
+310,013 tiles, of which 1,535 with ambiguous annotation were removed, leaving
+308,478 displayed.
+
+Embeddings were standardized across all tiles, then L2-normalized so that a
+cosine metric could be used, and projected to two dimensions with UMAP
+% TODO cite: UMAP (mcinnes2018umap exists in songlab.bib) and torchdr.
+(\texttt{torchdr}; 1,300 neighbours, minimum distance 0.5, 2,000 iterations,
+PCA initialization, seed 42). The projection was fitted on the 279,480 unique
+embedding rows, collapsing 28,998 exact duplicates, and coordinates were then
+broadcast back to every tile. Points were coloured by the annotation track
+described above, by a finer annotation vocabulary, or by GC content measured
+directly on the same 10 bp tile; with a ten-base denominator, GC takes only
+eleven distinct values, and no binning step is applied. Base composition was
+necessarily present in the model's input, so GC is not an external property
+withheld from the model. These projections use the final encoder layer,
+whereas the \secref{sec:origin} origin classifier is fitted on
+% TODO wording: the artifact reads "whereas the §3 origin classifier".
+\texttt{blocks.60}, twelve residual blocks earlier; the two are different
+representations of the same frozen model. No separation metric or classifier
+was computed on the projection, so we report association rather than
+separation.
+
+\subsection*{Regulatory motif scanning}
+
+Putative $\sigma$-factor promoter elements were identified by scanning plasmid
+sequences against position-weight matrices for $\sigma^{70}$ $-$35 and $-$10
+elements and for Shine--Dalgarno sequences, derived from RegulonDB, using
+FIMO as implemented in pymemesuite.
+% TODO cite: RegulonDB, FIMO/MEME Suite, pymemesuite.
+The matrix files carry no background frequencies, so scoring fell back to a
+uniform nucleotide background; no per-sequence background was estimated and
+no multiple-testing correction was applied, so reported p-values are raw
+per-box values. Box pairs were retained at $-$35/$-$10 spacings of 14--22 bp.
+The executed per-box significance thresholds differ between the two cached
+scans that supply the displayed panels --- 0.025 for the scan behind
+\emph{cop} and \emph{ycbr}, and 0.05 for the scan behind \emph{sacaa}, with
+the Shine--Dalgarno threshold at the code default of 0.05 in both --- and the
+mean information content quoted in each promoter panel title was computed
+over a 300 bp scan interval, not over the displayed crop.
+
+ViennaRNA
+% TODO cite: ViennaRNA -- the artifact's own note says it should be cited
+% only if an analysis using it is actually reported.
+was used elsewhere in this project for RNA secondary-structure prediction,
+but no base-pair-probability panel appears among the figures shown here, and
+none of the displayed panels contains a thermodynamic prediction. The pTA1040
+single-strand origin is therefore not presented as a structural or
+thermodynamic control: the stem-loops drawn on it are literature dyad
+symmetries relocated against the deposited sequence, as described above.

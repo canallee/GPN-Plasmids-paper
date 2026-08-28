@@ -1,0 +1,257 @@
+%======================================================================
+%  Supplementary Tables
+%
+%  Renumbered globally in order of appearance (the artifacts number them
+%  per-section):
+%    S1  <- pretraining, "Supplementary Table S1" (pretraining parameters)
+%    S2  <- origin,      "Supplementary Table 1"  (region-level metrics)
+%    S3  <- origin,      "Supplementary Table 2"  (window AUPRC)
+%    S4  <- interpretation, "Table S1"            (interpretation parameters)
+%
+%  Sources: pretraining/06_supplementary_parameter_table.md;
+%           artifact_origin/page.html section#supp;
+%           artifact_interpretation/page.html section#supp.
+%  Snapshot 2026-08-28.
+%======================================================================
+
+\section*{Supplementary Tables}
+
+% ---- Supplementary Table 1: pretraining parameters -------------------
+{\small
+\begin{longtable}{p{0.32\textwidth}p{0.42\textwidth}p{0.18\textwidth}}
+\caption{
+All values used to pretrain \model. The "Set as" column distinguishes values passed on the training command line from values fixed in the training source, since the two cannot be distinguished from the launch script alone. Optimizer moments, epsilon, and gradient clipping were left at their framework defaults.
+}\label{tab:supp-pretrain-params}\\
+\toprule
+Parameter & Value & Set as \\
+\midrule
+\endfirsthead
+\multicolumn{3}{l}{\emph{\tablename~\thetable{} (continued)}}\\
+\toprule
+Parameter & Value & Set as \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{3}{l}{\textit{Corpus filtering}} \\
+Source dataset & IMG/PR plasmid collection (699,973 sequences, 214,950 PTUs) & command line \\
+Minimum sequence length & 2,048 bp & code constant \\
+Maximum ambiguous-base fraction & 50\% & code constant \\
+Maximum DUST-masked fraction & 50\% & code constant \\
+Topology exclusion & sequences annotated \texttt{Concatemer} & code constant \\
+Held-out host species & \emph{Shewanella oneidensis}, \emph{Gluconacetobacter tumulisoli} & code constant \\
+Held-out unit & whole PTU (any PTU containing a held-out-species plasmid) & code constant \\
+Held-out set representative & longest sequence per sub-PTU & code constant \\
+\midrule
+\multicolumn{3}{l}{\textit{Clustering}} \\
+Sub-PTU criterion & $\geq$95\% ANI, $\geq$95\% unidirectional alignment fraction & precomputed input \\
+Dereplication criterion & $\geq$99\% ANI, $\geq$95\% bidirectional alignment fraction & precomputed input \\
+\midrule
+\multicolumn{3}{l}{\textit{Epoch construction}} \\
+Target composition (Major / Moderate / Unique) & 35\% / 15\% / 50\% & design target \\
+Major base rate, $\beta$ & 0.678 & code constant \\
+Major allocation exponent, $1/T$ & $1/1.5 = 2/3$ & code constant \\
+Major allocation floor & 1.0 representative & code constant \\
+Major size-clip percentile & 0.95 & code constant \\
+Major size cap, $Q_{0.95}$ & 10 sub-PTUs & data-derived \\
+Unique sampling fraction, $f_{\mathrm{Unique}}$ & 0.564 & code constant \\
+Fractional allocation resolved by & unbiased randomized rounding & code constant \\
+Resampling frequency & every epoch & code constant \\
+Per-epoch RNG seed & base seed $+$ epoch index & code constant \\
+\midrule
+\multicolumn{3}{l}{\textit{Windowing and tokenization}} \\
+Window size & 2,048 bp & command line \\
+Step size & 1,024 bp & command line \\
+Reverse-complement augmentation & enabled (windows enumerated for both strands) & code constant \\
+Circularization context appended & 1,024 bp at each terminus (complete plasmids) & code constant \\
+Window phase offset & uniform random, redrawn per epoch & code constant \\
+Per-epoch window subsample & 0.25 & command line \\
+Window shuffle seed & 42 & code constant \\
+Vocabulary & 7 tokens: \texttt{[PAD]}, \texttt{[MASK]}, \texttt{[UNK]}, a, c, g, t & tokenizer \\
+Padding & to 2,048 tokens with \texttt{[PAD]} & code constant \\
+\midrule
+\multicolumn{3}{l}{\textit{Objective}} \\
+Masking probability & 0.15 of eligible (nucleotide) positions & code default \\
+Mask replacement policy & 80\% \texttt{[MASK]} / 10\% random token / 10\% unchanged & library default \\
+Positions excluded from masking & all special tokens (\texttt{[PAD]}, \texttt{[MASK]}, \texttt{[UNK]}) & library default \\
+Loss & cross-entropy at selected positions only & code constant \\
+\midrule
+\multicolumn{3}{l}{\textit{Architecture}} \\
+Encoder & ByteNet-style dilated convolutional stack, non-causal & command line \\
+Layers & 72 & command line \\
+Hidden size & 768 & command line \\
+Kernel size & 9 & code default \\
+Convolution bias & disabled & code default \\
+Intermediate width & full (equal to hidden size) & code default \\
+Dilation cycle & 1, 2, 4, 8, 16, 32 (repeated 12$\times$) & code default \\
+Receptive field & 6,049 bp & derived \\
+Parameters & 467,904,007 & derived \\
+Input embedding & one-hot into 768 dimensions, no learned matrix & code default \\
+Positional encoding & none & code default \\
+Prediction head & Linear(768$\rightarrow$768) $\rightarrow$ GELU $\rightarrow$ LayerNorm $\rightarrow$ Linear(768$\rightarrow$7) & code default \\
+\midrule
+\multicolumn{3}{l}{\textit{Optimization}} \\
+Optimizer & AdamW & command line \\
+Learning rate & $5 \times 10^{-4}$ & command line \\
+Schedule & constant with warmup & command line \\
+Warmup steps & 2,000 & command line \\
+Weight decay & 0.01 & command line \\
+Gradient accumulation & 1 & command line \\
+Precision & BF16 (training and evaluation) & command line \\
+Graph compilation & enabled & command line \\
+Parallelism & distributed data parallel & command line \\
+Hardware & NVIDIA H200 GPUs & run configuration \\
+Per-device batch size & 80, then 76 & command line \\
+Device count & 8 (to step 295,000), then 5, then 4 & run configuration \\
+Effective batch size & 640, then 380, then 304 windows & derived \\
+Random seed & 1234 & command line \\
+Configured maximum steps & 800,000 & command line \\
+\textbf{Steps completed} & \textbf{375,000} & run outcome \\
+Checkpoint interval & 5,000 steps & command line \\
+Released checkpoint & \texttt{GPN\_\allowbreak Plasmids\_\allowbreak ByteNet\_\allowbreak H200/\allowbreak checkpoint-375000} & run outcome \\
+Windows consumed & $\approx$ 217 million ($\approx 4.5 \times 10^{11}$ tokens) & derived \\
+Resampled epochs & $\approx$ 102 & derived \\
+\end{longtable}
+}
+
+
+\clearpage
+
+% ---- Supplementary Table 2: region-level ranking metrics --------------
+\begin{sidewaystable}[h]
+\caption{
+Region-level ranking metrics --- mean average precision (mAP), Precision@1 (P@1), Recall@1 (R@1) and NDCG, mean $\pm$ s.d. over the five similarity-aware splits; every method and baseline, both tasks. Reference tool = oriTfinder2 (\emph{oriT}) / OriV-Finder (\emph{oriV}), training-split database. Colours match the figure legend.
+}
+\label{tab:supp-region-metrics}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccccc}
+\toprule
+& \multicolumn{4}{c}{\emph{oriT}} & \multicolumn{4}{c}{\emph{oriV}} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+Method & mAP & P@1 & R@1 & NDCG & mAP & P@1 & R@1 & NDCG \\
+\midrule
+\multicolumn{9}{l}{\textit{Baselines \& from-scratch}} \\
+Longest intergenic & 0.352 $\pm$ 0.08 & 0.183 $\pm$ 0.05 & 0.172 $\pm$ 0.04 & 0.493 $\pm$ 0.07 & 0.663 $\pm$ 0.07 & 0.522 $\pm$ 0.08 & 0.496 $\pm$ 0.08 & 0.745 $\pm$ 0.05 \\
+Reference tool (train) & 0.149 $\pm$ 0.03 & 0.140 $\pm$ 0.05 & 0.126 $\pm$ 0.04 & 0.428 $\pm$ 0.05 & 0.730 $\pm$ 0.03 & 0.706 $\pm$ 0.03 & 0.657 $\pm$ 0.03 & 0.819 $\pm$ 0.02 \\
+One-hot, CNN & 0.509 $\pm$ 0.11 & 0.409 $\pm$ 0.13 & 0.393 $\pm$ 0.13 & 0.643 $\pm$ 0.09 & 0.686 $\pm$ 0.04 & 0.584 $\pm$ 0.03 & 0.547 $\pm$ 0.04 & 0.783 $\pm$ 0.02 \\
+One-hot, Residual CNN & 0.493 $\pm$ 0.14 & 0.403 $\pm$ 0.14 & 0.387 $\pm$ 0.15 & 0.646 $\pm$ 0.10 & 0.671 $\pm$ 0.04 & 0.569 $\pm$ 0.05 & 0.535 $\pm$ 0.05 & 0.771 $\pm$ 0.03 \\
+\midrule
+\multicolumn{9}{l}{\textit{Frozen DNA language-model embeddings}} \\
+PlasmidGPT & 0.438 $\pm$ 0.15 & 0.319 $\pm$ 0.14 & 0.305 $\pm$ 0.14 & 0.591 $\pm$ 0.13 & 0.531 $\pm$ 0.05 & 0.405 $\pm$ 0.07 & 0.375 $\pm$ 0.07 & 0.672 $\pm$ 0.04 \\
+Evo2-1B & 0.848 $\pm$ 0.06 & 0.797 $\pm$ 0.07 & 0.769 $\pm$ 0.08 & 0.906 $\pm$ 0.03 & 0.807 $\pm$ 0.05 & 0.735 $\pm$ 0.07 & 0.692 $\pm$ 0.07 & 0.876 $\pm$ 0.03 \\
+Evo2-7B & 0.883 $\pm$ 0.05 & 0.865 $\pm$ 0.06 & 0.836 $\pm$ 0.06 & 0.935 $\pm$ 0.03 & 0.825 $\pm$ 0.04 & 0.768 $\pm$ 0.06 & 0.720 $\pm$ 0.06 & 0.893 $\pm$ 0.03 \\
+Evo2-40B & 0.883 $\pm$ 0.03 & 0.851 $\pm$ 0.05 & 0.820 $\pm$ 0.04 & 0.930 $\pm$ 0.02 & 0.810 $\pm$ 0.04 & 0.747 $\pm$ 0.06 & 0.697 $\pm$ 0.06 & 0.885 $\pm$ 0.03 \\
+\model & 0.897 $\pm$ 0.06 & 0.869 $\pm$ 0.08 & 0.843 $\pm$ 0.09 & 0.932 $\pm$ 0.04 & 0.816 $\pm$ 0.05 & 0.772 $\pm$ 0.05 & 0.721 $\pm$ 0.06 & 0.883 $\pm$ 0.04 \\
+Ensemble (\model + Evo2-7B) & 0.928 $\pm$ 0.03 & 0.892 $\pm$ 0.05 & 0.862 $\pm$ 0.06 & 0.949 $\pm$ 0.02 & 0.861 $\pm$ 0.03 & 0.788 $\pm$ 0.04 & 0.738 $\pm$ 0.05 & 0.903 $\pm$ 0.02 \\
+\bottomrule
+\end{tabular}%
+}
+\end{sidewaystable}
+
+
+\clearpage
+
+% ---- Supplementary Table 3: window-level AUPRC ------------------------
+\begin{table}[h]
+\caption{
+Window-level detection average precision (AUPRC), mean $\pm$ s.d. over the five splits, on the validation and held-out test windows, at each embedder's reported best-val layer. The random-ranker AUPRC equals the positive-window prevalence (0.048).
+}
+\label{tab:supp-window-auprc}
+\begin{center}
+\small
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{\emph{oriT} AUPRC} & \multicolumn{2}{c}{\emph{oriV} AUPRC} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Method & validation & test & validation & test \\
+\midrule
+One-hot, CNN & 0.254 $\pm$ 0.07 & 0.277 $\pm$ 0.08 & 0.390 $\pm$ 0.04 & 0.383 $\pm$ 0.08 \\
+One-hot, Residual CNN & 0.248 $\pm$ 0.08 & 0.279 $\pm$ 0.10 & 0.386 $\pm$ 0.06 & 0.375 $\pm$ 0.03 \\
+PlasmidGPT & 0.148 $\pm$ 0.04 & 0.150 $\pm$ 0.06 & 0.214 $\pm$ 0.04 & 0.201 $\pm$ 0.06 \\
+Evo2-1B & 0.624 $\pm$ 0.13 & 0.605 $\pm$ 0.15 & 0.585 $\pm$ 0.06 & 0.570 $\pm$ 0.05 \\
+Evo2-7B & 0.719 $\pm$ 0.11 & 0.722 $\pm$ 0.10 & 0.632 $\pm$ 0.07 & 0.616 $\pm$ 0.09 \\
+Evo2-40B & 0.708 $\pm$ 0.11 & 0.696 $\pm$ 0.12 & 0.577 $\pm$ 0.06 & 0.546 $\pm$ 0.07 \\
+\model & 0.805 $\pm$ 0.14 & 0.781 $\pm$ 0.15 & 0.701 $\pm$ 0.07 & 0.671 $\pm$ 0.07 \\
+Ensemble (\model + Evo2-7B) & 0.841 $\pm$ 0.10 & 0.814 $\pm$ 0.10 & 0.745 $\pm$ 0.06 & 0.692 $\pm$ 0.08 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\clearpage
+
+% ---- Supplementary Table 4: interpretation parameters ----------------
+{\small
+\begin{longtable}{p{0.32\textwidth}p{0.34\textwidth}p{0.26\textwidth}}
+\caption{
+Interpretation parameters. The provenance column distinguishes values fixed in the analysis source from library defaults and from settings not yet recovered from the analysis notebooks.
+}\label{tab:supp-interp-params}\\
+\toprule
+Parameter & Value & Set as \\
+\midrule
+\endfirsthead
+\multicolumn{3}{l}{\emph{\tablename~\thetable{} (continued)}}\\
+\toprule
+Parameter & Value & Set as \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{3}{l}{\textit{Inference}} \\
+Context window & 2,048 bp & code constant \\
+Strand handling (masked logits) & forward + RC, averaged & code constant \\
+Circular replicons & window wraps origin & code constant \\
+Model checkpoint & \texttt{v3\_noflex\_375k} & run outcome \\
+Checkpoint exceptions (\emph{cop}, \emph{ycbr}) & \texttt{v3\_noflex\_295k} & run outcome \\
+\midrule
+\multicolumn{3}{l}{\textit{Information content}} \\
+Background distribution & uniform, 0.25 per base & code constant \\
+Range & 0--2 bits & derived \\
+\midrule
+\multicolumn{3}{l}{\textit{Categorical Jacobian}} \\
+Alleles substituted per position & 4 (A, C, G, T) & code constant \\
+Tensor shape & $L \times 4 \times L \times 4$ & derived \\
+Centring & all four tensor axes & code constant \\
+Contact statistic & Frobenius norm over the allele block & code constant \\
+Symmetrization & $\tfrac{1}{2}(C + C^{\mathsf{T}})$ & code constant \\
+Diagonal & zeroed before correction & code constant \\
+Background correction & average-product (APC) & code constant \\
+Masking during computation & none & code constant \\
+Strand handling & forward orientation only & code constant \\
+Colour scale & local per panel, vmax at 99th percentile & in-repo default, not set per call \\
+Compute precision & autocast, dtype not recorded & library default \\
+\midrule
+\multicolumn{3}{l}{\textit{Embeddings and UMAP}} \\
+Embedding layer & final encoder layer (72 of 72) & code constant \\
+Tile size / stride & 10 / 10 bp (non-overlapping) & code constant \\
+Per-tile pooling & mean of 10 centre states, fwd + RC & code constant \\
+Cohort & 40 origin-enriched Enterobacterales plasmids & curated selection \\
+Tiles: total / removed / displayed & 310,013 / 1,535 / 308,478 & derived from cache \\
+Rows fitted (duplicates collapsed) & 279,480 (28,998) & derived from cache \\
+Preprocessing & standardized, then L2-normalized & code constant \\
+UMAP metric & cosine & command line \\
+UMAP neighbours / \texttt{min\_dist} & 1,300 / 0.5 & command line / code default \\
+UMAP iterations / init / seed & 2,000 / PCA / 42 & code default \\
+\midrule
+\multicolumn{3}{l}{\textit{Annotation and motif scanning}} \\
+Annotation tool & PlasAnn (cached per accession) & external tool \\
+Origin calls & curated BLAST \emph{oriT}/\emph{oriV} replace PlasAnn's & code constant \\
+Overlap resolution & ambiguous tiles removed (priority bypassed) & code constant \\
+MGE / replicon calls & discarded upstream, not demoted & code constant \\
+Interval operations & bioframe & library \\
+Motif scan & FIMO (pymemesuite) vs RegulonDB $\sigma^{70}$ & library \\
+FIMO background / correction & uniform fallback / none & consequence of PWM file \\
+FIMO threshold (\emph{cop}, \emph{ycbr} / \emph{sacaa}) & 0.025 / 0.05 & recovered run record \\
+Shine--Dalgarno threshold & 0.05 & code default \\
+Mean-IC interval & 300 bp scan window, not the crop & code default \\
+CRISPR array calls & CRISPRCasFinder 4.2.30, definition G & recorded per run \\
+CRISPR spacer cap & maxSP never passed; tool default assumed & not recorded \\
+\midrule
+\multicolumn{3}{l}{\textit{Conventions}} \\
+Interval convention (text, legends) & 0-based half-open & convention \\
+Axis labels (artwork) & 1-based & figure setting \\
+Figure widths & 183 mm (double column) & figure setting \\
+\end{longtable}
+}
