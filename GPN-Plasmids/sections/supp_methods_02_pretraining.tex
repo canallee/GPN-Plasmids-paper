@@ -1,0 +1,475 @@
+%======================================================================
+%  Supplementary Methods -- pretraining (paper section 2)
+%
+%  Source: /home/canall/DNA_LM/plasmids_GPN/manuscript/pretraining/
+%    02_methods_corpus_and_clustering.md
+%    03_methods_epoch_construction.md              (the canonical variant;
+%       the _factorized_v1 and _factorized_DRAFT siblings are stale)
+%    04_methods_windowing_and_tokenization.md
+%    05_methods_architecture_objective_and_optimization.md
+%  snapshot 2026-08-28. These files mirror the artifact's Methods band and
+%  self-declare as the canonical source of truth for it.
+%
+%  Superscript citations map as in 02_pretraining.tex.
+%======================================================================
+
+\subsection*{Pretraining corpus and sequence clustering}
+
+\subsubsection*{Source dataset}
+
+\model was pretrained on plasmid sequences from the Integrated Microbial
+Genomes / Plasmid Repository (IMG/PR), \cite{camargo2024img} comprising
+699,973 sequences distributed across 214,950 Plasmid Taxonomic Units (PTUs).
+\cite{redondosalvo2020pathways} Sequences were used together with their
+IMG/PR metadata, including GOLD ecosystem annotations,
+\cite{mukherjee2023twenty} host taxonomy, assembly completeness, topology
+annotation, and per-sequence composition statistics.
+
+\subsubsection*{Filtering}
+
+Four criteria were applied in sequence:
+
+\begin{center}
+\begin{tabular}{clc}
+\toprule
+Step & Criterion & Sequences remaining \\
+\midrule
+--- & IMG/PR source & 699,973 \\
+1 & length $\geq$ 2,048 bp & 699,110 \\
+2 & ambiguous-base fraction $\leq$ 50\% and DUST-masked fraction $\leq$ 50\% & 699,085 \\
+3 & sequences annotated as concatemers excluded & 693,644 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The length threshold matches the model's input window, so that every retained
+sequence yields at least one full-length training window. The composition
+filters remove 25 sequences dominated by ambiguous bases or low-complexity
+repeats. Concatemers --- assemblies containing multiple tandem copies of the
+same replicon --- were excluded using the IMG/PR \texttt{topology} annotation,
+removing 5,441 sequences; they were not re-detected computationally at this
+stage.
+
+\subsubsection*{Sequence clustering}
+
+Pairwise sequence relationships were computed with skani,
+\cite{shaw2023fast} which estimates the average nucleotide identity (ANI) ---
+the mean identity across the aligned regions of two sequences --- together
+with the alignment fraction (AF) --- the proportion of a sequence spanned by
+that alignment. skani was run in all-versus-all (triangle) mode over the full
+sequence set, treating each sequence as an individual genome, under its
+high-sensitivity (\texttt{--slow}) preset with an 85\% ANI screening
+threshold (\texttt{-s 85}) and a 95\% minimum alignment fraction
+(\texttt{--min-af 95}); the exact invocation is recorded in the provenance
+notes.
+
+From these values, two levels of within-PTU clustering were defined by
+independent criteria applied to the same sequence set, not by a single
+agglomerative procedure.
+
+\textbf{Dereplication clusters} were defined at $\geq$99\% ANI with $\geq$95\%
+\emph{bidirectional} alignment fraction, requiring that both sequences in a
+pair cover at least 95\% of each other's length. Because the criterion is
+symmetric, only pairs that are near-identical in both sequence and length are
+collapsed: a short fragment is not absorbed into a much longer plasmid it
+happens to match, and so survives as an independent training example. This
+level corresponds to repeated observation of the same molecule --- the same
+strain or isolate.
+
+\textbf{Sub-PTUs} were defined at $\geq$95\% ANI with $\geq$95\%
+\emph{unidirectional} alignment fraction, requiring only that at least one
+sequence of a pair is $\geq$95\% covered by the alignment. The identity
+threshold follows the conventional boundary used to delimit prokaryotic
+species from genome-wide ANI, \cite{jain2018high} though we note that species
+concepts for plasmids remain operational rather than formally defined, and we
+use the threshold as a practical delimiter of plasmid-level structure. The
+unidirectional coverage criterion is deliberate: it groups a complete plasmid
+with partial assemblies of the same plasmid, which is the common situation
+for metagenomically derived sequences. It follows that sub-PTUs may contain
+sequences of substantially different lengths, and that membership reflects
+sequence correspondence rather than complete functional equivalence, since a
+partial assembly may lack accessory regions present in a complete one.
+
+Across the full database this yields 505,821 dereplication clusters and
+343,291 sub-PTUs. PTUs contain a mean of 1.60 sub-PTUs and a median of one,
+with a maximum of 737; 80.8\% of PTUs resolve into a single sub-PTU. Host
+assignments span 49 phyla in the full collection.
+
+\subsubsection*{Hierarchy validation}
+
+Because the two clustering levels are defined independently, strict
+containment is not guaranteed a priori, and we therefore measured it.
+Containment is exact at the PTU level: no sub-PTU and no dereplication
+cluster spans more than one PTU. This is the level at which the training and
+held-out split is defined, so the split is unambiguous.
+
+\subsubsection*{Training and held-out split}
+
+The corpus was partitioned by host species: all PTUs containing a plasmid
+whose host species was \emph{Shewanella oneidensis} or
+\emph{Gluconacetobacter tumulisoli} were reserved as a species-disjoint
+held-out set (3 PTUs, 6 sequences; 5 sub-PTU representatives, the longest
+sequence per cluster). Splitting at the level of whole PTUs, rather than of
+individual sequences, prevents leakage between the two partitions: because no
+sub-PTU or dereplication cluster crosses a PTU boundary, no close relative of
+a held-out sequence remains in training.
+
+The training corpus is therefore 693,638 sequences spanning 213,393 PTUs,
+340,697 sub-PTUs, and 500,466 dereplication clusters. Its largest PTU
+contains 735 sub-PTUs, and its host assignments span 48 phyla, compared with
+49 in the full collection. Sequence lengths have a mean of 24.0 kb and a
+median of 10.1 kb.
+
+\subsubsection*{PTU categories}
+
+Each PTU in the training corpus was classified by which levels of the
+hierarchy are populated within it:
+
+\begin{itemize}
+\item \textbf{Major} --- more than one sub-PTU (multiple plasmid sequences captured within the clade);
+\item \textbf{Moderate} --- exactly one sub-PTU but more than one dereplication cluster (a single plasmid sequence with isolate-level variation);
+\item \textbf{Unique} --- a single dereplication cluster.
+\end{itemize}
+
+This partitions the training corpus into 40,871 Major, 24,850 Moderate, and
+147,672 Unique PTUs. Within the Moderate category, PTUs contain a median of 2
+dereplication clusters (mean 2.33, maximum 18). Within the Unique category,
+92.3\% of PTUs comprise a single sequence, while the remaining 7.7\% contain
+several near-identical sequences collapsed into one cluster (maximum 84).
+
+
+\subsection*{Epoch construction as diversity-aware sampling}
+
+Throughout, an epoch denotes one complete pass through the windowed examples
+generated from a newly sampled subset of the IMG/PR training set, rather than
+through all training sequences. Before windowing, each epoch contained
+approximately 166,000 sequence representatives---roughly one quarter of the
+training sequences---and the subset and corresponding windowed dataset were
+reconstructed at every epoch boundary. For a sequence \(s\), let \(\pi_s\)
+denote the marginal probability that \(s\) is included in the sampled subset
+before windowing, and define
+
+\[
+P(s)=\frac{\pi_s}{\sum_{s'}\pi_{s'}}.
+\]
+
+Thus, \(P(s)\) describes the normalized expected sequence composition of an
+epoch. It does not imply that sequences within an epoch are sampled
+independently, nor does it describe the distribution of windows or nucleotides
+presented to the model.
+
+Let \(i\) denote a PTU, \(g(i)\) its category (Major, Moderate or Unique), \(r\) a
+possible category value and \(u\) a sub-PTU. The expected sequence composition
+factorizes as
+
+\[
+P(s)=P(r)\,P(i\mid r)\,P(u\mid i)\,P(s\mid u).
+\]
+
+For each Major PTU \(i\), containing \(n_i\) represented sub-PTUs, we defined
+the expected allocation
+
+\[
+a_i=
+\max\!\left[
+1,\;
+\beta\,\min(n_i,Q_{0.95})^{1/T}
+\right],
+\]
+
+where \(\beta=0.678\), \(T=1.5\), and \(Q_{0.95}\) is the 95th percentile of
+sub-PTU counts among Major PTUs. The resulting allocation was additionally
+clipped to the number of sub-PTUs available. The exponent \(1/T=2/3\) increased
+allocation with internal diversity but imposed diminishing returns; the floor
+ensured representation of every Major PTU, whereas the percentile cap limited
+the influence of the most heavily sampled PTUs. For Unique PTUs, let
+\(N_{\mathrm{Unique}}\) denote their total number and define
+
+\[
+m_{\mathrm{Unique}}
+=\left\lfloor f_{\mathrm{Unique}}N_{\mathrm{Unique}}\right\rfloor,
+\qquad
+q_{\mathrm{Unique}}
+=\frac{m_{\mathrm{Unique}}}{N_{\mathrm{Unique}}},
+\]
+
+where \(f_{\mathrm{Unique}}=0.564\). The expected PTU-level contribution was
+therefore
+
+\[
+w_i=
+\begin{cases}
+a_i, & i\in\mathrm{Major},\\
+1, & i\in\mathrm{Moderate},\\
+q_{\mathrm{Unique}}, & i\in\mathrm{Unique}.
+\end{cases}
+\]
+
+Writing \(W_r=\sum_{i:g(i)=r}w_i\) and \(W=\sum_r W_r\), the first two factors
+are
+
+\[
+P(r)=\frac{W_r}{W},
+\qquad
+P(i\mid r)=\frac{w_i}{W_r}.
+\]
+
+Consequently, Moderate and Unique PTUs are weighted uniformly within their
+respective categories, whereas Major PTUs are weighted according to their expected
+allocations. The values of \(\beta\) and \(f_{\mathrm{Unique}}\) were chosen to
+target an approximately 35\% Major, 15\% Moderate and 50\% Unique composition
+among selected representatives; these are target proportions rather than fixed
+realized probabilities. Across three independently seeded epoch constructions,
+the mean composition was 58,057 Major, 24,848 Moderate and 83,287 Unique
+representatives, corresponding to fractions of 0.349, 0.150 and 0.501,
+respectively, and a mean total of 166,192 representatives (s.d. 2.9).
+
+Within PTU \(i\), sub-PTUs have equal expected weight,
+
+\[
+P(u\mid i)=\frac{1}{n_i},
+\]
+
+with \(n_i=1\) for Moderate and Unique PTUs. Representative selection proceeded
+by first drawing one sequence uniformly from each dereplication cluster and
+then drawing one of the resulting representatives uniformly from each sub-PTU.
+Accordingly,
+
+\[
+P(s\mid u)
+=
+\frac{1}{d_u}\frac{1}{|c(s)|},
+\]
+
+where \(d_u\) is the number of dereplication clusters in sub-PTU \(u\), and
+\(|c(s)|\) is the number of sequences in the dereplication cluster containing
+\(s\). This reduces the influence of repeatedly sampled near-identical
+sequences without treating every raw sequence as an equally weighted
+observation.
+
+Each epoch realized these marginal weights through coupled,
+without-replacement sampling. For a Major PTU, write
+\(\delta_i=a_i-\lfloor a_i\rfloor\). The realized integer allocation \(K_i\)
+was
+
+\[
+K_i=
+\begin{cases}
+\lceil a_i\rceil, & \text{with probability }\delta_i,\\
+\lfloor a_i\rfloor, & \text{with probability }1-\delta_i,
+\end{cases}
+\qquad
+\mathbb{E}[K_i]=a_i.
+\]
+
+Thus, an allocation of \(a_i=1.2\) yielded two sub-PTU representatives with
+probability 0.2 and one with probability 0.8. The required sub-PTUs were then
+sampled uniformly without replacement. Each Moderate PTU contributed one
+representative. Exactly \(m_{\mathrm{Unique}}\) Unique PTUs were sampled
+uniformly without replacement. Thus, Unique-PTU inclusion indicators were not
+independent within an epoch, although every Unique PTU had the same marginal
+inclusion probability \(q_{\mathrm{Unique}}\). If \(Q_{0.95}=10\), the
+expected-allocation ceiling for Major PTUs was 3.15 representatives per epoch,
+whereas randomized rounding permitted a maximum realized contribution of four.
+
+At each epoch boundary, representatives within dereplication clusters and
+sub-PTUs, randomized Major-PTU allocations, selected Major sub-PTUs, the
+Unique-PTU subset, and window phase and window subset were regenerated. These
+operations are hierarchical rather than independent. MLM masks were generated
+separately on the fly during batch collation.
+
+The resulting sequences were windowed in both orientations, so the
+factorization above describes representative selection before the
+sequence-length-dependent windowing stage. Every Major and Moderate PTU was
+represented in each complete epoch; treating successive epochs as independent
+draws, the probability that a given Unique PTU was never selected across the
+approximately 102 epochs of training was \((1-q_{\mathrm{Unique}})^{102}\approx
+1.7\times10^{-37}\).
+
+
+\subsection*{Sequence preprocessing, windowing, and tokenization}
+
+\subsubsection*{Sequence sanitization and topology-aware preprocessing}
+
+Each selected sequence was uppercased, and characters outside \{A, C, G, T,
+N\} were replaced with N before further processing. Preprocessing then
+followed the IMG/PR completeness and topology annotations
+(\suppfref{fig:supp-windowing}).
+
+For sequences annotated as putatively complete and as containing a direct
+terminal repeat (DTR), the DTR length was identified by a binary search over
+candidate terminal overlaps and one terminal copy was removed when detected.
+Every sequence annotated as putatively complete was then treated as circular:
+1,024 bp from its 3$'$ terminus was prepended and 1,024 bp from its 5$'$
+terminus was appended. The extended sequence was randomly offset and trimmed
+to a multiple of the 1,024 bp stride before window extraction. This supplied
+genuine flanking context to windows crossing the arbitrary linearization
+point.
+
+Sequences not annotated as complete were padded with 1,024 placeholder
+characters at each end and assigned a uniformly random start offset in
+\([0,1{,}024)\). After window extraction, placeholder characters were removed,
+leaving terminal windows shorter than the full input length. These
+placeholders were used only to position the tiling and never reached the
+model; short terminal windows were instead padded with \texttt{[PAD]} during
+tokenization.
+
+\subsubsection*{Window generation and strand augmentation}
+
+Processed sequences were tiled into 2,048 bp windows at a stride of 1,024 bp,
+giving 1,024 bp overlap between adjacent windows. Each sequence was processed
+in both its forward and reverse-complement orientation, and windows from both
+orientations were retained. Longer sequences therefore generated
+proportionally more training windows. Before window subsampling, an epoch
+contained approximately 8.56 million windows.
+
+\subsubsection*{Per-epoch window subsampling}
+
+After shuffling the generated window dataset, a fixed-size 25\% subset was
+retained globally without replacement,
+
+\[
+m_{\mathrm{window}}=\left\lfloor 0.25\,N_{\mathrm{window}}\right\rfloor,
+\]
+
+reducing an epoch to approximately 2.14 million windows. This sampling was
+performed over windows, not independently within each sequence. Because the
+selected sequences and window offsets were regenerated at each epoch
+boundary, the retained windows also varied between epochs. Window subsampling
+reduced within-epoch redundancy and bounded the per-process memory required to
+materialize each epoch.
+
+\subsubsection*{Tokenization}
+
+Windows were tokenized at single-nucleotide resolution using a seven-token
+vocabulary: \texttt{[PAD]} (0), \texttt{[MASK]} (1), \texttt{[UNK]} (2), and
+\texttt{a} (3), \texttt{c} (4), \texttt{g} (5), \texttt{t} (6). The tokenizer
+lowercased its input, no sequence-level special tokens were added, and
+ambiguous N positions mapped to \texttt{[UNK]}. Windows shorter than 2,048
+tokens were padded to that length with \texttt{[PAD]}.
+
+Tokenization was performed on the fly during batch collation rather than
+materialized in advance; MLM masking was applied separately by the data
+collator as described below.
+
+
+\subsection*{Model architecture, objective, and optimization}
+
+\subsubsection*{Architecture}
+
+\model adapts the GPN convolutional DNA language-model framework
+\cite{benegas2023dna} using a ByteNet-style encoder \cite{kalchbrenner2016neural}
+of 72 residual blocks with a hidden dimension of 768 and a convolutional
+kernel width of 9, totalling 467,904,007 parameters. Each block is a
+pre-normalized residual unit applying, in order, layer normalization, GELU, a
+linear projection, layer normalization, GELU, a dilated one-dimensional
+convolution, layer normalization, GELU, and a second linear projection, with
+the block output added to its input. Convolutions are computed at full hidden
+width and without bias terms.
+
+The convolutions are \textbf{non-causal}: each position is convolved with
+symmetric context on both sides. This differs from the original ByteNet
+formulation, in which convolutions are masked to be causal for autoregressive
+generation, and is required here because the training objective is masked
+prediction rather than next-token prediction.
+
+\subsubsection*{Input representation}
+
+Token identities are encoded as one-hot vectors of width equal to the hidden
+dimension, so the first seven channels carry nucleotide identity and the
+remainder are zero at input. There is no learned embedding matrix. No
+positional encoding is used: position is represented implicitly by the
+convolutional stack, which is translation-equivariant by construction --- an
+appropriate inductive bias for genomic sequence, where a motif carries the
+same meaning wherever it occurs.
+
+\subsubsection*{Dilation and receptive field}
+
+Dilation follows a six-layer cycle of 1, 2, 4, 8, 16, 32, repeated twelve
+times across the 72 layers. The resulting receptive field is
+
+\[1 + \sum_{\ell} (k - 1)\,d_\ell \;=\; 1 + 8 \times (1{+}2{+}4{+}8{+}16{+}32) \times 12 \;=\; 6{,}049 \text{ bp},\]
+
+approximately three times the 2,048 bp input window. Every output position
+therefore conditions on the entire window rather than on a local
+neighbourhood, so the model has full-context access without attention.
+Combined with the circularization of complete plasmids, this means that
+predictions near the ends of a window are informed by genuine flanking
+sequence.
+
+The architecture and masked-prediction workflow are summarized in
+\fref{fig:pretraining}g.
+
+\subsubsection*{Pretraining objective}
+
+The model is trained by masked language modelling. \cite{devlin2018bert}
+Masking is applied on the fly at batch collation: 15\% of eligible positions
+are selected, of which 80\% are replaced by \texttt{[MASK]}, 10\% by a
+randomly drawn token, and 10\% left unchanged.
+
+Special tokens are excluded from selection, which has two consequences worth
+stating explicitly. \texttt{[PAD]} positions in short terminal windows are
+never masked and never supervised. Ambiguous positions, which map to
+\texttt{[UNK]}, are likewise never masked and never supervised, so N runs are
+neither prediction targets nor a source of spurious loss. The masking rate
+therefore applies to nucleotide positions specifically, and the supervised
+label set is exactly \{a, c, g, t\}: although the output head is dimensioned
+to the full seven-token vocabulary, only the four nucleotide classes are ever
+targets.
+
+The prediction head is a two-layer perceptron --- Linear(768 $\rightarrow$
+768), GELU, layer normalization, Linear(768 $\rightarrow$ 7) --- and the loss
+is cross-entropy over the vocabulary, evaluated only at selected positions;
+all other positions carry the ignore index and contribute nothing to the
+gradient.
+
+Because the encoder is convolutional and carries no attention mask,
+\texttt{[PAD]} tokens in short terminal windows are consumed as ordinary
+context by the convolution even though they are excluded from the loss.
+
+\subsubsection*{Optimization}
+
+The model was trained from random initialization with AdamW, a learning rate
+of $5 \times 10^{-4}$, and weight decay of 0.01, under a constant schedule
+preceded by 2,000 warmup steps. Training used BF16 mixed precision
+throughout, distributed data parallelism, and ahead-of-time graph compilation
+of the model.
+
+\subsubsection*{Batch schedule and training length}
+
+Per-device batch size was held at 80, and at 76 after the first phase. The
+number of devices changed twice over the course of the run: training
+proceeded on eight devices through step 295,000, then on five, and finally on
+four, giving effective batch sizes of 640, 380, and 304 windows in the three
+phases. The learning rate was held at $5 \times 10^{-4}$ across all three
+phases with no rescaling.
+
+Training completed \textbf{375,000 optimizer steps}. Because the schedule is
+constant after warmup, the step count at which training stopped is not a
+point on a decay curve --- the released checkpoint is taken from a phase of
+constant learning rate, not from a partially completed annealing schedule.
+
+The invariant quantity across the batch-size changes is the amount of data
+consumed. Summing the three phases gives approximately 217 million windows,
+or about $4.5 \times 10^{11}$ nucleotide tokens. At approximately 2.14
+million windows per epoch, this corresponds to roughly 102 resampled epochs,
+each generated from a newly sampled subset of the IMG/PR training set as
+defined above.
+
+\subsubsection*{Checkpointing}
+
+Checkpoints were written every 5,000 steps. The released model is the
+checkpoint at step 375,000.
+
+\subsubsection*{Inference}
+
+Inference operates on user-specified genomic positions or pre-defined
+windows. For nucleotide prediction at a specified position, a 2,048 bp window
+centered on that position is extracted and the central nucleotide is masked.
+For embedding extraction, the input table specifies each window and the
+requested central region is mean-pooled from the final encoder layer. Each
+input is evaluated in its forward and reverse-complement orientation, and the
+resulting nucleotide logits or final-layer embeddings are averaged across
+orientations. Dense full-sequence maps require an external tiling and
+overlap-aggregation step rather than being produced by a single inference
+entry point.

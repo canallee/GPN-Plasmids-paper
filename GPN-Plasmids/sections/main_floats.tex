@@ -1,0 +1,179 @@
+%======================================================================
+%  Main figures and tables
+%
+%  Figures 1, 2 and 4 are the assembled composites from the three companion
+%  artifacts; the per-panel "component" cards those artifacts also display
+%  are deliberately not reproduced (see CONVERSION_NOTES.md). Figure 3 is
+%  reserved for the unwritten genome-wide application section.
+%
+%  Tables 1-3 are main-text tables in the origin artifact and are kept there.
+%
+%  \fitfig caps height as well as width so no figure runs off the page.
+%======================================================================
+
+% ---- Figure 1: pretraining ------------------------------------------
+% Asset: figures/Fig_1_Main.pdf  (artifact/figures/pdf_files/Fig_1_Main.pdf,
+% the supplied Illustrator composite, copied unchanged)
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/Fig_1_Main}
+\caption{
+\textbf{\model: a genomic language model of plasmid sequence space.} \textbf{a}, Origin of transfer (\emph{oriT}): a relaxase nicks the plasmid at \emph{oriT} and the single strand is transferred through the conjugation pilus from donor to recipient cell. \textbf{b}, Origin of replication (\emph{oriV}): a Rep protein binds \emph{oriV} and initiates plasmid replication. \textbf{c}, GOLD ecosystem composition of the 693,638-sequence training corpus, shown as a treemap with tile area proportional to sequence count, alongside the reserved host-phylogeny area \cite{mukherjee2023twenty}. \textbf{d}, PTU-category composition of the 213,393 PTUs, 500,466 dereplicated sequences, and a mean 166,192 representatives per epoch (displayed as \textasciitilde{}160k in the supplied artwork); ribbons connect the same categories, and Major PTUs are split by dereplicated sequences per PTU. \textbf{e}, Per-PTU sampling rate relative to one sequence per PTU, measured after dereplication: sequence-uniform sampling reaches 715$\times$, whereas diversity-aware sampling is capped at 4.0$\times$. \textbf{f}, Hierarchical epoch resampling across PTUs, sub-PTUs, dereplication clusters, and sequence representatives. \textbf{g}, Masked language modelling with a 2,048 bp input window and a 72-layer ByteNet encoder, yielding per-nucleotide embeddings and nucleotide probabilities.
+}
+\label{fig:pretraining}
+\end{figure}
+
+
+% ---- Figure 2: origin classification ---------------------------------
+% Asset: figures/figure4_composite.pdf -- the artifact's "Assembled" card.
+% (Filename still says figure4 from an earlier numbering; the artwork is the
+% assembled Figure 2 and is copied unchanged.)
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/figure4_composite}
+\caption{
+\textbf{\model identifies origin-containing regions in plasmids.} \textbf{a}, Similarity-aware partitioning of the curated origins (112 \emph{oriT}, 224 \emph{oriV}) into five parts, and the cross-validation setup. \textbf{b}, Window-level detection AUPRC on the evaluated intergenic-window population, all methods (\emph{oriT} over \emph{oriV}). \textbf{c}, Window AUPRC on origins novel to training versus origins with training similarity $>$20 --- the operational generalization test (\emph{oriT} over \emph{oriV}). \textbf{d}, Region-level ranking of intergenic regions by Precision@1 (\emph{oriT} over \emph{oriV}). \textbf{e}, Calibrated window-probability tracks along two example regions. \textbf{f}, Per-region inference speed for a single-split, five-run window predictor. Stacked pairs in \textbf{b}--\textbf{d} read \emph{oriT} over \emph{oriV}; the model legend sits under \textbf{c}.
+}
+\label{fig:origin}
+\end{figure}
+
+
+% ---- Figure 3: genome-wide application (RESERVED) ---------------------
+% PLACEHOLDER -- to be written/uploaded by author. This float exists so that
+% the interpretation composite auto-numbers as Figure 4.
+\begin{figure}[h]
+    \centering
+    \placeholderfig{6cm}{figures/genome-wide --- to be supplied by author}
+\caption{
+\todo{Genome-wide application figure --- to be supplied by author.}
+}
+\label{fig:genomewide}
+\end{figure}
+
+
+% ---- Figure 4: model interpretation ----------------------------------
+% Asset: figures/fig5_catjac.pdf -- the artifact's "Final" assembled card.
+% (Filename still says fig5 from an earlier numbering.) The "Fig. 4a" and
+% "Fig. 4b" standalone component panels in that artifact are not reproduced.
+\begin{figure}[h]
+    \centering
+    \fitfig{figures/fig5_catjac}
+\caption{
+\textbf{Model-derived dependency patterns at a characterized origin of transfer and origin of replication.} Categorical-Jacobian dependency maps computed with frozen \model over a 2,048 bp context and cropped to the locus (heatmap; each panel scaled to its own crop with the upper limit at the crop's 99th percentile, so intensities are not comparable between panels). Above each map: a logo track of per-position information content from the model's masked predictive distribution, measuring predictive specificity against a uniform background, and annotation lanes carrying externally sourced features as arrows (blue, inverted repeats; orange, direct repeats; green, promoter boxes). Red boxes are annotation-driven overlays marking the extent of an annotated feature, not model-detected boundaries. Axes are labelled in 1-based coordinates; intervals below are 0-based half-open. \textbf{a}, Origin of transfer of \emph{Klebsiella pneumoniae} plasmid pIGRK (AY543071.1, [904,1214)). IR1--IR3 and the two identical 12 bp direct repeats DR1, DR2 are the repeats proposed in the source study, which mapped the minimal \emph{oriT} interval experimentally and predicted the individual elements; $-$35 and $-$10 mark a P\emph{mobK} promoter predicted computationally in that study, not one verified experimentally, and DR2 lies within their spacer. IR4 ([1119,1152)) is not annotated in the source literature and was identified after inspecting this map. \textbf{b}, Minimal origin of replication of \emph{Escherichia coli} plasmid pSC101 (NC\_002056.1, [5100,5272)), a crop within the reported minimal origin: the DnaA box and IHF site lie outside the displayed interval. DR1--DR3 are the three 21 bp RepA iterons; IR1 and IR2 are the two inverted repeats, with the $-$35 and $-$10 boxes of the \emph{rep} promoter inside IR1 and IR2 respectively. All pSC101 and pIGRK coordinates were located by exact substring search against the deposited sequence. Both panels use checkpoint \texttt{v3\_noflex\_375k}.
+}
+\label{fig:interpretation}
+\end{figure}
+
+
+\clearpage
+
+% ---- Table 1 ---------------------------------------------------------
+\begin{table}[h]
+\caption{
+\textbf{Region-level ranking, mean average precision (mAP)} averaged equally over the five similarity-aware splits. \emph{oriT} and \emph{oriV} evaluated separately; higher is better. mAP is per-plasmid average precision, macro-averaged within each split. Precision@1 is shown in \fref{fig:origin}d; Recall@1 is in \supptref{tab:supp-region-metrics}. P@1 and R@1 are not identical when a plasmid has more than one positive region.
+}
+\label{tab:region-map}
+\begin{center}
+\begin{tabular}{lccl}
+\toprule
+Method & \emph{oriT} mAP & \emph{oriV} mAP & Source \\
+\midrule
+\multicolumn{4}{l}{\textit{Baselines}} \\
+Longest intergenic (naive) & 0.352 & 0.663 & \supptref{tab:supp-region-metrics} \\
+Reference tool (train) --- oriTfinder2 / OriV-Finder & 0.149 & 0.730 & \supptref{tab:supp-region-metrics} \\
+Reference tool (train + val) & 0.157 & 0.732 & region-ranking notebook \\
+One-hot, CNN (from scratch) & 0.509 & 0.686 & \supptref{tab:supp-region-metrics} \\
+One-hot, Residual CNN & 0.493 & 0.671 & region-ranking notebook \\
+\midrule
+\multicolumn{4}{l}{\textit{Frozen DNA language-model embeddings}} \\
+PlasmidGPT & 0.438 & 0.531 & \supptref{tab:supp-region-metrics} \\
+Evo2-1B & 0.848 & 0.807 & \supptref{tab:supp-region-metrics} \\
+Evo2-7B & 0.883 & 0.825 & \supptref{tab:supp-region-metrics} \\
+Evo2-40B & 0.883 & 0.810 & \supptref{tab:supp-region-metrics} \\
+\model (standalone, deployment) & 0.897 & 0.816 & \supptref{tab:supp-region-metrics} \\
+Ensemble (\model + Evo2-7B) & 0.928 & 0.861 & \supptref{tab:supp-region-metrics} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+
+% ---- Table 2 ---------------------------------------------------------
+\begin{table}[h]
+\caption{
+\textbf{Window-level detection, average precision (AUPRC)} on held-out test windows (mean $\pm$ s.d. over the five splits). The random-ranker AUPRC equals the positive-window prevalence, 0.048.
+}
+\label{tab:window-auprc}
+\begin{center}
+\begin{tabular}{lccl}
+\toprule
+Method & \emph{oriT} AUPRC & \emph{oriV} AUPRC & Source \\
+\midrule
+One-hot, CNN & 0.277 $\pm$ 0.077 & 0.383 $\pm$ 0.076 & \supptref{tab:supp-window-auprc} \\
+One-hot, Residual CNN & 0.279 $\pm$ 0.103 & 0.375 $\pm$ 0.030 & \supptref{tab:supp-window-auprc} \\
+PlasmidGPT & 0.150 $\pm$ 0.064 & 0.201 $\pm$ 0.062 & \supptref{tab:supp-window-auprc} \\
+Evo2-1B & 0.605 $\pm$ 0.148 & 0.570 $\pm$ 0.046 & \supptref{tab:supp-window-auprc} \\
+Evo2-7B & 0.722 $\pm$ 0.100 & 0.616 $\pm$ 0.090 & \supptref{tab:supp-window-auprc} \\
+Evo2-40B & 0.696 $\pm$ 0.119 & 0.546 $\pm$ 0.071 & \supptref{tab:supp-window-auprc} \\
+\model (standalone) & 0.781 $\pm$ 0.150 & 0.671 $\pm$ 0.074 & \supptref{tab:supp-window-auprc} \\
+Ensemble (\model + Evo2-7B) & 0.814 $\pm$ 0.104 & 0.692 $\pm$ 0.078 & \supptref{tab:supp-window-auprc} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\clearpage
+
+% ---- Table 3 ---------------------------------------------------------
+\begin{table}[h]
+\caption{
+\textbf{Key task, training and inference parameters,} with how each was set. Design-critical values appear inline in \nameref{sec:methods}; the rest are collected here.
+}
+\label{tab:origin-params}
+\begin{center}
+\small
+\begin{tabular}{p{0.42\textwidth}p{0.30\textwidth}l}
+\toprule
+Parameter & Value & Set as \\
+\midrule
+\multicolumn{3}{l}{\textit{Reference curation \& detection}} \\
+Curated origins (\emph{oriT} / \emph{oriV}) & 112 / 224 & derived (MMseqs2 dedup) \\
+MMseqs2 dedup (id / cov / mode) & 90\% / 90\% / shorter & command line \\
+BLASTN detection (word size / dust) & 7 / off & command line \\
+Detection thresholds (identity / subj.\ coverage) & 80\% / 80\% & code constant \\
+\midrule
+\multicolumn{3}{l}{\textit{Regions \& selection}} \\
+CDS caller & Pyrodigal-gv (meta) & library \\
+Min intergenic length / min regions per plasmid & 50 bp / 3 & code constant \\
+Origin--region assignment & $\geq$ 50\% origin length, summed across intersecting regions & code constant \\
+Plasmids per unique origin / max origins per plasmid & top 5 / $\leq$ 5 & code constant \\
+\midrule
+\multicolumn{3}{l}{\textit{Splits}} \\
+Similarity (EMBOSS Water gap open / extend) & 10 / 0.5 & command line \\
+GraphPart folds / threshold & 5 / 0.3 & command line \\
+\midrule
+\multicolumn{3}{l}{\textit{Windowing \& imbalance}} \\
+Window size / training step / inference step & 512 / 256 / 16 bp & command line \\
+Positive-window rule & $\geq$ 50\% origin or $\geq$ 256 bp & code constant \\
+Downsample neg:pos (\emph{oriT} / \emph{oriV}) & 20:1 / 20:1 & command line \\
+Positive-class loss weight (\emph{oriT} / \emph{oriV}) & 20$\times$ / 20$\times$ & command line \\
+Reverse-complement augmentation & enabled & code constant \\
+\midrule
+\multicolumn{3}{l}{\textit{Probes \& training}} \\
+MLP probe input & mean-pooled window & code constant \\
+One-hot probe (hidden / kernel / dropout) & 64 / 16 / 0.15 & command line \\
+Stochastic runs $\times$ splits per (embedder, layer) & $5 \times 5 = 25$ & command line \\
+Optimizer / learning rate / weight decay & AdamW / $5\times10^{-4}$ / 0.01 & command line \\
+Schedule / epochs / batch size & cosine / 30 / 256 & command line \\
+Model selection & best val AUPRC & code constant \\
+Layer selection & mean val AUPRC, both tasks & derived \\
+\midrule
+\multicolumn{3}{l}{\textit{Calibration \& aggregation}} \\
+Calibrator & isotonic (clip) & code constant \\
+Ensembling & probability soft-vote (5 runs) & code constant \\
+Region aggregator & percentile-75 & command line \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}

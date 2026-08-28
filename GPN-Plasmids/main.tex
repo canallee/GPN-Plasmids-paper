@@ -5,6 +5,9 @@
 %  The preamble below is carried over verbatim so that the two manuscripts
 %  share formatting, cross-reference macros and bibliography behaviour.
 %
+%  Section bodies are transcribed from the three companion artifacts; see
+%  CONVERSION_NOTES.md for which artifact and snapshot each file came from.
+%
 %  Everything marked  % TODO  is a placeholder for you to fill in.
 %  See README.md for the conventions used in this file.
 %======================================================================
@@ -80,6 +83,11 @@
 \newcommand{\edfrefs}[1]{Extended Data Figures~\ref{#1}}
 \newcommand{\edtref}[1]{Extended Data Table~\ref{#1}}
 
+% Section cross-reference. The artifacts write these as "§2", "§3", "§4";
+% under the Nature-style unnumbered sectioning used here there is no section
+% number to point at, so they resolve to the section's name instead.
+\newcommand{\secref}[1]{\nameref{#1}}
+
 \newcommand{\red}{\color{red}}
 \newcommand{\green}{\color{green}}
 \newcommand{\blue}{\color{blue}}
@@ -139,10 +147,19 @@
 \def\todo#1{\textbf{\textcolor{red}{ [TODO: #1]}}}
 \def\fixme#1{\textbf{\textcolor{red}{ [FIXME: #1]}}}
 
+% ---- figure sizing ----------------------------------------------------
+% Caps BOTH dimensions so a figure can never run off the page: it is scaled
+% to the text width unless that would make it taller than the optional first
+% argument (a fraction of \textheight), in which case the height governs.
+% The remaining height is left for the caption. Three of the supplementary
+% panels are tall enough that width=\textwidth alone would overflow.
+\newcommand{\fitfig}[2][0.72]{%
+  \includegraphics[width=\textwidth,height=#1\textheight,keepaspectratio]{#2}%
+}
+
 % ---- placeholder graphic ---------------------------------------------
-% Draws a labelled empty box so the skeleton compiles before any figure PDFs
-% exist. Replace each \placeholderfig with \includegraphics and delete this
-% definition once all figures are in figures/.
+% Draws a labelled empty box. Still used for Figure 3, which is reserved for
+% the genome-wide application section and has no artwork yet.
 \newcommand{\placeholderfig}[3][\textwidth]{%
   \fbox{\parbox[c][#2][c]{\dimexpr#1-2\fboxsep-2\fboxrule\relax}{%
     \centering\ttfamily\small #3}}%
@@ -213,60 +230,55 @@
 \maketitle
 
 
+%======================================================================
+%  Abstract -- transcribed verbatim from CONVERSION_PROMPT.md section 7.
+%======================================================================
 \begin{abstract}
-% word limit 200 (Nature); GPN-Star ran ~220 words in draft
-\todo{Abstract.}
-% Suggested shape, following GPN-Star:
-%  1. Context: what problem in plasmid biology / genome interpretation is open.
-%  2. Gap: why existing methods fall short.
-%  3. "Here, we introduce \model (...expansion of the acronym...), a ..."
-%  4. What it was trained on.
-%  5. Headline results, one clause per benchmark family.
-%  6. Generalization beyond the primary setting.
-%  7. "Taken together, these results position \model as ..."
+Plasmids drive bacterial adaptation and are central tools for engineering
+microbes, yet the non-coding elements that govern their transfer and
+replication --- origins of transfer (\emph{oriT}) and vegetative replication
+(\emph{oriV}) --- remain unannotated across the metagenomic majority of
+plasmids. Existing annotation methods are reference- and alignment-based, so
+they fail on the divergent, host-uncharacterized sequences that now dominate
+plasmid databases. We present \model, a genomic language model trained by
+masked-nucleotide prediction on the plasmid sequences of the IMG/PR database
+with a diversity-aware sampling scheme that captures the breadth of
+metagenomic plasmid diversity rather than sequencing depth. Without any
+labels, \model learns representations that organize plasmid DNA by function.
+For identifying origin-containing regions, a lightweight classifier on its
+frozen embeddings generalizes to origins with no detectable homology to the
+training data, outperforms reference-based tools and models trained from
+scratch, and matches genomic language models up to 85$\times$ larger at
+roughly 45$\times$ less inference compute. Applied across IMG/PR, it
+annotates putative origins genome-wide and reveals previously undescribed
+transfer and replication gene architectures. Interpreting the model shows
+that it has internalized the cis-regulatory architecture of \emph{oriT},
+\emph{oriV}, promoters and other functional elements at single-nucleotide
+resolution. \model offers a scalable, alignment-free route to annotating the
+functional elements of diverse and uncultured plasmids.
 \end{abstract}
 
 \clearpage
 
-%======================================================================
-\section*{Introduction}
-%======================================================================
-% GPN-Star used five paragraphs here:
-%  (1) the biological problem, (2) why language models are a natural fit and
-%  where they fall short, (3) the alternative line of work being built on,
-%  (4) "Here, we present \model ..." with the main claims and forward
-%  references to figures, (5) a short paragraph on generality.
-
-\todo{Introduction.}
+\input{sections/01_introduction}
 
 
 %======================================================================
 \section*{Results}
 %======================================================================
-% One \subsection* per result, each a short noun phrase (GPN-Star used
-% "Pathogenic coding variants", "Complex trait heritability", ...). Each
-% subsection opens by naming the question, then reports the comparison and
-% points at a panel with \fref{...}.
 
-\subsection*{\todo{Model and data overview}}
-
-\todo{Describe the model, the training data, and the evaluation setup
-(\fref{fig:overview}).}
-
-\subsection*{\todo{Result 2}}
-
-\todo{Text.}
-
-\subsection*{\todo{Result 3}}
-
-\todo{Text.}
+\input{sections/02_pretraining}
+\input{sections/03_origin}
+\input{sections/04_genomewide}
+\input{sections/05_interpretation}
 
 
 %======================================================================
 \section*{Discussion}
 %======================================================================
-% GPN-Star: summary of contributions, then limitations, then outlook on
-% growing data resources.
+% PLACEHOLDER -- none of the three companion artifacts carries Discussion
+% prose. Their "Positioning notes" / "Open items" bands are working memos and
+% were deliberately not converted (see CONVERSION_NOTES.md).
 
 \todo{Discussion.}
 
@@ -290,35 +302,12 @@ This research is supported in part by National Institutes of Health grants
 
 
 %======================================================================
-%  Main figures
+%  Main figures and tables
 %======================================================================
 % Figures live at the end of the main text, after the references, as required
-% by Nature-style submissions. Replace \placeholderfig with
-% \includegraphics[width=\textwidth]{figures/<name>} once the PDF exists.
-% Caption convention: a bold lead sentence naming the figure, then
-% \textbf{(A)} ... one sentence per panel, then a closing sentence giving the
-% metric and the error bars.
+% by Nature-style submissions.
 
-\begin{figure}[h]
-    \centering
-    \placeholderfig{6cm}{figures/overview}
-    % \includegraphics[width=\textwidth]{figures/overview}
-\caption{
-\textbf{Overview of \model.} \textbf{(A)} \todo{panel A.} \textbf{(B)} \todo{panel B.} \textbf{(C)} \todo{panel C.}
-}
-\label{fig:overview}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \placeholderfig{6cm}{figures/benchmarks}
-    % \includegraphics[width=\textwidth]{figures/benchmarks}
-\caption{
-\textbf{\todo{Benchmark figure title}.} \textbf{(A)} \todo{panel A.}
-The performance metric is \todo{metric}. The error bars represent 95\% confidence intervals from 1,000 class-stratified bootstrap resamples.
-}
-\label{fig:benchmarks}
-\end{figure}
+\input{sections/main_floats}
 
 
 \clearpage
@@ -327,12 +316,23 @@ The performance metric is \todo{metric}. The error bars represent 95\% confidenc
 \section*{Methods}
 \label{sec:methods}
 %======================================================================
-% In GPN-Star the Methods section is a one-paragraph pointer to the
-% Supplementary Information, followed by the journal-required statements.
-% Cross-reference it from the text with \nameref{sec:methods}.
+% As in GPN-Star, this is a one-paragraph pointer to the Supplementary
+% Information followed by the journal-required statements. The transcribed
+% Methods themselves are in "Supplementary Methods" below. The artifacts'
+% prose says "(Methods)", and \nameref{sec:methods} resolves to that word
+% because the label sits here rather than on the supplementary section.
 
 The Supplementary Information contains Supplementary Text and the details of
-\todo{list the supplementary methods subsections here}.
+the pretraining corpus and sequence clustering, diversity-aware epoch
+construction, sequence preprocessing, windowing and tokenization, model
+architecture, training setup and inference, reference origin curation,
+plasmid databases and origin detection, intergenic regions and plasmid
+selection, homology-partitioned cross-validation splits, windowing and class
+imbalance, sequence embedders and probes, probe training and layer selection,
+calibration and region aggregation, masked-logit inference, positional
+information content, functional annotation of plasmids, locus curation and
+coordinate verification, the categorical Jacobian, contextual sequence
+embeddings and dimensionality reduction, and regulatory motif scanning.
 
 \subsection*{Reporting summary}
 Further information on research design is available in the Nature Portfolio Reporting Summary linked to this article.
@@ -365,19 +365,14 @@ The authors declare no competing interests.
 %======================================================================
 \section*{Extended Data Figures}
 %======================================================================
-% Resets the figure counter and relabels floats as "Extended Data Figure N".
+% PLACEHOLDER -- none of the three companion artifacts supplies Extended Data
+% figures; every one of their supplementary panels is carried in the
+% "Supplementary Figures" section below. The heading and the counter reset are
+% kept so the slot exists if figures are promoted here later.
 
 \beginextendeddata
 
-\begin{figure}[h!]
-    \centering
-    \placeholderfig[0.9\textwidth]{6cm}{figures/ed-example}
-    % \includegraphics[width=0.9\textwidth]{figures/ed-example}
-\caption{
-\todo{Extended data caption. These captions are not bold-led in GPN-Star; they open directly with the description.}
-}
-\label{fig:ed-example}
-\end{figure}
+\todo{No Extended Data figures yet.}
 
 
 \clearpage
@@ -395,66 +390,25 @@ The authors declare no competing interests.
 
 \section*{Supplementary Text}
 \label{sec:supp_text}
-% Cross-reference from the main text with \nameref{sec:supp_text}.
+% PLACEHOLDER -- no artifact supplies Supplementary Text. Cross-reference from
+% the main text with \nameref{sec:supp_text} once there is something here.
 
-\subsection*{\todo{Supplementary discussion topic}}
-
-\todo{Text.}
+\todo{Supplementary Text.}
 
 
 \section*{Supplementary Methods}
 
-\subsection*{Training Data}
-\todo{Text.}
-
-\subsection*{Model Architecture}
-\todo{Text.}
-
-\subsection*{Training Setup}
-\todo{Text.}
-
-\subsection*{Inference}
-\todo{Text.}
-
-\subsection*{Evaluation Benchmarks}
-\todo{Text.}
+\input{sections/supp_methods_02_pretraining}
+\input{sections/supp_methods_03_origin}
+\input{sections/supp_methods_05_interpretation}
 
 
 \clearpage
-\section*{Supplementary Tables}
-\
-
-% Wide tables use sidewaystable (rotating package) + \resizebox, as in the
-% GPN-Star training-setup table.
-\begin{table}[h]
-\caption{
-\todo{Table caption.}
-}
-\label{tab:example}
-\begin{center}
-\begin{tabular}{lcc}
-\toprule
- & \todo{col 1} & \todo{col 2} \\
-\midrule
-\todo{row} & & \\
-\bottomrule
-\end{tabular}
-\end{center}
-\end{table}
+\input{sections/supp_tables}
 
 
 \clearpage
-\section*{Supplementary Figures}
-
-\begin{figure}[h]
-    \centering
-    \placeholderfig[0.8\textwidth]{6cm}{figures/supp-example}
-    % \includegraphics[width=0.8\textwidth]{figures/supp-example}
-\caption{
-\todo{Supplementary figure caption.}
-}
-\label{fig:supp-example}
-\end{figure}
+\input{sections/supp_figures}
 
 
 \clearpage

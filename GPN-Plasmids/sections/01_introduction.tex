@@ -1,0 +1,99 @@
+%======================================================================
+%  Introduction
+%
+%  Source: CONVERSION_PROMPT.md section 8 (author-provided), snapshot
+%          2026-08-28. Transcribed verbatim apart from LaTeX markup, the
+%          \model macro, [ref] -> \cite, and the figure cross-references.
+%
+%  Two author-directed wording changes, both given in session 2026-08-28:
+%    - paragraph 3: "...transfer to functional tasks and to sequences never
+%      seen in training [ref, GPN; ref, Evo]. This ab initio generalization is
+%      precisely what origin annotation on divergent plasmids demands."
+%      -> "...transfer to applications like variant effect prediction,
+%      annotation, and generation [ref, GPN; ref, Evo]."
+%    - paragraph 4: "generalizes ab initio" -> "generalizes to unseen origins"
+%      (standing instruction: avoid the term "ab initio").
+%======================================================================
+
+\section*{Introduction}
+\label{sec:intro}
+
+Plasmids are mobile, extrachromosomal DNA elements that shape bacterial
+evolution and are central tools of microbial engineering. By transferring
+genes horizontally between cells they spread traits --- antibiotic
+resistance, virulence, and metabolic capabilities --- between otherwise
+unrelated bacteria
+% TODO cite: horizontal transfer of resistance/virulence/metabolic traits.
+% The source text carries a bare [ref] here with no work named, and no
+% candidate is present in any artifact bibliography.
+, and by replicating independently of the chromosome they persist as stable
+accessory genomes. The two processes that define a plasmid's life cycle also
+make it useful in the laboratory: conjugative transfer moves engineered DNA
+between hosts, and vegetative replication maintains it. Each is governed by a
+short, non-coding cis-regulatory element --- the origin of transfer
+(\emph{oriT}), where a relaxase nicks the plasmid to initiate conjugation,
+and the origin of vegetative replication (\emph{oriV}), where a replication
+initiator binds to begin replication (\fref{fig:pretraining}a,b).
+Identifying these origins is therefore a prerequisite both for understanding
+how a plasmid moves and replicates and for repurposing it as an engineering
+vector.
+
+Metagenomic sequencing has expanded the known plasmid universe by orders of
+magnitude, cataloguing hundreds of thousands of plasmid sequences --- billions
+of nucleotides --- most from uncultured lineages with no characterized host
+\cite{camargo2024img}. Yet the elements that make these plasmids work remain
+largely unannotated, and origins are among the hardest features to find.
+\emph{oriT} and \emph{oriV} are short, intergenic, and structurally diverse,
+defined less by conserved sequence motifs than by architecture --- iterons,
+inverted repeats, and paired promoter boxes whose spacing and symmetry,
+rather than their exact bases, carry function. The tools used to annotate
+them (oriTfinder2
+% TODO cite: oriTfinder2. Named in the origin artifact but that artifact
+% ships no bibliography, and no entry exists in songlab.bib.
+, OriV-Finder
+% TODO cite: OriV-Finder. Same as above.
+) are reference- and alignment-based: they recognize an origin by its
+similarity to a curated set of experimentally characterized examples, so they
+degrade sharply on the divergent origins that dominate metagenomic plasmids
+and are effectively blind to origins unlike the reference set. The result is
+a widening gap between the plasmids we can sequence and the ones we can
+functionally interpret --- a gap that most constrains exactly the non-model,
+uncultured plasmids of greatest interest for discovery and engineering.
+
+Genomic language models (gLMs) offer a route past this reference dependence.
+Trained by self-supervision to predict masked or successive nucleotides on
+unannotated sequence, they learn representations that transfer to
+applications like variant effect prediction, annotation, and generation
+\cite{benegas2023dna,nguyen2024sequence}. General-purpose gLMs, however, are
+trained across broad evolutionary scales and dominated by chromosomal
+genomes; plasmids --- mobile, recombining, compositionally distinct, and
+lacking any universal taxonomy --- are underrepresented, and pretraining on
+the wrong sequence distribution can transfer worse than not pretraining at
+all. Building a gLM for plasmids also raises a sampling problem absent for
+cellular genomes: plasmids have no hierarchical classification to sample
+across, and abundance in sequence databases reflects sequencing effort rather
+than biological diversity, so naive training would over-fit a handful of
+heavily sequenced clades.
+
+Here we present \model, a genomic language model trained by masked-nucleotide
+prediction on the plasmid sequences of the IMG/PR database. To learn from the
+true diversity of the metagenomic plasmid universe rather than its sequencing
+depth, we designed a diversity-aware sampling scheme that weights training
+toward the breadth of plasmid diversity rather than sequencing depth
+(\fref{fig:pretraining}). Using \model, we build a benchmark and a deployable
+pipeline for plasmid-origin annotation: a lightweight classifier on the
+model's frozen embeddings identifies origin-containing regions and, evaluated
+on a homology-partitioned benchmark that isolates origins with no training
+homolog, generalizes to unseen origins --- outperforming reference-based
+tools and models trained from scratch, and matching genomic language models
+up to 85$\times$ larger while using roughly 45$\times$ less inference
+compute. Applied across all of IMG/PR, the classifier annotates putative
+\emph{oriT} and \emph{oriV} genome-wide and reveals previously undescribed
+transfer and replication gene architectures. Finally, interpreting the
+trained model shows that it has internalized the cis-regulatory grammar of
+these elements --- the repeats, iterons, and promoter couplings of
+\emph{oriT} and \emph{oriV}, together with promoters and other functional
+elements --- directly from sequence and without supervision. Together, these
+results establish \model as a scalable, alignment-free foundation for
+annotating and engineering the functional elements of diverse and uncultured
+plasmids.
