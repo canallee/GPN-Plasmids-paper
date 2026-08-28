@@ -1,0 +1,24 @@
+# Reference manuscripts (GPN-Star, GPN-MSA) are deliberately NOT tracked.
+# This repository is public, and reference/GPN-Star is an unpublished
+# manuscript whose sources should not be distributed. It is also ~57 MB of
+# figure binaries. Keep it local; see README.md.
+reference/
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+output-subdoc/
+
+# OS cruft
+.DS_Store

@@ -1,0 +1,463 @@
+%======================================================================
+%  GPN-Plasmids -- manuscript
+%
+%  Template derived from the GPN-Star manuscript (reference/GPN-Star/main.tex).
+%  The preamble below is carried over verbatim so that the two manuscripts
+%  share formatting, cross-reference macros and bibliography behaviour.
+%
+%  Everything marked  % TODO  is a placeholder for you to fill in.
+%  See README.md for the conventions used in this file.
+%======================================================================
+
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{amsfonts,amsthm}
+\usepackage{bbm}
+\usepackage[font=small]{caption}
+\DeclareCaptionLabelFormat{previous-page}{#1 #2 \emph{(continued)}}
+\DeclareUnicodeCharacter{2032}{\ensuremath{'}}  % ' prime  (U+2032), e.g. "5' UTR"
+\DeclareUnicodeCharacter{2217}{\ensuremath{*}}  % * asterisk operator (U+2217)
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}  % - minus sign (U+2212)
+
+\usepackage{rotating}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[toc,page]{appendix} %for appendix/SI numbering
+
+\usepackage{float} % for figures to stay where I want them to appear
+% \usepackage[nolists, nomarkers]{endfloat}
+\usepackage{bm} % for bold math symbols
+\usepackage[margin=1in]{geometry}
+\usepackage[backend=biber,style=nature,defernumbers=true]{biblatex}
+
+\addbibresource{songlab.bib}
+
+% Two bibliographies: everything cited in the main text (up to
+% \maintextpartfalse) is collected in the "maincited" category and printed as
+% "References"; anything cited only in the supplement is printed at the very
+% end as "Supplementary References".
+\DeclareBibliographyCategory{maincited}
+\newif\ifmaintextpart\maintextparttrue
+\AtEveryCitekey{\ifmaintextpart\addtocategory{maincited}{\thefield{entrykey}}\fi}
+
+\usepackage[colorlinks=true,
+            linkcolor=blue,
+            urlcolor=blue,
+            citecolor=blue]{hyperref}
+\usepackage{xurl}
+\usepackage{algorithm,algorithmic}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{multirow}
+
+
+\theoremstyle{plain}
+\newtheorem{axiom}{Axiom}
+\newtheorem{claim}[axiom]{Claim}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newcommand{\footremember}[2]{%
+    \footnote{#2}
+    \newcounter{#1}
+    \setcounter{#1}{\value{footnote}}%
+}
+\newcommand{\footrecall}[1]{%
+    \footnotemark[\value{#1}]%
+}
+
+% ---- cross-reference helpers -----------------------------------------
+\newcommand{\tref}[1]{Table~\ref{#1}}
+\newcommand{\fref}[1]{Figure~\ref{#1}}
+\newcommand{\supptref}[1]{Supplementary Table~\ref{#1}}
+\newcommand{\suppfref}[1]{Supplementary Figure~\ref{#1}}
+\newcommand{\supptrefs}[1]{Supplementary Tables~\ref{#1}}
+\newcommand{\suppfrefs}[2]{Supplementary Figures~\ref{#1} and \ref{#2}}
+\newcommand{\edfref}[1]{Extended Data Figure~\ref{#1}}
+\newcommand{\edfrefs}[1]{Extended Data Figures~\ref{#1}}
+\newcommand{\edtref}[1]{Extended Data Table~\ref{#1}}
+
+\newcommand{\red}{\color{red}}
+\newcommand{\green}{\color{green}}
+\newcommand{\blue}{\color{blue}}
+\newcommand{\purple}{\color{purple}}
+
+% ---- math shorthands --------------------------------------------------
+\newcommand{\bsD}{\boldsymbol{D}}
+\newcommand{\bsM}{\boldsymbol{M}}
+\newcommand{\bstheta}{\boldsymbol{\theta}}
+\newcommand{\bsbeta}{\boldsymbol{\beta}}
+\newcommand{\bsgamma}{\boldsymbol{\gamma}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\bsc}{\boldsymbol{c}}
+\newcommand{\bsC}{\boldsymbol{C}}
+\newcommand{\bsS}{\boldsymbol{S}}
+\newcommand{\bsw}{\boldsymbol{w}}
+\newcommand{\bsx}{\boldsymbol{x}}
+\newcommand{\bsv}{\boldsymbol{v}}
+\newcommand{\bsu}{\boldsymbol{u}}
+\newcommand{\bsy}{\boldsymbol{y}}
+\newcommand{\bsz}{\boldsymbol{z}}
+\newcommand{\bsY}{\boldsymbol{Y}}
+\newcommand{\bsX}{\boldsymbol{X}}
+\newcommand{\bsB}{\boldsymbol{B}}
+\newcommand{\bsZ}{\boldsymbol{Z}}
+\newcommand{\bsmu}{\boldsymbol{\mu}}
+\newcommand{\bstau}{\boldsymbol{\tau}}
+
+\def\bbP{\mathbb{P}}
+
+% ---- float numbering for the supplement / extended data ---------------
+\newcommand{\beginsupplement}{%\
+        \renewcommand{\tablename}{Supplementary Table}
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{\arabic{table}}%
+        \renewcommand{\figurename}{Supplementary Figure}
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{\arabic{figure}}%
+        \setcounter{page}{1}
+     }
+\newcommand{\beginextendeddata}{%\
+        \renewcommand{\tablename}{Extended Data Table}
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{\arabic{table}}%
+        \renewcommand{\figurename}{Extended Data Figure}
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{\arabic{figure}}%
+     }
+
+\usepackage{xspace}
+% Model / method name used throughout the manuscript. Change it in one place
+% here and it updates everywhere.
+\newcommand{\model}{GPN-Plasmids\xspace}   % TODO: confirm the final method name
+
+\def\todo#1{\textbf{\textcolor{red}{ [TODO: #1]}}}
+\def\fixme#1{\textbf{\textcolor{red}{ [FIXME: #1]}}}
+
+% ---- placeholder graphic ---------------------------------------------
+% Draws a labelled empty box so the skeleton compiles before any figure PDFs
+% exist. Replace each \placeholderfig with \includegraphics and delete this
+% definition once all figures are in figures/.
+\newcommand{\placeholderfig}[3][\textwidth]{%
+  \fbox{\parbox[c][#2][c]{\dimexpr#1-2\fboxsep-2\fboxrule\relax}{%
+    \centering\ttfamily\small #3}}%
+}
+
+% ---- external documents (xr) -----------------------------------------
+% Only needed if the supplement is split into a separate .tex/.pdf; kept from
+% GPN-Star in case you go that route.
+\usepackage{xr}
+
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+\typeout{(#1)}% latexmk will find this if $recorder=0
+\@addtofilelist{#1}
+\IfFileExists{#1}{}{\typeout{No file #1.}}
+}\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+\externaldocument{#1}%
+\addFileDependency{#1.tex}%
+\addFileDependency{#1.aux}%
+}
+
+%\myexternaldocument{supplementary}
+
+\usepackage{nameref}
+
+% Uncomment to stamp a watermark on drafts circulated outside the lab.
+% \usepackage[printwatermark]{xwatermark}
+% \newwatermark[pages=0-100,color=red!50,angle=0,scale=0.7,xpos=0,ypos=-125]{Confidential.  Please do not share.}
+
+
+%======================================================================
+%  Title and authors
+%======================================================================
+
+% TODO: settle on a title. Keep discarded candidates commented out here, as in
+% GPN-Star, so the group can compare them.
+% \title{A genomic language model for plasmids}
+\title{GPN-Plasmids: \todo{title}}
+
+% ---- author list ------------------------------------------------------
+% Authors are HIDDEN: nothing is typeset below the title, and the PDF metadata
+% carries no author either. The list is kept in the source so it is not lost.
+% Flip to \showauthorstrue to print it.
+\newif\ifshowauthors
+\showauthorsfalse
+
+\ifshowauthors
+  % TODO: complete the author list, the equal-contribution footnote and the
+  % affiliation numbering before this is ever switched on.
+  \author{Jianan Canal Li$^{1,*}$, \todo{co-authors}, Yun S. Song$^{1,2,3,4,}$\footnote{To whom correspondence should be addressed: \url{yss@berkeley.edu}}\\
+  \and
+  \small$^{1}$Computer Science Division, University of California, Berkeley, Berkeley, CA, USA\and
+  \small$^{2}$Department of Statistics, University of California, Berkeley, Berkeley, CA, USA\and
+  \small$^{3}$Center for Computational Biology, University of California, Berkeley, Berkeley, CA, 94720, USA\\
+  \small$^{4}$Innovative Genomics Institute, University of California, Berkeley, Berkeley, CA, 94720, USA\\
+  }
+\else
+  \author{}
+  \hypersetup{pdfauthor={}}
+\fi
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+\begin{abstract}
+% word limit 200 (Nature); GPN-Star ran ~220 words in draft
+\todo{Abstract.}
+% Suggested shape, following GPN-Star:
+%  1. Context: what problem in plasmid biology / genome interpretation is open.
+%  2. Gap: why existing methods fall short.
+%  3. "Here, we introduce \model (...expansion of the acronym...), a ..."
+%  4. What it was trained on.
+%  5. Headline results, one clause per benchmark family.
+%  6. Generalization beyond the primary setting.
+%  7. "Taken together, these results position \model as ..."
+\end{abstract}
+
+\clearpage
+
+%======================================================================
+\section*{Introduction}
+%======================================================================
+% GPN-Star used five paragraphs here:
+%  (1) the biological problem, (2) why language models are a natural fit and
+%  where they fall short, (3) the alternative line of work being built on,
+%  (4) "Here, we present \model ..." with the main claims and forward
+%  references to figures, (5) a short paragraph on generality.
+
+\todo{Introduction.}
+
+
+%======================================================================
+\section*{Results}
+%======================================================================
+% One \subsection* per result, each a short noun phrase (GPN-Star used
+% "Pathogenic coding variants", "Complex trait heritability", ...). Each
+% subsection opens by naming the question, then reports the comparison and
+% points at a panel with \fref{...}.
+
+\subsection*{\todo{Model and data overview}}
+
+\todo{Describe the model, the training data, and the evaluation setup
+(\fref{fig:overview}).}
+
+\subsection*{\todo{Result 2}}
+
+\todo{Text.}
+
+\subsection*{\todo{Result 3}}
+
+\todo{Text.}
+
+
+%======================================================================
+\section*{Discussion}
+%======================================================================
+% GPN-Star: summary of contributions, then limitations, then outlook on
+% growing data resources.
+
+\todo{Discussion.}
+
+
+%======================================================================
+\section*{Acknowledgements}
+%======================================================================
+\todo{Acknowledgements.}
+% Remember to credit data providers and, if applicable, icon sources, e.g.:
+% In \fref{fig:overview}, icons are made by ... from www.flaticon.com.
+
+\section*{Funding}
+% TODO: verify the grant numbers that apply to this project.
+This research is supported in part by National Institutes of Health grants
+\todo{grant numbers}.
+
+
+\clearpage
+\printbibliography[category=maincited,title={References}]
+\newpage
+
+
+%======================================================================
+%  Main figures
+%======================================================================
+% Figures live at the end of the main text, after the references, as required
+% by Nature-style submissions. Replace \placeholderfig with
+% \includegraphics[width=\textwidth]{figures/<name>} once the PDF exists.
+% Caption convention: a bold lead sentence naming the figure, then
+% \textbf{(A)} ... one sentence per panel, then a closing sentence giving the
+% metric and the error bars.
+
+\begin{figure}[h]
+    \centering
+    \placeholderfig{6cm}{figures/overview}
+    % \includegraphics[width=\textwidth]{figures/overview}
+\caption{
+\textbf{Overview of \model.} \textbf{(A)} \todo{panel A.} \textbf{(B)} \todo{panel B.} \textbf{(C)} \todo{panel C.}
+}
+\label{fig:overview}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \placeholderfig{6cm}{figures/benchmarks}
+    % \includegraphics[width=\textwidth]{figures/benchmarks}
+\caption{
+\textbf{\todo{Benchmark figure title}.} \textbf{(A)} \todo{panel A.}
+The performance metric is \todo{metric}. The error bars represent 95\% confidence intervals from 1,000 class-stratified bootstrap resamples.
+}
+\label{fig:benchmarks}
+\end{figure}
+
+
+\clearpage
+
+%======================================================================
+\section*{Methods}
+\label{sec:methods}
+%======================================================================
+% In GPN-Star the Methods section is a one-paragraph pointer to the
+% Supplementary Information, followed by the journal-required statements.
+% Cross-reference it from the text with \nameref{sec:methods}.
+
+The Supplementary Information contains Supplementary Text and the details of
+\todo{list the supplementary methods subsections here}.
+
+\subsection*{Reporting summary}
+Further information on research design is available in the Nature Portfolio Reporting Summary linked to this article.
+
+\subsection*{Data Availability}
+\todo{Hugging Face / accession links for models, training data and benchmarks.}
+
+\subsection*{Code Availability}
+\todo{GitHub link and Zenodo archive DOI.}
+
+\subsection*{Author Contributions}
+\todo{Contribution statement, one clause per author, semicolon separated.}
+
+\subsection*{Competing Interests}
+The authors declare no competing interests.
+
+\subsection*{Additional Information}
+
+\noindent
+\textbf{Supplementary information} The online version contains supplementary material.
+
+\noindent
+% Named here in GPN-Star, but a name in this line would leak the corresponding
+% author while \showauthorsfalse is in effect. Fill in at submission.
+\textbf{Correspondence and requests for materials} should be addressed to \todo{corresponding author}.
+
+
+\clearpage
+
+%======================================================================
+\section*{Extended Data Figures}
+%======================================================================
+% Resets the figure counter and relabels floats as "Extended Data Figure N".
+
+\beginextendeddata
+
+\begin{figure}[h!]
+    \centering
+    \placeholderfig[0.9\textwidth]{6cm}{figures/ed-example}
+    % \includegraphics[width=0.9\textwidth]{figures/ed-example}
+\caption{
+\todo{Extended data caption. These captions are not bold-led in GPN-Star; they open directly with the description.}
+}
+\label{fig:ed-example}
+\end{figure}
+
+
+\clearpage
+
+%======================================================================
+%  SUPPLEMENTARY INFORMATION
+%======================================================================
+% \maintextpartfalse must come before any supplement-only citation: from here
+% on, newly cited references go to "Supplementary References" instead of the
+% main "References" list.
+\maintextpartfalse
+
+% Resets figure/table counters and page numbering for the supplement.
+\beginsupplement
+
+\section*{Supplementary Text}
+\label{sec:supp_text}
+% Cross-reference from the main text with \nameref{sec:supp_text}.
+
+\subsection*{\todo{Supplementary discussion topic}}
+
+\todo{Text.}
+
+
+\section*{Supplementary Methods}
+
+\subsection*{Training Data}
+\todo{Text.}
+
+\subsection*{Model Architecture}
+\todo{Text.}
+
+\subsection*{Training Setup}
+\todo{Text.}
+
+\subsection*{Inference}
+\todo{Text.}
+
+\subsection*{Evaluation Benchmarks}
+\todo{Text.}
+
+
+\clearpage
+\section*{Supplementary Tables}
+\
+
+% Wide tables use sidewaystable (rotating package) + \resizebox, as in the
+% GPN-Star training-setup table.
+\begin{table}[h]
+\caption{
+\todo{Table caption.}
+}
+\label{tab:example}
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+ & \todo{col 1} & \todo{col 2} \\
+\midrule
+\todo{row} & & \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\clearpage
+\section*{Supplementary Figures}
+
+\begin{figure}[h]
+    \centering
+    \placeholderfig[0.8\textwidth]{6cm}{figures/supp-example}
+    % \includegraphics[width=0.8\textwidth]{figures/supp-example}
+\caption{
+\todo{Supplementary figure caption.}
+}
+\label{fig:supp-example}
+\end{figure}
+
+
+\clearpage
+\printbibliography[notcategory=maincited,title={Supplementary References}]
+
+\end{document}
