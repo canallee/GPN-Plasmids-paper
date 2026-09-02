@@ -1,10 +1,14 @@
 %======================================================================
 %  Supplementary Figures
 %
-%  Renumbered globally in order of appearance. Local -> global:
-%    pretraining    S1,S2   -> S1,S2
-%    origin         S1-S10  -> S3-S12
-%    interpretation S1-S7   -> S13-S19
+%  Renumbered globally in order of appearance, after five figures were
+%  promoted to Extended Data on 2026-09-01 (see sections/extended_data.tex).
+%  Artifact-local -> global supplementary number:
+%    pretraining    S2                  -> S1
+%    origin         S2,S3,S6-S10        -> S2-S8
+%    interpretation S1-S4,S6,S7         -> S9-S14
+%  Promoted out of this file: pretraining S1; origin S1, S4, S5;
+%  interpretation S5 -- now Extended Data Figures 1-5.
 %
 %  Every figure here is a complete, assembled supplementary figure. The
 %  artifacts' per-panel "Component"/"standalone panel" cards are not
@@ -23,14 +27,6 @@
 
 % ================= from the pretraining artifact =====================
 
-\begin{figure}[h]
-    \centering
-    \fitfig{figures/figS1_combined}
-\caption{
-The IMG/PR collection, corpus construction, cluster hierarchy, and diversity-aware sampling. Panels \textbf{a}, \textbf{c} and \textbf{d} describe the full IMG/PR collection (699,973 sequences, 214,950 PTUs); the remaining panels describe the 693,638-sequence training corpus after quality filtering and the two-species holdout. Panel titles are given here rather than on the artwork. \textbf{a}, Host phyla by plasmid-sequence count (log scale) --- the twelve largest plus an aggregate "other phyla" bar (49 phyla in all; 40\% of sequences carry a host assignment). \textbf{b}, Sequences removed at each filtering step (log scale); 99.1\% of the collection is retained. \textbf{c}, Concentration of diversity: cumulative fraction of dereplicated sequences (solid) and of sub-PTUs (dashed) against the cumulative fraction of PTUs, ranked and shaded by category (Major / Moderate / Unique); a small minority of PTUs accounts for most of the collection. \textbf{d}, Length distribution of the full collection (log-scaled); the dashed lines mark the 2,048 bp minimum and the 10.1 kb median, and the sub-2,048 bp sequences the filter removes are visible to the left. \textbf{e}, Completeness (complete vs incomplete) and topology (linear / direct- or inverted-terminal-repeat) annotations. \textbf{f}, Number of PTUs against sub-PTUs per PTU (both log); 81\% of PTUs resolve to a single sub-PTU, the largest to 735. \textbf{g}, Cluster-size distributions at the two identity levels --- dereplication (99\% ANI) and sub-PTU (95\% ANI). \textbf{h}, Distribution of expected Major-PTU allocations (mean 1.42, range 1.08--3.15, none at the floor). \textbf{i}, The Major-PTU allocation $a_i$ against sub-PTU count $n_i$: it grows sublinearly as $n^{2/3}$ (dashed), floored at one representative and capped at the 95th percentile of sub-PTU count ($Q_{0.95} = 10$ sub-PTUs), giving an expected-allocation ceiling of 3.15 representatives per epoch.
-}
-\label{fig:supp-corpus}
-\end{figure}
 
 \begin{figure}[h]
     \centering
@@ -44,18 +40,11 @@ Sequence preprocessing and windowing. \textbf{Complete plasmids} (top): for sequ
 
 \clearpage
 % ================= from the origin artifact ==========================
-% NOTE: figures S3, S4 and S5 below are raster-only in the source artifact
-% (no PDF exists for supp_inference_pipeline, supp_similarity_clustermap_oriT
-% or supp_similarity_clustermap_oriV). They are copied in as-is, unedited.
+% NOTE: the two clustermap figures below are raster-only in the source
+% artifact (no PDF exists for supp_similarity_clustermap_oriT or
+% supp_similarity_clustermap_oriV). They are copied in as-is, unedited.
+% The third raster-only figure, supp_inference_pipeline, is now ED Figure 2.
 
-\begin{figure}[h]
-    \centering
-    \fitfig{figures/supp_inference_pipeline.png}
-\caption{
-Genome-wide origin discovery with \model. A query plasmid is annotated into coding sequences and intergenic regions (IGRs). Each IGR is tiled into overlapping 512 bp windows that frozen \model embeddings and the trained probe score for origin overlap; the per-window scores are pooled at the 75th percentile (or the maximum if the IGR has five or fewer windows) and converted per split into one ensemble score per IGR. Ranking a plasmid's IGRs by that score gives its candidate origin-containing regions --- the workflow applied genome-wide across IMG/PR and the source of the predictions used downstream (\secref{sec:genomewide}).
-}
-\label{fig:supp-pipeline}
-\end{figure}
 
 \begin{figure}[h]
     \centering
@@ -75,23 +64,7 @@ Genome-wide origin discovery with \model. A query plasmid is annotated into codi
 \label{fig:supp-clustermap-oriv}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \fitfig{figures/supp_region_tracks_8}
-\caption{
-Calibrated window-probability tracks for additional origin-containing regions. Eight held-out examples --- four \emph{oriT} (\textbf{a}--\textbf{d}, left) and four \emph{oriV} (\textbf{e}--\textbf{h}, right) --- scored by the \model probe: calibrated per-window probability (red, left axis) along a 512 bp window stepped at 16 bp, with the annotated origin shaded orange, flanking coding sequence grey, and the per-window origin overlap (blue dashed, right axis). The green line is the 75th-percentile region score used for ranking. Same tracks and legend as \fref{fig:origin}e.
-}
-\label{fig:supp-tracks8}
-\end{figure}
 
-\begin{figure}[h]
-    \centering
-    \fitfig{figures/supp_win_layer}
-\caption{
-Probe layer selection by validation AUPRC. Window-level AUPRC for every probed layer of each pretrained embedder (per-split mean bars over per-split heatmaps, best-val layer outlined); \textbf{a}, \emph{oriT}; \textbf{b}, \emph{oriV}. Each embedder's reported probe uses the single layer maximizing mean validation AUPRC across both tasks --- \model \texttt{blocks.60}, Evo2-1B/7B \texttt{blocks.15.mlp.l3}, Evo2-40B \texttt{blocks.16.mlp.l3}, PlasmidGPT \texttt{h.3}. Selection uses validation columns only; because parts rotate, each part is validation in one split and test in another. GPN reporting considered layers 60--72.
-}
-\label{fig:supp-layer}
-\end{figure}
 
 \begin{figure}[h]
     \centering
@@ -178,20 +151,12 @@ Periodic direct-repeat arrays show lattice-like dependency patterns. Four CRISPR
 \label{fig:supp-crispr}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \fitfig{figures/figS5_umap_feature}
-\caption{
-Embedding projection coloured by coarse functional annotation. Two-dimensional UMAP of frozen \model embeddings over 308,478 non-overlapping 10 bp tiles from 40 origin-enriched Enterobacterales plasmids, each tile embedded from its own 2,048 bp context and averaged over forward and reverse-complement inputs (\nameref{sec:methods}). Each point is one tile, coloured by its annotation: intergenic (blue), coding sequence (orange), origin of vegetative replication (red), origin of transfer (green) and non-coding RNA (purple). Labels are assigned by overlap across the whole tile, and origin calls are curated BLAST hits that replace PlasAnn's own. Coding and intergenic tiles occupy largely distinct regions, and the two origin classes and non-coding RNA are associated with compact regions within the intergenic territory. No separation metric or classifier was computed, so this is an association rather than a demonstrated separation, and the cohort is origin-enriched by construction. Annotations were not used during pretraining or in fitting the projection; they were used to filter ambiguous tiles and to colour the points.
-}
-\label{fig:supp-umap-feature}
-\end{figure}
 
 \begin{figure}[h]
     \centering
     \fitfig{figures/figS6_umap_detailed}
 \caption{
-The same projection at finer annotation granularity. The projection of \suppfref{fig:supp-umap-feature}, recoloured by a finer vocabulary in which coding sequences are split by functional category: conjugation, non-conjugative DNA mobility, plasmid maintenance/replication/regulation, toxin--antitoxin systems, antibiotic resistance, metal and biocide resistance, stress response, virulence and defence, metabolism, and unclassified open reading frames, alongside the intergenic, origin and non-coding RNA classes of \suppfref{fig:supp-umap-feature}. Several coding categories are associated with contiguous regions of the projection. As in \suppfref{fig:supp-umap-feature}, no separation metric was computed.
+The same projection at finer annotation granularity. The projection of \edfref{fig:ed-umap-feature}, recoloured by a finer vocabulary in which coding sequences are split by functional category: conjugation, non-conjugative DNA mobility, plasmid maintenance/replication/regulation, toxin--antitoxin systems, antibiotic resistance, metal and biocide resistance, stress response, virulence and defence, metabolism, and unclassified open reading frames, alongside the intergenic, origin and non-coding RNA classes of \edfref{fig:ed-umap-feature}. Several coding categories are associated with contiguous regions of the projection. As in \edfref{fig:ed-umap-feature}, no separation metric was computed.
 }
 \label{fig:supp-umap-detailed}
 \end{figure}
@@ -200,7 +165,7 @@ The same projection at finer annotation granularity. The projection of \suppfref
     \centering
     \fitfig{figures/figS7_umap_gc}
 \caption{
-The same projection coloured by GC content. The projection of \suppfref{fig:supp-umap-feature}, recoloured by the GC content of each 10 bp tile on a continuous scale from 0 to 1; with a ten-base denominator only eleven values are attainable, and no binning is applied. GC varies smoothly across the projection, with high- and low-GC tiles associated with different regions of both the coding and the intergenic territories. GC was not supplied as an annotation, but base composition was necessarily present in the model's input, so this is not a property withheld from the model. Because the projection varies strongly with composition, GC may contribute to the annotation-associated structure in \suppfrefs{fig:supp-umap-feature}{fig:supp-umap-detailed}.
+The same projection coloured by GC content. The projection of \edfref{fig:ed-umap-feature}, recoloured by the GC content of each 10 bp tile on a continuous scale from 0 to 1; with a ten-base denominator only eleven values are attainable, and no binning is applied. GC varies smoothly across the projection, with high- and low-GC tiles associated with different regions of both the coding and the intergenic territories. GC was not supplied as an annotation, but base composition was necessarily present in the model's input, so this is not a property withheld from the model. Because the projection varies strongly with composition, GC may contribute to the annotation-associated structure in \edfref{fig:ed-umap-feature} and \suppfref{fig:supp-umap-detailed}.
 }
 \label{fig:supp-umap-gc}
 \end{figure}

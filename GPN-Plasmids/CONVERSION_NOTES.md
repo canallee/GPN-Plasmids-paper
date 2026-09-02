@@ -100,9 +100,17 @@ notes and were skipped, as the prompt directs.
 
 ## Figures
 
-Only complete, assembled figures were used. All 22 assets were copied into
-`figures/` unedited — nothing was regenerated, resized, or recoloured — and
-every `\includegraphics` points there, never at a source artifact repo.
+Only complete, assembled figures were used, and every `\includegraphics` points
+into `figures/`, never at a source artifact repo.
+
+Twenty-one of the 22 assets were copied from their artifacts unedited — nothing
+regenerated, resized, or recoloured. **Figure 2 is the exception.** It was
+originally the origin artifact's own assembled card, `figure4_composite.pdf`
+(9.04 × 8.89 in); the author replaced it with `Fig_2_Main.pdf` (12.16 × 11.91
+in) in commit `67d8a55`, "Better sized fig 2". That file does not exist in the
+origin artifact repo, which still carries only `figure4_composite.pdf`, so
+Figure 2's artwork and its companion artifact have diverged — re-syncing §3
+from the artifact will not bring the new figure with it.
 
 **Dropped as component / standalone panels:**
 
@@ -118,10 +126,11 @@ every `\includegraphics` points there, never at a source artifact repo.
 - interpretation: `fig5_a_pigrk_orit` and `fig5_b_psc101_oriv`
   (the "Fig. 4a" / "Fig. 4b" `Component` cards)
 
-**Filenames that no longer match their numbers.** `Fig_2_Main.pdf` is
-Figure **2** and `fig5_catjac.pdf` is Figure **4** — both artifacts renumbered
-their labels but not their assets. Copied under the original names so the
-provenance stays traceable.
+**One filename that no longer matches its number.** `fig5_catjac.pdf` is
+Figure **4** — the interpretation artifact renumbered its label but not its
+assets. Copied under the original name so the provenance stays traceable.
+(Figure 2 used to be in this list as `figure4_composite.pdf`; its replacement,
+`Fig_2_Main.pdf`, matches its number.)
 
 **Three supplementary figures are raster-only.** No PDF exists for
 `supp_inference_pipeline`, `supp_similarity_clustermap_oriT` or
@@ -160,23 +169,53 @@ Grepping the compiled PDF's text for the memo band names, the status-chip
 vocabulary and `TODO cite` returns nothing, confirming no working-memo content
 reached the page.
 
+## Extended Data Figures (promoted 2026-09-01)
+
+Nature Biotechnology displays Extended Data alongside the main figures online,
+so five figures were promoted out of the Supplementary set, in their order of
+appearance. They live in `sections/extended_data.tex`, `\input` from the
+`\section*{Extended Data Figures}` block in `main.tex`.
+
+| ED | Was Supp. Fig. | Asset | Content |
+|---|---|---|---|
+| 1 | S1 | `figS1_combined.pdf` | IMG/PR collection, corpus construction, cluster hierarchy, diversity-aware sampling |
+| 2 | S3 | `supp_inference_pipeline.png` | genome-wide origin discovery with \model |
+| 3 | S6 | `supp_region_tracks_8.pdf` | calibrated window-probability tracks, additional regions |
+| 4 | S7 | `supp_win_layer.pdf` | probe layer selection by validation AUPRC |
+| 5 | S17 | `figS5_umap_feature.pdf` | embedding projection by coarse functional annotation |
+
+Captions moved across byte-for-byte — GPN-Star uses the same convention for
+both bands (no bold lead sentence, opening directly with the description).
+Only the `\label` prefixes changed, `fig:supp-*` → `fig:ed-*`, so `\edfref`
+reads correctly. None of the five captions carries a `\cite`, so although the
+Extended Data section sits *before* `\maintextpartfalse` and its citations
+would count as main-text, the two reference lists are unchanged.
+
+**One cross-reference had to be split.** The interpretation artifact writes
+"Supplementary Figs. S5–S7" as a single contiguous range over the three UMAP
+panels. The first of those is now Extended Data Figure 5, so the range no
+longer exists as one span; §5 now reads "Extended Data Figure 5 and
+Supplementary Figures 13–14 …". A `% NOTE` at that line records why. This is
+the only place where promotion forced a change to the transcribed wording, and
+it changes only the pointer, not the claim.
+
 ## Global renumbering
 
 Supplementary floats are numbered per-section in the artifacts and were
 renumbered globally in order of appearance. All internal pointers moved with
-them.
+them. The figure rows below are **after** the five Extended Data promotions.
 
 | Global | Was | Content |
 |---|---|---|
-| Fig. S1–S2 | pretraining S1–S2 | corpus/hierarchy/sampling; windowing |
-| Fig. S3–S12 | origin S1–S10 | pipeline, clustermaps, tracks, layer, PR, calibration, forest, length, per-split |
-| Fig. S13–S19 | interpretation S1–S7 | *oriT* maps, *oriV* maps, promoters, CRISPR, three UMAPs |
+| Fig. S1 | pretraining S2 | windowing |
+| Fig. S2–S8 | origin S2, S3, S6–S10 | clustermaps, PR curves, calibration, forest, length, per-split |
+| Fig. S9–S14 | interpretation S1–S4, S6, S7 | *oriT* maps, *oriV* maps, promoters, CRISPR, two UMAPs |
 | Table S1 | pretraining Table S1 | pretraining parameters |
 | Table S2–S3 | origin Supp. Tables 1–2 | region metrics; window AUPRC |
 | Table S4 | interpretation Table S1 | interpretation parameters |
 
-The origin artifact's Tables 1–3 are **main-text** tables there and stayed
-main-text here.
+Supplementary tables were not affected by the promotion. The origin artifact's
+Tables 1–3 are **main-text** tables there and stayed main-text here.
 
 ## Bibliography
 
