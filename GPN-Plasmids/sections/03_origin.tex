@@ -29,8 +29,13 @@ of clinically important families they remain largely uncharacterized across
 the metagenomic majority of plasmids. The task is to identify or prioritize
 origin-containing intergenic regions rather than to recover exact origin
 boundaries. We therefore trained lightweight probes on frozen embeddings,
-without repeating the pretraining procedure of \secref{sec:pretraining}.
-% TODO wording: the artifact reads "the pretraining procedure of §2".
+without repeating the pretraining described in \secref{sec:pretraining}.
+% NOTE (2026-09-01): the artifact read "the pretraining procedure of §2", and
+% this line carried a TODO asking for better wording. Resolved when §2 was
+% split into three subsections: \secref renders the heading TEXT, and
+% "the pretraining procedure of Pretraining and model architecture" is a
+% noun-phrase collision. Recast so the heading is the object of "in", which
+% reads naturally for a title. sec:pretraining now labels §2.3.
 
 We evaluated this capability at two complementary levels. Window-level
 detection asks whether origin-containing sequence can be recovered among the

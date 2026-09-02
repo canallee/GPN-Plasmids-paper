@@ -38,13 +38,41 @@ into the manuscript is copy-paste, so the artifact version was used. The
 markdown Methods files (`02`–`06`) *were* used — those match the artifact and
 self-declare as canonical. Swap in the longer narrative if you meant that one.
 
+*Superseded 2026-09-01, author-directed.* Those seven paragraphs are no longer
+presented as one subsection. They were **regrouped into three Results
+subsections** — `IMG/PR processing` (`sec:imgpr`), `Diversity-aware sampling
+for pretraining` (`sec:sampling`) and `Pretraining and model architecture`
+(`sec:pretraining`) — laid out 2 / 3 / 3 paragraphs. This is a structural
+edit, not a re-transcription: the file still tracks the same artifact band and
+`02_pretraining.tex` remains one file, so the provenance row above still holds.
+Two sentences changed paragraph (old P1 s2 now opens §2.3; old P2 s1 and s3 now
+open §2.2) and three sentences were added (the Fig. 1c callout and the closer
+in §2.1, and the second half of the §2.2 opener). No transcribed clause was
+deleted. Note that the split ends up closer in shape to
+`01_results_sampling_design.md`, so if you ever swap that narrative in, compare
+against the three-subsection layout rather than the flat one. Two further
+author-directed changes rode along: IMG/PR is now expanded on first use in the
+body, and the epoch size was reconciled from "approximately 170,000" to the
+measured mean of 166,192.
+
 **2. Nature-style unnumbered sections, per your instruction.** There are no
 section numbers, so the `§2` / `§3` / `§4` pointers written into the origin and
 interpretation prose resolve by name through a `\secref` macro
-(`\secref{sec:pretraining}` → "Pretraining"). Six places read a little oddly as
-a result and each carries a `% TODO wording:` comment — most notably
+(`\secref{sec:origin}` → "Origin classification"). Six places read a little
+oddly as a result and each carries a `% TODO wording:` comment — most notably
 "the §3 classifier", which renders as "the Origin classification classifier".
-The wording is yours to fix; nothing was reworded here.
+The wording is yours to fix; nothing was reworded at conversion time.
+
+*Update 2026-09-01.* One of the six is now resolved. `03_origin.tex` read
+"without repeating the pretraining procedure of `\secref{sec:pretraining}`",
+which the §2 split would have rendered as "…the pretraining procedure of
+Pretraining and model architecture" — a noun-phrase collision. It was recast to
+"without repeating the pretraining described in `\secref{sec:pretraining}`", so
+the heading is the object of a preposition, where a title reads naturally. The
+`% TODO wording:` comment there was replaced with a `% NOTE` recording the
+change. This is the second place where a structural change forced a change to
+transcribed wording, after the Extended Data promotion noted below. Five
+`% TODO wording:` comments remain.
 
 **3. Methods sit in the Supplementary Information,** following GPN-Star:
 `\section*{Methods}` is a one-paragraph pointer plus the journal statements,
