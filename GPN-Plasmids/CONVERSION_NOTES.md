@@ -118,7 +118,7 @@ every `\includegraphics` points there, never at a source artifact repo.
 - interpretation: `fig5_a_pigrk_orit` and `fig5_b_psc101_oriv`
   (the "Fig. 4a" / "Fig. 4b" `Component` cards)
 
-**Filenames that no longer match their numbers.** `figure4_composite.pdf` is
+**Filenames that no longer match their numbers.** `Fig_2_Main.pdf` is
 Figure **2** and `fig5_catjac.pdf` is Figure **4** — both artifacts renumbered
 their labels but not their assets. Copied under the original names so the
 provenance stays traceable.
