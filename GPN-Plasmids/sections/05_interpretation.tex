@@ -137,9 +137,14 @@ class separation. The cohort was selected for curated \emph{oriT} and
 \emph{oriV} hits and is not a representative sample of plasmids. And because
 the projection varies strongly with GC content, sequence composition may
 contribute to the apparent annotation structure. These embeddings come from
-the final encoder layer, whereas the \secref{sec:origin} classifier is fitted
-% TODO wording: the artifact reads "whereas the §3 classifier is fitted on
-% blocks.60". Under unnumbered sectioning this renders as the section name.
+the final encoder layer, whereas the origin classifier described in
+\secref{sec:origin} is fitted
+% NOTE (2026-09-01): the artifact read "whereas the §3 classifier is fitted on
+% blocks.60", and this line carried a TODO because \secref renders the heading
+% TEXT -- giving "the Origin classification classifier". The §3 split made the
+% collision worse, so this was recast on the pattern settled in the §2 split:
+% the heading is now the object of "in", where a title reads naturally.
+% sec:origin labels §3.1, which is where the classifier is defined.
 on \texttt{blocks.60}, twelve residual blocks earlier; the two are different
 representations of the same frozen model, and this projection is offered as
 descriptive evidence, not as an account of classifier behaviour.

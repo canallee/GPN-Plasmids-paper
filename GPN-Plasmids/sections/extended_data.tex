@@ -6,7 +6,7 @@
 %  online). Order follows their order of appearance in the manuscript:
 %
 %    ED 1  <- former Supp. Fig. S1   IMG/PR collection, hierarchy and sampling
-%    ED 2  <- former Supp. Fig. S3   genome-wide origin-discovery pipeline
+%    ED 2  <- former Supp. Fig. S3   window -> IGR origin-inference pipeline
 %    ED 3  <- former Supp. Fig. S6   additional window-probability tracks
 %    ED 4  <- former Supp. Fig. S7   probe layer selection
 %    ED 5  <- former Supp. Fig. S17  embedding projection by annotation
@@ -33,13 +33,23 @@ The IMG/PR collection, corpus construction, cluster hierarchy, and diversity-awa
 \label{fig:ed-corpus}
 \end{figure}
 
-% ---- ED 2: genome-wide origin-discovery pipeline (was Supp. S3)
-%      Raster-only in the source artifact; copied in as-is.
+% ---- ED 2: window -> intergenic-region inference pipeline (was Supp. S3)
+%      Raster-only in the source artifact; artwork copied in as-is.
+%
+%      2026-09-01, author-directed: caption retitled. It opened "Genome-wide
+%      origin discovery with GPN-Plasmids", which named the downstream
+%      application rather than the artwork. The figure shows ONE query
+%      plasmid going from window-level classification to intergenic-region
+%      classification, and the two things that buys -- localization within a
+%      region, and a ranking over a plasmid's regions. Genome-wide
+%      application is a consequence of the pipeline, so it is demoted to the
+%      closing clause. The figure is now cited from §3.1, which describes
+%      the same two stages in prose.
 \begin{figure}[h]
     \centering
     \fitfig{figures/supp_inference_pipeline.png}
 \caption{
-Genome-wide origin discovery with \model. A query plasmid is annotated into coding sequences and intergenic regions (IGRs). Each IGR is tiled into overlapping 512 bp windows that frozen \model embeddings and the trained probe score for origin overlap; the per-window scores are pooled at the 75th percentile (or the maximum if the IGR has five or fewer windows) and converted per split into one ensemble score per IGR. Ranking a plasmid's IGRs by that score gives its candidate origin-containing regions --- the workflow applied genome-wide across IMG/PR and the source of the predictions used downstream (\secref{sec:genomewide}).
+From window-level classification to intergenic-region ranking with \model. A query plasmid is annotated into coding sequences and intergenic regions (IGRs), and each IGR is tiled into overlapping 512 bp windows that frozen \model embeddings and the trained probe score for origin overlap. Reading those per-window scores along the region gives a calibrated probability profile that localizes origin signal to part of an IGR rather than only flagging the IGR as a whole. Pooling the profile at the 75th percentile (or taking the maximum if the IGR has five or fewer windows) and converting it per split into one ensemble score per IGR reduces the region to a single value, so a plasmid's IGRs become comparable to one another; ranking them by that score gives its candidate origin-containing regions. The same two-stage workflow, applied unchanged across IMG/PR, is the source of the genome-wide predictions used downstream (\secref{sec:genomewide}).
 }
 \label{fig:ed-pipeline}
 \end{figure}

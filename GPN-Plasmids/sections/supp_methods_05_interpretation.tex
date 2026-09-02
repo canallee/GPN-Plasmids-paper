@@ -212,8 +212,11 @@ directly on the same 10 bp tile; with a ten-base denominator, GC takes only
 eleven distinct values, and no binning step is applied. Base composition was
 necessarily present in the model's input, so GC is not an external property
 withheld from the model. These projections use the final encoder layer,
-whereas the \secref{sec:origin} origin classifier is fitted on
-% TODO wording: the artifact reads "whereas the §3 origin classifier".
+whereas the origin classifier described in \secref{sec:origin} is fitted on
+% NOTE (2026-09-01): the artifact read "whereas the §3 origin classifier", and
+% this line carried a TODO because \secref renders the heading TEXT. Recast on
+% the pattern settled in the §2 split, so the heading is the object of "in".
+% Matches the identical recast in 05_interpretation.tex.
 \texttt{blocks.60}, twelve residual blocks earlier; the two are different
 representations of the same frozen model. No separation metric or classifier
 was computed on the projection, so we report association rather than

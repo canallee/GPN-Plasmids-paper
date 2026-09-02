@@ -55,6 +55,55 @@ author-directed changes rode along: IMG/PR is now expanded on first use in the
 body, and the epoch size was reconciled from "approximately 170,000" to the
 measured mean of 166,192.
 
+*Superseded 2026-09-01, author-directed — §3, same session.* `03_origin.tex`
+was given the same treatment. Its seven transcribed paragraphs are **regrouped
+into four Results subsections** — `Origin scoring in intergenic regions`
+(`sec:origin`, the original label, kept), `Origins of transfer`
+(`sec:origin-orit`), `Origins of replication` (`sec:origin-oriv`) and
+`Model scale, ensembling and inference cost` (`sec:origin-cost`) — laid out
+3 / 2 / 2 / 3 paragraphs. Again structural, not a re-transcription; the
+provenance row above still holds. Two things drove it:
+
+- **The inference pipeline was undescribed.** No sentence anywhere in the
+  manuscript described how a window-level probe becomes a region-level
+  annotation, and ED Fig. 2, which draws exactly that, was cited nowhere. It
+  now opens the section as §3.1 P2, before any result. The paragraph is new
+  prose but carries no new fact: every value in it comes from the ED Fig. 2
+  caption or from `supp_methods_03_origin.tex` ("Calibration and region
+  aggregation", "Inference"). ED Fig. 2's own caption was retitled to match —
+  see the Extended Data section below.
+- **oriT and oriV were interleaved.** Every paragraph reported both tasks in
+  one breath ("0.87 on oriT and 0.77 on oriV"). They are now separated, with
+  §3.2 carrying the full baseline sweep once and §3.3 written purely as
+  contrast — the stronger baselines, the narrower margin, the window/region
+  ordering — without redefining the metrics, the splits or the novelty
+  protocol. Splitting by task also tightened the numbers: the transcription
+  gave ranges spanning both tasks ("Evo2 probes scored 0.55–0.72"), which are
+  now per-task.
+
+One transcribed clause was dropped, as a duplicate: old P6 ended "this
+throughput difference was the reason we applied standalone GPN-Plasmids across
+IMG/PR" and old P7 opened "We therefore applied the standalone GPN-Plasmids
+classifiers across IMG/PR", so the two were merged into the closer of §3.4.
+Sentences were added at §3.1 P2 (in full), at the head of §3.1 P3 (benchmark
+design, from the Fig. 2a caption and Supplementary Methods, including the oriT
+reinsertion caveat that previously appeared only in Methods and in the Supp.
+Fig. S2 caption), at the head of §3.3 (the contrast framing) and at the head of
+§3.4 P1. One of the last of those — that parameter count did not translate
+monotonically into accuracy — is the only genuinely new *claim* in the section;
+it is read straight off Tables 1 and 2, but the artifact never stated it, so it
+carries an inline `% FLAG` asking for author sign-off.
+
+The split also closed a citation gap. Eleven floats had no main-text citation
+at all: ED Figs. 2–4, Supp. Figs. S2–S8, and Tables 1–2 with Supp. Tables S2–S3
+were cited only from their own captions. Nature Biotechnology numbers Extended
+Data and Supplementary figures by order of first citation, so the numbering was
+undefined. Citations were placed in an order that reproduces the **existing**
+numbering exactly, so no float in `extended_data.tex` or `supp_figures.tex`
+needed reordering: ED 2 → §3.1, ED 3 → §3.2 then §3.3, ED 4 → §3.4; S2, S3 →
+§3.1, S4, S5 → §3.2, S6, S7 → §3.3, S8 → §3.4. If you move a citation, re-check
+that order or the figures renumber.
+
 **2. Nature-style unnumbered sections, per your instruction.** There are no
 section numbers, so the `§2` / `§3` / `§4` pointers written into the origin and
 interpretation prose resolve by name through a `\secref` macro
@@ -71,8 +120,21 @@ Pretraining and model architecture" — a noun-phrase collision. It was recast t
 the heading is the object of a preposition, where a title reads naturally. The
 `% TODO wording:` comment there was replaced with a `% NOTE` recording the
 change. This is the second place where a structural change forced a change to
-transcribed wording, after the Extended Data promotion noted below. Five
-`% TODO wording:` comments remain.
+transcribed wording, after the Extended Data promotion noted below.
+
+*Update 2026-09-01, later the same session.* The §3 split resolved three more,
+leaving **one**. `\secref{sec:origin}` was the worst of them: it rendered as
+"the Origin classification classifier" in both `05_interpretation.tex` and
+`supp_methods_05_interpretation.tex`, and pointing it at a subsection would not
+have helped. Both were recast on the pattern the §2 split settled on — the
+heading as the object of a preposition — to "the origin classifier described in
+`\secref{sec:origin}`". `sec:origin` deliberately stays on §3.1, which is where
+the classifier is defined, so the pointer lands on the right subsection. The
+third was `03_origin.tex`'s pointer to `\secref{sec:genomewide}`, which needed
+no rewording at all: "the mobilization and replication analyses in
+Genome-wide application" already reads as that construction, so its TODO was
+simply downgraded to a NOTE. The one that remains is
+`05_interpretation.tex:28`, "across IMG/PR (`\secref{sec:genomewide}`)".
 
 **3. Methods sit in the Supplementary Information,** following GPN-Star:
 `\section*{Methods}` is a one-paragraph pointer plus the journal statements,
@@ -207,7 +269,7 @@ appearance. They live in `sections/extended_data.tex`, `\input` from the
 | ED | Was Supp. Fig. | Asset | Content |
 |---|---|---|---|
 | 1 | S1 | `figS1_combined.pdf` | IMG/PR collection, corpus construction, cluster hierarchy, diversity-aware sampling |
-| 2 | S3 | `supp_inference_pipeline.png` | genome-wide origin discovery with \model |
+| 2 | S3 | `supp_inference_pipeline.png` | window → intergenic-region origin-inference pipeline (retitled 2026-09-01; see §3 note above) |
 | 3 | S6 | `supp_region_tracks_8.pdf` | calibrated window-probability tracks, additional regions |
 | 4 | S7 | `supp_win_layer.pdf` | probe layer selection by validation AUPRC |
 | 5 | S17 | `figS5_umap_feature.pdf` | embedding projection by coarse functional annotation |
