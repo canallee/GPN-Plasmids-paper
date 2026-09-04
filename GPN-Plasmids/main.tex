@@ -243,6 +243,17 @@
 % paragraphs avoid; the three exact multipliers, which the Results carry; the
 % "models trained from scratch" clause, subsumed by "reference-based tools and
 % smaller models"; and the closing restatement of the model name.
+%
+% CLAIM CORRECTED 2026-09-04, author sign-off requested. The author-supplied
+% abstract read "generalizes to origins with no detectable homology to the
+% training data". The body does not support that: novelty is defined
+% operationally as BLASTN similarity at or below 20, where similarity is
+% percent identity x query coverage / 100, and 03_origin.tex states outright
+% that "the label does not establish biological novelty". A score of 20 is
+% detectable homology, so "no detectable homology" overstates the result in
+% the one place a reader is least able to check it. Changed to "no close
+% homolog", which the benchmark does support. Revert only if you can point to
+% evidence for the stronger claim.
 \begin{abstract}
 Plasmids drive bacterial adaptation and are central tools for engineering
 microbes, yet the non-coding origins that govern their transfer and
@@ -255,7 +266,7 @@ diversity-aware sampling scheme that captures the breadth of plasmid
 diversity rather than sequencing depth. Without any labels, it learns
 representations that organize plasmid DNA by function. A lightweight
 classifier on its frozen embeddings identifies origin-containing regions,
-generalizes to origins with no detectable homology to the training data,
+generalizes to origins with no close homolog in the training data,
 outperforms reference-based tools, and matches far larger models at a
 fraction of the inference cost. Applied database-wide, it offers a scalable,
 alignment-free route to the functional elements of uncultured plasmids.
@@ -332,11 +343,30 @@ This research is supported in part by National Institutes of Health grants
 \subsection*{Reporting summary}
 Further information on research design is available in the Nature Portfolio Reporting Summary linked to this article.
 
+% Restructured 2026-09-04. These were one-line \todo placeholders. For an
+% application paper the availability statements ARE the deliverable, so each
+% artefact the manuscript relies on is now enumerated with its own slot. No
+% identifier is invented: every one is a \todo for the author to fill. Delete
+% any line for an artefact you decide not to release, but say so explicitly
+% rather than leaving it silent -- Nature Portfolio asks for a reason.
 \subsection*{Data Availability}
-\todo{Hugging Face / accession links for models, training data and benchmarks.}
+The plasmid sequences used for pretraining were obtained from the IMG/PR
+database \cite{camargo2024img}; the accessions retained after quality
+filtering and the species holdout, together with the dereplication and sub-PTU
+cluster assignments, are available at \todo{repository / accession}. The
+curated origin benchmark --- the 112 \emph{oriT} and 224 \emph{oriV}
+reference sequences, their homology-partitioned cross-validation splits, and
+the intergenic regions and window labels derived from them --- is available at
+\todo{repository / DOI}. Genome-wide origin predictions across IMG/PR are
+available at \todo{repository / DOI}. The plasmid records used for the
+interpretation analyses are available from GenBank under the accessions cited
+in \nameref{sec:methods}.
 
 \subsection*{Code Availability}
-\todo{GitHub link and Zenodo archive DOI.}
+Pretraining, probe training, calibration and the two-stage inference pipeline
+are implemented at \todo{GitHub URL}, archived at \todo{Zenodo DOI}. Trained
+\model weights and the fitted origin probes are available at
+\todo{Hugging Face URL}. \todo{State the licence for code and for weights.}
 
 \subsection*{Author Contributions}
 \todo{Contribution statement, one clause per author, semicolon separated.}

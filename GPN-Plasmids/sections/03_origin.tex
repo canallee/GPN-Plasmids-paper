@@ -35,7 +35,7 @@
 
 
 % ---- 3.1 --------------------------------------------------------------
-\subsection*{From windows to ranked regions}
+\subsection*{A two-stage pipeline ranks intergenic regions}
 \label{sec:origin}
 
 Having pretrained \model on the diversity of IMG/PR, we asked whether its
@@ -67,13 +67,14 @@ alignment so that held-out origins are dissimilar to those used for training
 pipeline's two stages give two measurements. Window-level detection asks
 whether origin-containing sequence can be recovered among a plasmid's
 intergenic windows against a strongly imbalanced background, summarized by
-average precision, for which a random ranker scores the positive prevalence of
-0.048 (\fref{fig:origin}b). Region-level ranking asks how well the
+average precision (AUPRC), for which a random ranker scores the positive
+prevalence of 0.048 (\fref{fig:origin}b). Region-level ranking asks how well the
 origin-containing region can be prioritized among a plasmid's regions, scored
 by mean average precision (mAP) and Precision@1 (\fref{fig:origin}d). Because
 the parts were assigned by sequence similarity, 88\% of held-out positive
 \emph{oriT} windows and 87\% of \emph{oriV} windows fall at or below the
-BLASTN \cite{camacho2009blast} novelty threshold to their split's training positives (\fref{fig:origin}c,
+BLASTN \cite{camacho2009blast} novelty threshold of 20 to their split's
+training positives (\fref{fig:origin}c,
 \nameref{sec:methods}). We call these windows novel in this operational sense;
 the label does not establish biological novelty.
 
@@ -93,8 +94,8 @@ trained from scratch on one-hot sequence reached 0.51 and a frozen PlasmidGPT
 \cite{shao2026plasmidgpt} probe 0.44. Among the pretrained nucleotide models, \model matched or exceeded
 Evo2 \cite{brixi2026genome} probes up to 85$\times$ larger.
 
-The same ordering held at the window level, where \model reached an average
-precision of 0.78 against the 0.048 random-ranker floor, ahead of every Evo2
+The same ordering held at the window level, where \model reached AUPRC 0.78
+against the 0.048 random-ranker floor, ahead of every Evo2
 scale and of the one-hot probes, split by split and not only on average
 (\fref{fig:origin}b, top; \tref{tab:window-auprc};
 \suppfref{fig:supp-prcurves}). PlasmidGPT was the weakest method, falling
@@ -118,7 +119,7 @@ origin and falls away across the flanking coding sequence
 
 
 % ---- 3.3 --------------------------------------------------------------
-\subsection*{Origins of replication are harder to rank}
+\subsection*{\model gains less on origins of replication}
 \label{sec:origin-oriv}
 
 The \emph{oriV} task has a different shape, because origins of replication
@@ -137,7 +138,7 @@ The two evaluation levels separate the language models differently. At the
 region level \model and the two largest Evo2 models are indistinguishable by
 mAP, their differences well inside each model's split-to-split spread
 (\supptref{tab:supp-region-metrics}), whereas at the window level \model leads
-more clearly, 0.67 against 0.62 for Evo2-7B (\fref{fig:origin}b, bottom;
+more clearly, AUPRC 0.67 against 0.62 for Evo2-7B (\fref{fig:origin}b, bottom;
 \tref{tab:window-auprc}). Robustness to novel windows followed the \emph{oriT}
 pattern (\fref{fig:origin}c, bottom), ranking accuracy is broadly stable
 across plasmid-length bins (\suppfref{fig:supp-regforest},
@@ -147,7 +148,7 @@ within its region (\fref{fig:origin}e, bottom;
 
 
 % ---- 3.4 --------------------------------------------------------------
-\subsection*{Inference cost decides deployment}
+\subsection*{Inference cost decides the deployed model}
 \label{sec:origin-cost}
 
 Two features of the comparison hold across both origin types. Parameter count
