@@ -63,7 +63,17 @@ We evaluated the pipeline on curated origins, 112 \emph{oriT} and 224
 \emph{oriV} after redundancy filtering, partitioned by all-against-all local
 alignment so that held-out origins are dissimilar to those used for training
 (\fref{fig:origin}a;
-\suppfrefs{fig:supp-clustermap-orit}{fig:supp-clustermap-oriv}). The
+\suppfrefs{fig:supp-clustermap-orit}{fig:supp-clustermap-oriv}). All 224
+\emph{oriV} origins partitioned cleanly; for \emph{oriT}, 25 of the 112 did
+not, and were reinserted beside their nearest assigned neighbour, so that
+split is similarity-aware rather than strictly homology-separated.
+% RESTORED 2026-09-04. This caveat was cut in the main-text trim as Methods
+% detail. That was a misjudgement: it qualifies the headline task, 22% of the
+% oriT benchmark is affected, and a reviewer who finds it only in Methods will
+% treat it as buried. Also note the ground-truth caveat added below.
+Origin locations in the evaluated plasmids were themselves assigned by BLASTN
+against the curated set (\nameref{sec:methods}), so every positive is by
+construction alignment-findable from a curated origin. The
 pipeline's two stages give two measurements. Window-level detection asks
 whether origin-containing sequence can be recovered among a plasmid's
 intergenic windows against a strongly imbalanced background, summarized by

@@ -56,7 +56,11 @@ them (oriTfinder2 \cite{liu2025oritdb,li2018oritfinder}, OriV-Finder
 \cite{li2025orivfinder}) are reference- and alignment-based: they recognize an origin by its
 similarity to a curated set of experimentally characterized examples, so they
 degrade sharply on the divergent origins that dominate metagenomic plasmids
-and are effectively blind to origins unlike the reference set. The result is
+% Softened 2026-09-04: "effectively blind" is refuted by this paper's own
+% Table 1, where OriV-Finder reaches mAP 0.73 and remains competitive with the
+% language models. The severe failure is on oriT, not on both tasks.
+and can be blind to origins unlike the reference set, severely so for
+\emph{oriT}. The result is
 a widening gap between the plasmids we can sequence and the ones we can
 functionally interpret --- a gap that most constrains exactly the non-model,
 uncultured plasmids of greatest interest for discovery and engineering.
@@ -85,13 +89,31 @@ toward the breadth of plasmid diversity rather than sequencing depth
 (\fref{fig:pretraining}). Using \model, we build a benchmark and a deployable
 pipeline for plasmid-origin annotation: a lightweight classifier on the
 model's frozen embeddings identifies origin-containing regions and, evaluated
-on a homology-partitioned benchmark that isolates origins with no training
-homolog, generalizes to unseen origins --- outperforming reference-based
+% Corrected 2026-09-04 to match the Abstract and the Methods. Was "isolates
+% origins with no training homolog". Novelty is an operational BLASTN score
+% threshold, not the absence of a homolog, and 03_origin.tex says so outright.
+on a homology-partitioned benchmark that isolates origins below an operational
+similarity threshold, generalizes to unseen origins --- outperforming
+reference-based
+% PLACEHOLDER (2026-09-04, author-directed): the two ratios in the next clause
+% have DIFFERENT comparators, which currently reads as one comparison. 85x is
+% Evo2-40B by parameter count; the measured 45x speedup is against Evo2-7B,
+% which is only ~15x larger (03_origin.tex, "Inference cost decides the
+% deployed model"). The author is adding the Evo2-40B timing. Once it exists,
+% either quote both ratios against the SAME model, or split the clause so each
+% ratio names its comparator. Leave as is until then.
 tools and models trained from scratch, and matching genomic language models
 up to 85$\times$ larger while using roughly 45$\times$ less inference
-compute. Applied across all of IMG/PR, the classifier annotates putative
+compute. % NOTE (2026-09-04, author-directed): this sentence promises the result of
+% \secref{sec:genomewide}, which is not yet written -- a co-author is adding it.
+% Deliberately left in place. If that section changes what it reports, this
+% sentence and the corresponding clause in the Abstract must both follow.
+Applied across all of IMG/PR, the classifier annotates putative
 \emph{oriT} and \emph{oriV} genome-wide and reveals previously undescribed
 transfer and replication gene architectures. Finally, interpreting the
+% FLAG (2026-09-04): "internalized the cis-regulatory grammar" is the strongest
+% claim in the paper and rests on selected loci with no null model. See the
+% FLAG on the matching heading in 05_interpretation.tex. Author decision.
 trained model shows that it has internalized the cis-regulatory grammar of
 these elements --- the repeats, iterons, and promoter couplings of
 \emph{oriT} and \emph{oriV}, together with promoters and other functional

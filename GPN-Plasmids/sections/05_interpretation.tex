@@ -34,6 +34,25 @@
 %  Extended Data Figure 5 (2026-09-01); the rest renumber globally to S9-S14.
 %======================================================================
 
+% FLAG (2026-09-04) -- AUTHOR DECISION NEEDED, not changed unilaterally.
+% The claim-evidence audit found this heading, and the matching Introduction
+% clause "internalized the cis-regulatory grammar", overstate what this section
+% shows, and contradict its own text ("These maps report model sensitivity, not
+% biology"). Three reasons:
+%   1. NO NULL MODEL. The categorical Jacobian of a randomly initialised model,
+%      or of shuffled sequence, is never shown. Periodic and anti-diagonal
+%      structure at repeats could come from the convolutional prior alone, so
+%      "pretraining yields" is not established.
+%   2. PANELS ARE SELECTED ON THE OUTCOME. Methods record that four CRISPR
+%      arrays were chosen from six "partly on the basis of the model output",
+%      the NAH7 frame was chosen to maximise arm self-complementarity, and four
+%      of five pTA1040 loops are shown.
+%   3. The only quantitative test anywhere in the section is NEGATIVE (P ~ 0.08).
+% Cheapest fix by far is an untrained-model and a shuffled-sequence control on
+% the two main-figure loci; that would earn the current heading outright.
+% Otherwise retitle to something the evidence supports, e.g.
+%   "Dependency maps align with annotated repeats"   (5 words, keeps the set)
+% and strike "internalized the cis-regulatory grammar" from the Introduction.
 \subsection*{Pretraining internalizes origin architecture}
 \label{sec:interpretation}
 
@@ -71,7 +90,7 @@ The association extends to further locus classes. Eight additional origins,
 four of transfer and four of replication, spanning three architectural
 classes, show the same correspondence between repeat geometry and
 dependency-pattern geometry
-(\suppfrefs{fig:supp-orit-maps}{fig:supp-oriv-maps}). Across four
+(\suppfrefs{fig:supp-orit-maps}{fig:supp-oriv-maps}). Across four predicted
 $\sigma^{70}$ promoters, off-diagonal signal is present between the $-$35 and
 $-$10 boxes, the Shine--Dalgarno region carries a dense on-diagonal block, and
 the coding sequence shows periodic on-diagonal beading at codon spacing

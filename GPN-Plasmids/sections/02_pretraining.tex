@@ -41,6 +41,10 @@
 from the IMG/PR collection \cite{camargo2024img}, after quality filtering and
 a PTU-level species holdout (\nameref{sec:methods}). Host assignments span 48
 phyla, and the ecosystem composition of the corpus, annotated through GOLD
+% ACTION FOR AUTHOR (2026-09-04): the Figure 1c caption calls the phylogeny
+% area "reserved", i.e. the panel is still a placeholder, but this sentence
+% points the reader at it as though it were drawn. Supply the phylogeny or cut
+% the clause.
 \cite{mukherjee2023twenty}, is shown alongside that host phylogeny in
 \fref{fig:pretraining}c. In contrast to genomic language models trained
 across broad evolutionary timescales, \model is trained exclusively on mobile
@@ -83,7 +87,10 @@ sequence per PTU, the strategy Evo applies to IMG/PR
 within-clade variation and carries a robustness cost specific to a
 metagenomic corpus. Plasmid identity in IMG/PR is assigned computationally,
 and a misclassified chromosomal fragment has no genuine plasmid sequence to
-group with, so it tends to survive clustering as its own singleton. Because
+group with, so it may survive clustering as its own singleton. Because
+% Hedged 2026-09-04: no misclassification rate by PTU category is measured
+% anywhere, so the mechanism is asserted rather than shown. IMG/PR or geNomad
+% plasmid-confidence scores would let this be measured directly.
 Unique PTUs are 69\% of all PTUs, a one-sequence-per-PTU budget would spend
 the majority of training on single, uncorroborated sequences.
 
@@ -104,7 +111,7 @@ every epoch boundary.
 
 
 % ---- 2.3 --------------------------------------------------------------
-\subsection*{The encoder conditions on the whole window}
+\subsection*{A dilated encoder replaces attention}
 \label{sec:pretraining}
 
 \model is trained by masked language modelling \cite{devlin2018bert} in a
@@ -112,9 +119,13 @@ convolutional framework adapted from GPN \cite{benegas2023dna}, learning a
 nucleotide probability distribution conditioned on surrounding sequence
 (\fref{fig:pretraining}g). The model is a 468M-parameter encoder of 72
 residual blocks of dilated, non-causal convolutions adapted from ByteNet
-\cite{kalchbrenner2016neural}, giving a receptive field of 6,049 bp, roughly
-three times the 2,048 bp input window, so every output position conditions on
-the whole window without attention. Complete plasmids are circularized before
+% Wording corrected 2026-09-04: 6,049 bp is the NOMINAL receptive field of the
+% dilated stack. The effective receptive field of a deep CNN is smaller and
+% centre-weighted, and is not measured here, so "conditions on the whole
+% window" overstated it. The heading carried the same overstatement.
+\cite{kalchbrenner2016neural}, giving a nominal receptive field of 6,049 bp,
+roughly three times the 2,048 bp input window, so every output position's
+receptive field spans the window without attention. Complete plasmids are circularized before
 windowing so that predictions near a window edge are informed by genuine
 flanking sequence rather than an artefact of linearization
 (\suppfref{fig:supp-windowing}). Architecture, training schedule and compute

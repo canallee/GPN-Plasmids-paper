@@ -37,8 +37,13 @@ origins runs unchanged across IMG/PR, reduces each plasmid to a short ranked
 list of candidate regions, and does so at a cost that makes exhaustive
 application to a metagenomic database tractable.
 
-Combining \model with Evo2-7B improved on either model alone, which indicates
-that the two carry partly non-redundant predictive information. Two
+Combining \model with Evo2-7B improved on either model alone, which is
+consistent with the two carrying partly non-redundant predictive information,
+though an ensemble gain is also consistent with variance reduction across
+differently seeded probes.
+% Hedge matched to the Results 2026-09-04. The Results say "consistent with"
+% and this said "indicates". Distinguishing the two explanations needs a
+% prediction-correlation or error-overlap measurement, which is not reported. Two
 differences in pretraining corpus could produce that. \model was pretrained on
 plasmids with diversity-aware sampling that preserves within-PTU variation,
 whereas Evo's published OpenGenome construction retained a single IMG/PR
@@ -66,7 +71,10 @@ documented, no quantitative test was run across a defined denominator of loci,
 and each dependency map carries its own local colour scale, so pattern
 intensities cannot be compared between panels. Two case studies do not
 establish that the correspondence holds for origins generally, the four
-promoters were chosen as visually clean examples from a motif scan and do not
+% Corrected 2026-09-04: the Methods state that the pHTbeta ORF32 panel was NOT
+% from the motif scan -- its boxes were placed by consensus substring match.
+promoters were chosen as visually clean examples, three from a motif scan and
+one placed by consensus substring match, and do not
 support a promoter-wide recovery rate, and no element-recovery rate is claimed
 anywhere. The same applies to the embedding projection: no separation metric
 or classifier was computed, the cohort was selected for curated hits and is

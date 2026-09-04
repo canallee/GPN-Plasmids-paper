@@ -264,7 +264,13 @@ databases. We present \model, a genomic language model trained by
 masked-nucleotide prediction on a metagenomic plasmid corpus with a
 diversity-aware sampling scheme that captures the breadth of plasmid
 diversity rather than sequencing depth. Without any labels, it learns
-representations that organize plasmid DNA by function. A lightweight
+representations whose projection is associated with functional annotation.
+% Softened 2026-09-04. Was "representations that organize plasmid DNA by
+% function". The only support is the UMAP, which 05_interpretation.tex and the
+% Discussion both explicitly decline to call class separation, and which the
+% Discussion says may be driven by GC content. Earn the stronger sentence with
+% a separation metric against a GC-matched control, or leave it soft.
+A lightweight
 classifier on its frozen embeddings identifies origin-containing regions,
 generalizes to origins with no close homolog in the training data,
 outperforms reference-based tools, and matches far larger models at a
