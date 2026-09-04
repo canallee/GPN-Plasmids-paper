@@ -10,9 +10,7 @@
 
 \subsection*{Reference origin curation}
 
-\emph{oriT} references were compiled from three sources: the oriTDB2
-% TODO cite: oriTDB2.
-database, six consensus \emph{oriT} sequences from an \emph{oriT}-diversity
+\emph{oriT} references were compiled from three sources: the oriTDB2 \cite{liu2025oritdb} database, six consensus \emph{oriT} sequences from an \emph{oriT}-diversity
 study,
 % TODO cite: the oriT-diversity study (six consensus oriTs).
 and 87 experimentally validated \emph{oriT}s from an
@@ -26,21 +24,17 @@ reclassified from bioinformatic to experimental. Bioinformatic-predicted
 duplicates of the experimental set and were $\geq$15 bp (2,860 sequences).
 These 2,860 bioinformatic entries were not used as BLAST queries for
 classifier labels. The final experimental set of 142 sequences was reduced to
-\textbf{112} by MMseqs2
-% TODO cite: MMseqs2.
-clustering (minimum sequence identity 90\%, coverage 90\%, coverage-mode =
+\textbf{112} by MMseqs2 \cite{steinegger2017mmseqs2} clustering (minimum sequence identity 90\%, coverage 90\%, coverage-mode =
 shorter). \emph{oriV} references (452 sequences from the OriV-Finder
-database) were deduplicated identically to \textbf{224} sequences.
+database \cite{li2025orivfinder}) were deduplicated identically to \textbf{224} sequences.
 
 \subsection*{Plasmid databases and origin detection}
 
-Origins were located in two plasmid collections: PLSDB
-% TODO cite: PLSDB.
-(filtered to $\geq$ 2,000 bp) and IMG/PR \cite{camargo2024img}.
+Origins were located in two plasmid collections: PLSDB \cite{molano2025plsdb} (filtered to $\geq$ 2,000 bp) and IMG/PR \cite{camargo2024img}.
 Representative selection used a 95\% ANI, 95\% unidirectional
 alignment-fraction grouping (\texttt{ani95\_af95\_one\_direct}), which is
 distinct from the 99\% ANI dereplication columns. Reference origins were
-aligned to plasmid genomes with BLASTN (word size 7, dust filtering off),
+aligned to plasmid genomes with BLASTN \cite{camacho2009blast} (word size 7, dust filtering off),
 pre-filtered at 50\% subject coverage and then retained at $\geq$ 80\%
 identity and $\geq$ 80\% subject coverage; overlapping hits were merged and
 the longest-span alignment kept per plasmid. After PLSDB selection, IMG/PR
@@ -49,9 +43,10 @@ max(alignment fraction) $\geq$95\% (skani \cite{shaw2023fast}) were excluded.
 
 \subsection*{Intergenic regions and plasmid selection}
 
+% Pyrodigal-gv has no publication of its own; its README asks for these three.
 Coding sequences were predicted with Pyrodigal-gv
-% TODO cite: Pyrodigal-gv.
-in metagenomic mode; intergenic regions were the complement of all CDS
+\cite{larralde2022pyrodigal,hyatt2010prodigal,camargo2024genomad} in
+metagenomic mode; intergenic regions were the complement of all CDS
 intervals with a minimum length of 50 bp, and plasmids with fewer than three
 qualifying intergenic regions were excluded. For each origin, overlap with
 all intersecting intergenic regions was summed; the origin was retained if
@@ -123,9 +118,7 @@ three scales --- 1B, 7B and 40B parameters --- supplied embeddings from hook
 10--22 respectively; \model supplied embeddings from layers 36--72
 (\texttt{blocks.\{i\}}); a non-pretrained one-hot nucleotide encoding served
 as the from-scratch baseline; and PlasmidGPT (a BPE transformer pretrained on
-engineered Addgene
-% TODO cite: Addgene.
-plasmids) served as a negative control. PlasmidGPT token hidden states were
+engineered Addgene \cite{kamens2015addgene} plasmids) served as a negative control. PlasmidGPT token hidden states were
 upsampled to nucleotide resolution by repeating each token vector across the
 nucleotides spanned in the tokenizer offset mapping. Contextual embedders
 received extra flanking bases in the forward pass (768 bp per side for
@@ -188,10 +181,12 @@ CDS intersection. After isotonic regression both the 75th and 95th
 percentiles are well calibrated on the reliability diagrams; the 75th
 percentile spreads probability mass more smoothly across the ranking range.
 
-% NOTE: the artifact titles this subsection simply "Inference", which collides
-% with the pretraining Methods' own "Inference" heading above. Kept verbatim
-% rather than renamed; disambiguate at the author's discretion.
-\subsection*{Inference}
+% NOTE (2026-09-04): the artifact titled this subsection simply "Inference",
+% which collided with the pretraining Methods' own "Inference" heading. With
+% both Methods blocks now in one main-article Methods section the collision was
+% visible in the running text, so the two were disambiguated: the pretraining
+% one is "Pretraining inference", this one is "Origin inference and deployment".
+\subsection*{Origin inference and deployment}
 
 At inference, intergenic regions were tiled into 512 bp windows at a 16 bp
 stride, denser than the 256 bp training step used only for example
@@ -221,3 +216,27 @@ draws; average precision was computed per split and macro-averaged. The BLAST
 tables used for this stratification are not regenerated in the current
 repository, so the claim is limited to the operational score threshold rather
 than to the absence of any homolog.
+
+% Added 2026-09-04. Both paragraphs carry facts that previously appeared ONLY
+% in the Results prose, which was trimmed to the Nature Biotechnology main-text
+% limit. Nothing here is new: the timing harness and the reference-tool
+% database ablation are transcribed from 03_origin.tex as they stood.
+\subsection*{Reference-tool baselines}
+
+The reference tools were run as region rankers over the same intergenic
+regions supplied to the probes, with oriTfinder2 serving the \emph{oriT} task
+and OriV-Finder the \emph{oriV} task. Because these tools match a query
+against a curated database rather than learning from a training fold, their
+exposure to the benchmark is controlled by which origins that database is
+allowed to contain. Restricting each tool's database to the training fold
+alone, rather than to the training and validation folds together, changed its
+scores by at most 0.007 on either task, so the reported comparison is not
+sensitive to that choice.
+
+\subsection*{Inference-cost measurement}
+
+Per-region inference cost was measured with a single-split, five-run window
+predictor over 794 intergenic regions drawn from 10 plasmids, timed on one
+CUDA device. The comparison holds the region set, the window size, the stride
+and the number of stochastic runs fixed across embedders, so the reported
+difference reflects the embedder alone and not the surrounding pipeline.

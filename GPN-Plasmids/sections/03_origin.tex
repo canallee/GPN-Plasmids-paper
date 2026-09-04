@@ -6,278 +6,174 @@
 %    /home/canall/DNA_LM/BEND_ori_intervals/manuscript/artifact_origin/page.html
 %    snapshot 2026-08-28 (page.html mtime 2026-08-28 15:33)
 %
-%  Seven paragraphs, no subsection headings, transcribed from the artifact's
-%  "Main text" band. This artifact ships NO bibliography and NO inline
-%  citation markers, so no \cite could be converted; every tool named below
-%  carries a "% TODO cite:" at first mention. See CONVERSION_NOTES.md.
+%  This artifact ships NO bibliography and NO inline citation markers; every
+%  tool named below carries a "% TODO cite:" at first mention.
 %
-%  The artifact writes section pointers as "§2" and "§4". Under Nature-style
-%  unnumbered sectioning there is no number to reference, so \secref resolves
-%  them to the section name. TODO: the author may prefer different wording.
+%  2026-09-01, author-directed: the seven transcribed paragraphs were regrouped
+%  into four Results subsections. See CONVERSION_NOTES.md.
 %
-%  2026-09-01, author-directed: the seven transcribed paragraphs were
-%  REGROUPED into four Results subsections, following the §2 split in the
-%  same session:
-%
-%    3.1 Origin scoring in intergenic regions      sec:origin  (label kept)
-%    3.2 Origins of transfer                       sec:origin-orit
-%    3.3 Origins of replication                    sec:origin-oriv
-%    3.4 Model scale, ensembling and inference cost  sec:origin-cost
-%
-%  Laid out 3 / 2 / 2 / 3 paragraphs (was 7; now 10). Two author-directed
-%  goals drove the regrouping. First, the window -> intergenic-region
-%  inference pipeline (ED Fig. 2) was described nowhere and its figure was
-%  cited nowhere; it now opens the section, before any result, as 3.1 P2.
-%  Second, oriT and oriV were reported together in every paragraph
-%  ("0.87 on oriT and 0.77 on oriV"); they are now separated so that 3.2
-%  carries the full baseline sweep and 3.3 states only what DIFFERS -- the
-%  stronger baselines, the narrower margin, and the window/region ordering
-%  -- without redefining the metrics, the splits or the novelty protocol.
-%
-%  Paragraph accounting. Old P1 -> 3.1 P1. Old P2 (two evaluation levels)
-%  and old P5 s1-s2 (the novelty definition) merge into 3.1 P3. Old P3
-%  (region level) splits oriT -> 3.2 P1, oriV -> 3.3 P1. Old P4 (window
-%  level) splits oriT -> 3.2 P2, oriV -> 3.3 P2. Old P5's per-task numbers
-%  follow their task. Old P6 splits: its scale/PlasmidGPT reading is pulled
-%  forward into 3.4 P1, the ensemble into 3.4 P2, the timing into 3.4 P3.
-%  Old P7 merges with old P6's last sentence, which said the same thing
-%  twice ("this throughput difference was the reason we applied standalone
-%  GPN-Plasmids across IMG/PR" / "We therefore applied the standalone
-%  GPN-Plasmids classifiers across IMG/PR"). That is the ONLY transcribed
-%  clause dropped, and it is dropped as a duplicate, not as content.
-%
-%  Added: 3.1 P2 in full (sourced from the ED Fig. 2 caption and from
-%  supp_methods_03_origin.tex, "Calibration and region aggregation" and
-%  "Inference" -- no fact that is not already in one of those); the
-%  benchmark-design sentences opening 3.1 P3 (from the Fig. 2a caption and
-%  Supplementary Methods, "Homology-partitioned cross-validation splits"),
-%  including the oriT reinsertion caveat that previously appeared only in
-%  Methods and in the Supp. Fig. S2 caption; the contrast sentences opening
-%  3.3; and the two cross-cutting sentences opening 3.4 P1. One of those
-%  last two is flagged inline for author sign-off.
-%
-%  Split by task, the per-task figures are tighter than the merged ranges
-%  the transcription carried (old P4 gave "Evo2 probes scored 0.55--0.72"
-%  and "one-hot probes 0.28--0.38" across BOTH tasks at once). Every value
-%  below is read off tab:window-auprc / tab:region-map and their
-%  supplementary counterparts at the two-decimal convention the Results
-%  already use.
-%
-%  Eleven floats that no main-text sentence cited now have body citations:
-%  ED Figs. 2-4 and Supp. Figs. S2-S8, plus Tables 1-2 and Supp. Tables
-%  S2-S3. The citation order was chosen to reproduce the EXISTING float
-%  numbering, so neither extended_data.tex nor supp_figures.tex needed its
-%  floats reordered. See CONVERSION_NOTES.md.
+%  2026-09-04, author-directed: TRIMMED to the Nature Biotechnology main-text
+%  limit and re-pitched from a benchmark leaderboard toward an application
+%  result. Every value removed survives in Methods, in the main tables, or in
+%  the supplementary tables; nothing was deleted outright.
+%    - Methods detail moved out: window size, stride, strand averaging,
+%      isotonic calibration, the pooling percentile, the five-part CV
+%      construction, the oriT reinsertion caveat, the similarity definition,
+%      the layer-selection protocol, the reference-tool database ablation
+%      (0.007) and the timing harness (794 regions / 10 plasmids). The last
+%      two were the only ones not already in Methods; they were added there
+%      first, as "Reference-tool baselines" and "Inference-cost measurement".
+%    - The task restatement opening old 3.1 P1 duplicated the Introduction and
+%      the closer of 2.3; it is now stated once, in the Introduction.
+%    - Old 3.4 collapsed from three paragraphs to one. The model-scale sweep
+%      moves to the tables and Extended Data; the ensemble mechanism
+%      speculation moves to the Discussion, where the author has corrected its
+%      framing (see the Discussion and CONVERSION_NOTES.md).
+%    - Decimal precision unified to two places throughout; the three-decimal
+%      passages and the six-value slash construction are gone.
 %======================================================================
 
 
-% ---- 3.1  Origin scoring in intergenic regions -----------------------
-% \subsection*{A window-to-region pipeline scores plasmid intergenic regions for origins}
-\subsection*{Origin scoring in intergenic regions}
+% ---- 3.1 --------------------------------------------------------------
+\subsection*{A window-to-region pipeline scores intergenic regions for origins}
 \label{sec:origin}
 
-Having pretrained \model on the diversity of IMG/PR, we next tested whether
-its frozen representations could identify intergenic regions containing
-origins of transfer or replication. Origins of transfer (\emph{oriT}) and
-vegetative replication (\emph{oriV}) are the sequence elements that determine,
-respectively, whether a plasmid can be mobilized between hosts and how it
-replicates within one. They are short and intergenic, and outside a handful
-of clinically important families they remain largely uncharacterized across
-the metagenomic majority of plasmids. The task is to identify or prioritize
-origin-containing intergenic regions rather than to recover exact origin
-boundaries. We therefore trained lightweight probes on frozen embeddings,
-without repeating the pretraining described in \secref{sec:pretraining}.
-% NOTE (2026-09-01): the artifact read "the pretraining procedure of §2", and
-% this line carried a TODO asking for better wording. Resolved when §2 was
-% split into three subsections: \secref renders the heading TEXT, and
-% "the pretraining procedure of Pretraining and model architecture" is a
-% noun-phrase collision. Recast so the heading is the object of "in", which
-% reads naturally for a title. sec:pretraining now labels §2.3.
+Having pretrained \model on the diversity of IMG/PR, we asked whether its
+frozen representations could identify intergenic regions containing origins
+of transfer or replication. The task is to prioritize origin-containing
+regions rather than to recover exact origin boundaries, so we trained
+lightweight probes on frozen embeddings, without repeating the pretraining
+described in \secref{sec:pretraining}.
 
 A probe that scores fixed-length windows does not by itself annotate a
 plasmid, because the unit of interest is a region rather than a window. We
-therefore built the classifier into a two-stage inference pipeline
-(\edfref{fig:ed-pipeline}). A query plasmid is first annotated into coding
-sequences and intergenic regions. Each intergenic region is then tiled into
-512 bp windows at a 16 bp stride and every window is scored from frozen
-\model embeddings, with the forward and reverse-complement strands averaged
-and each probe's logits mapped to probabilities by isotonic regression
-(\nameref{sec:methods}; the task, training and inference parameters are
-collected in \tref{tab:origin-params}). The result is a calibrated
-probability profile along the region, which localizes the signal to part of
-an intergenic region rather than only flagging the region as a whole. Pooling
-that profile --- at its
-75th percentile, or its maximum where a region has five or fewer windows ---
-and recalibrating yields one score per intergenic region, which is what makes
-the regions of a single plasmid comparable to each other and therefore
-rankable. A plasmid carrying no characterized origin is thus reduced to a
-short, ordered list of candidate regions, and this same procedure is the one
-we later run across IMG/PR (\secref{sec:genomewide}).
+therefore built the classifier into a two-stage pipeline
+(\edfref{fig:ed-pipeline}, \edtref{tab:origin-params}, \nameref{sec:methods}).
+A query plasmid is annotated into coding sequences and intergenic regions;
+each region is tiled into overlapping windows scored from frozen \model
+embeddings; and the calibrated scores give a probability profile that
+localizes signal to part of a region rather than only flagging the region as
+a whole. Pooling that profile yields one score per region, making a plasmid's
+regions comparable to each other and therefore rankable. A plasmid carrying no
+characterized origin is thus reduced to a short, ordered list of candidate
+regions, and this is the procedure we later run across IMG/PR
+(\secref{sec:genomewide}).
 
-We evaluated the pipeline on curated origins --- 112 \emph{oriT} and 224
-\emph{oriV} after redundancy filtering --- partitioned so that held-out
-origins are dissimilar to those used for training (\fref{fig:origin}a).
-All-against-all local alignment between origin sequences assigned them to
-five parts, and each cross-validation split trains on three parts while
-validating on one and testing on one; because the parts are defined on the
-origins rather than on the plasmids, a plasmid inherits its part through its
-origin. For \emph{oriT}, 87 of the 112 origins partitioned under the
-similarity threshold and the remaining 25 were reinserted next to their
-nearest assigned neighbour, so that split is similarity-aware rather than
-strictly homology-separated; all 224 \emph{oriV} origins partitioned without
-reinsertion (\suppfrefs{fig:supp-clustermap-orit}{fig:supp-clustermap-oriv}).
-Two complementary measurements follow from the pipeline's two stages.
-Window-level detection asks whether origin-containing sequence can be
-recovered among the intergenic windows of a plasmid, against a strongly
-imbalanced background (held-out positive prevalence 0.048); it is summarized
-by average precision (reported as AUPRC), for which a random ranker scores
-the prevalence itself, 0.048 (\fref{fig:origin}b). Region-level ranking asks,
-given a plasmid's intergenic regions, how well the origin-containing region
-can be prioritized, and is scored by mean average precision (mAP) and by
-Precision@1 (\fref{fig:origin}d). Because the parts were assigned by
-origin-sequence similarity, 88\% (\emph{oriT}) and 87\% (\emph{oriV}) of
-held-out positive windows had BLASTN
-% TODO cite: BLASTN.
-similarity $\leq$20 to their split's training positives, where similarity is
-percent identity $\times$ query coverage / 100 (\fref{fig:origin}c). We call
-these windows novel in this operational sense; the label does not establish
-biological novelty. We report both measurements separately for each origin
-type.
+We evaluated the pipeline on curated origins, 112 \emph{oriT} and 224
+\emph{oriV} after redundancy filtering, partitioned by all-against-all local
+alignment so that held-out origins are dissimilar to those used for training
+(\fref{fig:origin}a;
+\suppfrefs{fig:supp-clustermap-orit}{fig:supp-clustermap-oriv}). The
+pipeline's two stages give two measurements. Window-level detection asks
+whether origin-containing sequence can be recovered among a plasmid's
+intergenic windows against a strongly imbalanced background, summarized by
+average precision, for which a random ranker scores the positive prevalence of
+0.048 (\fref{fig:origin}b). Region-level ranking asks how well the
+origin-containing region can be prioritized among a plasmid's regions, scored
+by mean average precision (mAP) and Precision@1 (\fref{fig:origin}d). Because
+the parts were assigned by sequence similarity, 88\% of held-out positive
+\emph{oriT} windows and 87\% of \emph{oriV} windows fall at or below the
+BLASTN \cite{camacho2009blast} novelty threshold to their split's training positives (\fref{fig:origin}c,
+\nameref{sec:methods}). We call these windows novel in this operational sense;
+the label does not establish biological novelty.
 
 
-% ---- 3.2  Origins of transfer ----------------------------------------
-% \subsection*{\model identifies origins of transfer where reference tools fail}
-\subsection*{Origins of transfer}
+% ---- 3.2 --------------------------------------------------------------
+\subsection*{\model identifies origins of transfer where reference tools fail}
 \label{sec:origin-orit}
 
 At the region level, a probe on frozen \model embeddings ranked the
 \emph{oriT}-containing region first in most plasmids, reaching a Precision@1
 of 0.87 across the five similarity-aware splits (\fref{fig:origin}d, top) and
-a mean average precision of 0.90 (\tref{tab:region-map},
-\supptref{tab:supp-region-metrics}). Existing annotation served this task
-poorly. oriTfinder2
-% TODO cite: oriTfinder2.
-reached mAP 0.15, below the 0.35 of a naive baseline that simply ranks a
-plasmid's longest intergenic region first --- on this benchmark the reference
+an mAP of 0.90 (\tref{tab:region-map}). Existing annotation served this task
+poorly. oriTfinder2 \cite{liu2025oritdb,li2018oritfinder} reached mAP 0.15, below the 0.35 of a naive baseline that simply ranks a
+plasmid's longest intergenic region first, so on this benchmark the reference
 tool is worse than a rule that reads nothing but region length. A probe
-trained from
-scratch on one-hot sequence reached 0.51 and a frozen PlasmidGPT
-% TODO cite: PlasmidGPT.
-probe 0.44. Among the pretrained nucleotide models \model matched or exceeded
-Evo2
-% TODO cite: Evo2.
-probes up to 85$\times$ larger, with Evo2-7B and Evo2-40B both at 0.88.
+trained from scratch on one-hot sequence reached 0.51 and a frozen PlasmidGPT
+\cite{shao2026plasmidgpt} probe 0.44. Among the pretrained nucleotide models, \model matched or exceeded
+Evo2 \cite{brixi2026evo2} probes up to 85$\times$ larger.
 
-The same ordering held at the window level, where \model reached AUPRC 0.78
-on held-out test windows against the 0.048 random-ranker floor
-(\fref{fig:origin}b, top; \tref{tab:window-auprc},
-\supptref{tab:supp-window-auprc}); Evo2 probes scored 0.61--0.72 and one-hot
-probes 0.28. PlasmidGPT was the weakest method at 0.15, falling below the
-from-scratch one-hot baselines despite being a pretrained plasmid model. This
-ranking holds split by split and not only on average
-(\suppfref{fig:supp-prcurves}). Probes on the pretrained nucleotide models
-also retained more of their performance on novel windows than the
-from-scratch one-hot probes did: the lowest \model split on novel windows
-scored 0.50, still above the best split of either one-hot probe (0.28), and
-on novel windows \model remained similar to the larger Evo2 models (0.78
-versus 0.77), within the observed split-to-split variation
-(\fref{fig:origin}c, top). PlasmidGPT sat low on both axes. Because every
-method's window probabilities are placed on a common calibrated scale before
-aggregation
+The same ordering held at the window level, where \model reached an average
+precision of 0.78 against the 0.05 random-ranker floor, ahead of every Evo2
+scale and of the one-hot probes, split by split and not only on average
+(\fref{fig:origin}b, top; \tref{tab:window-auprc};
+\suppfref{fig:supp-prcurves}). PlasmidGPT was the weakest method, falling
+below the from-scratch one-hot baselines despite being a pretrained plasmid
+model. The pretrained nucleotide models also retained more of their
+performance on novel windows than the from-scratch probes did: \model scored
+0.78 there against 0.77 for the larger Evo2 models, within split-to-split
+variation,
+% FLAG (2026-09-04): the transcribed sentence gave the best one-hot split on
+% NOVEL windows as 0.28, which is exactly that method's overall test mean in
+% tab:supp-window-auprc. A best split should exceed its own mean, so the value
+% looks transposed. The comparison is stated qualitatively here until the
+% author confirms the number against the Fig. 2c source data.
+and every \model split stayed above the best one-hot split
+(\fref{fig:origin}c, top). Because every method's window probabilities are
+placed on a common calibrated scale before aggregation
 (\suppfref{fig:supp-reliability}), these probabilities can be read directly
-along a region: at a held-out \emph{oriT} the profile rises over the
-annotated origin and falls away across the flanking coding sequence
-(\fref{fig:origin}e, top), as it does at four further held-out examples
-(\edfref{fig:ed-tracks8}a--d).
+along a region: at a held-out \emph{oriT} the profile rises over the annotated
+origin and falls away across the flanking coding sequence
+(\fref{fig:origin}e, top; \edfref{fig:ed-tracks8}a--d).
 
 
-% ---- 3.3  Origins of replication -------------------------------------
-% \subsection*{Origins of replication are harder to rank against strong baselines}
-\subsection*{Origins of replication}
+% ---- 3.3 --------------------------------------------------------------
+\subsection*{Origins of replication are harder to rank against strong baselines}
 \label{sec:origin-oriv}
 
 The \emph{oriV} task has a different shape, because origins of replication
 sit in intergenic regions that simpler methods already find fairly often.
 Ranking a plasmid's longest intergenic region first reaches mAP 0.66, nearly
-twice its \emph{oriT} value, and OriV-Finder
-% TODO cite: OriV-Finder.
+twice its \emph{oriT} value, and OriV-Finder \cite{li2025orivfinder}
 reaches 0.73, so unlike oriTfinder2 the reference tool here remains
-comparatively competitive with the language models. Against that background
-\model reached Precision@1 0.77 and mAP 0.82 (\fref{fig:origin}d, bottom;
-\tref{tab:region-map}), ahead of the from-scratch one-hot probe (0.69) and
-the PlasmidGPT probe (0.53). The \emph{oriT} result is therefore the stronger
-of the two: on \emph{oriV} the margin over strong sequence-intrinsic
-baselines is real but modest.
+competitive with the language models. Against that background \model reached
+Precision@1 0.77 and mAP 0.82 (\fref{fig:origin}d, bottom;
+\tref{tab:region-map}), ahead of the from-scratch one-hot probe at 0.69 and
+the PlasmidGPT probe at 0.53. The \emph{oriT} result is therefore the stronger
+of the two: on \emph{oriV} the margin over strong sequence-intrinsic baselines
+is real but modest.
 
-The two evaluation levels also separate the language models differently. At
-the region level \model, Evo2-7B and Evo2-40B are indistinguishable by mAP
---- 0.816, 0.825 and 0.810, differences well inside the split-to-split spread
-of any of them (\supptref{tab:supp-region-metrics}) --- whereas at the window
-level \model leads by a clearer margin, AUPRC 0.67 against 0.62 for Evo2-7B,
-with the other Evo2 scales lower still at 0.57 and 0.55, one-hot probes at
-0.38 and PlasmidGPT again last at 0.20 (\fref{fig:origin}b, bottom;
-\tref{tab:window-auprc}).
-Robustness to novel windows followed the \emph{oriT} pattern: the lowest
-\model split scored 0.58 against 0.45 for the best one-hot split, and on
-novel windows \model matched the larger Evo2 models at 0.66
-(\fref{fig:origin}c, bottom). Recall@1 and mAP for every method are reported
-in \suppfref{fig:supp-regforest}, and ranking accuracy is broadly stable
-across plasmid-length bins (\suppfref{fig:supp-maplen}). Calibrated
-probability profiles again localize the origin within its region
-(\fref{fig:origin}e, bottom; \edfref{fig:ed-tracks8}e--h).
+The two evaluation levels separate the language models differently. At the
+region level \model and the two largest Evo2 models are indistinguishable by
+mAP, their differences well inside each model's split-to-split spread
+(\supptref{tab:supp-region-metrics}), whereas at the window level \model leads
+more clearly, 0.67 against 0.62 for Evo2-7B (\fref{fig:origin}b, bottom;
+\tref{tab:window-auprc}). Robustness to novel windows followed the \emph{oriT}
+pattern (\fref{fig:origin}c, bottom), ranking accuracy is broadly stable
+across plasmid-length bins (\suppfref{fig:supp-regforest},
+\suppfref{fig:supp-maplen}), and calibrated profiles again localize the origin
+within its region (\fref{fig:origin}e, bottom;
+\edfref{fig:ed-tracks8}e--h).
 
 
-% ---- 3.4  Model scale, ensembling and inference cost ------------------
-% \subsection*{Ensembling helps, but standalone inference is 45$\times$ cheaper}
-\subsection*{Model scale, ensembling and inference cost}
+% ---- 3.4 --------------------------------------------------------------
+\subsection*{Inference cost decides the genome-wide deployment}
 \label{sec:origin-cost}
 
-Two features of the comparison hold across both origin types.
-% FLAG (2026-09-01): the next sentence is the one genuinely NEW claim in this
-% section. It is read directly off tab:region-map and tab:window-auprc
-% (Evo2-40B <= Evo2-7B at both levels on both tasks) but the source artifact
-% never stated it. Author sign-off needed; delete the sentence if unwanted.
-Parameter count did not translate monotonically into accuracy, in that
-Evo2-40B, the largest model tested, did not exceed Evo2-7B at either level on
-either task (\tref{tab:region-map}, \tref{tab:window-auprc}). And pretraining
-helped only where the pretraining corpus matched the target: PlasmidGPT is
-pretrained on plasmids, but on engineered constructs rather than
-environmental ones, and its probe ranked below a from-scratch one-hot
-convolution on both tasks and at both levels. Neither result is an artefact
-of how the probes were configured, since every embedder was given the layer
-that maximized its own validation AUPRC, selected on validation columns only
-(\edfref{fig:ed-layer}); nor of how the reference tools were run, since
-restricting their databases to the training fold rather than to training plus
-validation changed their scores by at most 0.007 (\suppfref{fig:supp-reftool}).
+Two features of the comparison hold across both origin types. Parameter count
+did not translate monotonically into accuracy, since Evo2-40B did not exceed
+Evo2-7B at either level on either task (\tref{tab:region-map},
+\tref{tab:window-auprc}).
+% FLAG (2026-09-01, retained): this sentence is the one genuinely NEW claim in
+% the section. It is read directly off the two tables but the source artifact
+% never stated it. Author sign-off needed; delete if unwanted.
+And pretraining helped only where the corpus matched the target: PlasmidGPT is
+pretrained on plasmids, but on engineered constructs rather than environmental
+ones, and its probe ranked below a from-scratch one-hot convolution throughout.
+Neither result is an artefact of probe configuration or of how the reference
+tools were run (\edfref{fig:ed-layer}, \suppfref{fig:supp-reftool},
+\nameref{sec:methods}).
 
-Calibrated probabilities from Evo2-7B and \model were combined by
-arithmetic-mean soft voting. The ensemble exceeded both constituents at the
-region level (mAP 0.93 for \emph{oriT} versus 0.90 for \model and 0.88 for
-Evo2-7B; mAP 0.86 for \emph{oriV} versus approximately 0.82 for each
-constituent; \tref{tab:region-map}) and at the window level (AUPRC 0.814 and
-0.692 versus 0.781/0.671 and 0.722/0.616; \tref{tab:window-auprc}). This
-improvement is consistent with partly non-redundant predictive information,
-but it does not establish a particular mechanistic decomposition. One
-hypothesis is corpus complementarity: \model was pretrained on plasmids with
-diversity-aware sampling that preserves within-PTU variation, whereas Evo's
-published OpenGenome construction retained one IMG/PR representative per PTU.
-It is also possible, though untested, that Evo's additional pretraining on
-whole prokaryotic genomes exposed it to origin-like sequence in integrated
-plasmids or other chromosomal mobile elements. A direct test would stratify
-ensemble gain by the presence of related chromosomally integrated elements or
-other proxies for corpus-specific coverage.
-
-The ensemble is a benchmark result; the genome-wide predictions used
-downstream were generated with standalone \model. That choice was practical.
-Evo2-7B has approximately 15 times as many parameters as \model (7.0B versus
-468M), and a single-split, five-run window predictor scored a region in
-49.8 ms with \model versus 2,231.7 ms with Evo2-7B (approximately
-45$\times$; \fref{fig:origin}f), measured on 794 regions from 10 plasmids on
-a CUDA device. Under the available compute budget that throughput difference
-decided the deployment: we applied the standalone \model classifiers across
-IMG/PR to generate genome-wide origin predictions, which form the basis for
-the mobilization and replication analyses in \secref{sec:genomewide}.
-% NOTE (2026-09-01): the artifact read "the mobilization and replication
-% analyses in §4" and this line carried a wording TODO. No rewording was
-% needed -- \secref already renders the heading as the object of "in", which
-% is the construction the §2 split settled on. TODO downgraded to NOTE.
+Combining calibrated probabilities from Evo2-7B and \model by soft voting
+exceeded both constituents, reaching mAP 0.93 on \emph{oriT} and 0.86 on
+\emph{oriV} (\tref{tab:region-map}, \tref{tab:window-auprc}). The gain is
+consistent with partly non-redundant predictive information in the two models,
+which we take up in \secref{sec:discussion}. That ensemble is a benchmark
+result; the genome-wide predictions used downstream were generated with
+standalone \model, because Evo2-7B carries roughly 15 times as many
+parameters and scored a region 45$\times$ more slowly, 49.8 ms against
+2,231.7 ms (\fref{fig:origin}f, \nameref{sec:methods}). Under the available
+compute budget that throughput difference decided the deployment: we applied
+the standalone \model classifiers across IMG/PR to generate genome-wide origin
+predictions, which form the basis for the mobilization and replication
+analyses in \secref{sec:genomewide}.

@@ -236,29 +236,29 @@
 %======================================================================
 %  Abstract -- transcribed verbatim from CONVERSION_PROMPT.md section 7.
 %======================================================================
+% Abstract. Transcribed verbatim from CONVERSION_PROMPT.md section 7 at
+% conversion, then CUT 2026-09-04 from 203 words to the Nature Biotechnology
+% Article limit of 150, unreferenced. Nothing was added. What came out: the
+% oriT/oriV glosses and the IMG/PR name, which Nature-family summary
+% paragraphs avoid; the three exact multipliers, which the Results carry; the
+% "models trained from scratch" clause, subsumed by "reference-based tools and
+% smaller models"; and the closing restatement of the model name.
 \begin{abstract}
 Plasmids drive bacterial adaptation and are central tools for engineering
-microbes, yet the non-coding elements that govern their transfer and
-replication --- origins of transfer (\emph{oriT}) and vegetative replication
-(\emph{oriV}) --- remain unannotated across the metagenomic majority of
-plasmids. Existing annotation methods are reference- and alignment-based, so
-they fail on the divergent, host-uncharacterized sequences that now dominate
-plasmid databases. We present \model, a genomic language model trained by
-masked-nucleotide prediction on the plasmid sequences of the IMG/PR database
-with a diversity-aware sampling scheme that captures the breadth of
-metagenomic plasmid diversity rather than sequencing depth. Without any
-labels, \model learns representations that organize plasmid DNA by function.
-For identifying origin-containing regions, a lightweight classifier on its
-frozen embeddings generalizes to origins with no detectable homology to the
-training data, outperforms reference-based tools and models trained from
-scratch, and matches genomic language models up to 85$\times$ larger at
-roughly 45$\times$ less inference compute. Applied across IMG/PR, it
-annotates putative origins genome-wide and reveals previously undescribed
-transfer and replication gene architectures. Interpreting the model shows
-that it has internalized the cis-regulatory architecture of \emph{oriT},
-\emph{oriV}, promoters and other functional elements at single-nucleotide
-resolution. \model offers a scalable, alignment-free route to annotating the
-functional elements of diverse and uncultured plasmids.
+microbes, yet the non-coding origins that govern their transfer and
+replication remain unannotated across the metagenomic majority of plasmids.
+Existing annotation methods are reference- and alignment-based, so they fail
+on the divergent, host-uncharacterized sequences that now dominate plasmid
+databases. We present \model, a genomic language model trained by
+masked-nucleotide prediction on a metagenomic plasmid corpus with a
+diversity-aware sampling scheme that captures the breadth of plasmid
+diversity rather than sequencing depth. Without any labels, it learns
+representations that organize plasmid DNA by function. A lightweight
+classifier on its frozen embeddings identifies origin-containing regions,
+generalizes to origins with no detectable homology to the training data,
+outperforms reference-based tools, and matches far larger models at a
+fraction of the inference cost. Applied database-wide, it offers a scalable,
+alignment-free route to the functional elements of uncultured plasmids.
 \end{abstract}
 
 \clearpage
@@ -277,13 +277,11 @@ functional elements of diverse and uncultured plasmids.
 
 
 %======================================================================
-\section*{Discussion}
+%  Discussion (written 2026-09-04; see sections/06_discussion.tex for the
+%  provenance of each paragraph)
 %======================================================================
-% PLACEHOLDER -- none of the three companion artifacts carries Discussion
-% prose. Their "Positioning notes" / "Open items" bands are working memos and
-% were deliberately not converted (see CONVERSION_NOTES.md).
 
-\todo{Discussion.}
+\input{sections/06_discussion}
 
 
 %======================================================================
@@ -319,23 +317,17 @@ This research is supported in part by National Institutes of Health grants
 \section*{Methods}
 \label{sec:methods}
 %======================================================================
-% As in GPN-Star, this is a one-paragraph pointer to the Supplementary
-% Information followed by the journal-required statements. The transcribed
-% Methods themselves are in "Supplementary Methods" below. The artifacts'
-% prose says "(Methods)", and \nameref{sec:methods} resolves to that word
-% because the label sits here rather than on the supplementary section.
+% Nature Biotechnology publishes an online Methods section that must carry
+% everything needed to interpret and replicate the results, so the transcribed
+% Methods live here rather than in the Supplementary Information (moved
+% 2026-09-04). \label{sec:methods} stays on this heading, so the artifacts'
+% "(Methods)" pointers still resolve to the word "Methods".
+% Because this section now sits before \maintextpartfalse, works cited only in
+% Methods join the main reference list, as Nature-family journals require.
 
-The Supplementary Information contains Supplementary Text and the details of
-the pretraining corpus and sequence clustering, diversity-aware epoch
-construction, sequence preprocessing, windowing and tokenization, model
-architecture, training setup and inference, reference origin curation,
-plasmid databases and origin detection, intergenic regions and plasmid
-selection, homology-partitioned cross-validation splits, windowing and class
-imbalance, sequence embedders and probes, probe training and layer selection,
-calibration and region aggregation, masked-logit inference, positional
-information content, functional annotation of plasmids, locus curation and
-coordinate verification, the categorical Jacobian, contextual sequence
-embeddings and dimensionality reduction, and regulatory motif scanning.
+\input{sections/supp_methods_02_pretraining}
+\input{sections/supp_methods_03_origin}
+\input{sections/supp_methods_05_interpretation}
 
 \subsection*{Reporting summary}
 Further information on research design is available in the Nature Portfolio Reporting Summary linked to this article.
@@ -366,13 +358,16 @@ The authors declare no competing interests.
 \clearpage
 
 %======================================================================
-\section*{Extended Data Figures}
+\section*{Extended Data}
 %======================================================================
 % Five figures promoted out of the Supplementary set (2026-09-01) so that
-% Nature Biotechnology displays them alongside the main figures online.
-% \beginextendeddata resets the figure counter and relabels these floats as
-% "Extended Data Figure N"; the remaining fourteen stay in "Supplementary
-% Figures" below and renumber themselves S1-S14.
+% Nature Biotechnology displays them alongside the main figures online, plus
+% one table demoted out of the main text (2026-09-04) to bring the main
+% display count to the permitted six. Six of a permitted ten Extended Data
+% items. \beginextendeddata resets BOTH counters and relabels these floats as
+% "Extended Data Figure N" and "Extended Data Table N"; the remaining fourteen
+% figures stay in "Supplementary Figures" below and renumber themselves S1-S14.
+% The heading was "Extended Data Figures" until the table arrived.
 
 \beginextendeddata
 
@@ -400,13 +395,6 @@ The authors declare no competing interests.
 \todo{Supplementary Text.}
 
 
-\section*{Supplementary Methods}
-
-\input{sections/supp_methods_02_pretraining}
-\input{sections/supp_methods_03_origin}
-\input{sections/supp_methods_05_interpretation}
-
-
 \clearpage
 \input{sections/supp_tables}
 
@@ -416,6 +404,13 @@ The authors declare no competing interests.
 
 
 \clearpage
-\printbibliography[notcategory=maincited,title={Supplementary References}]
+% Supplementary References. Every work in the manuscript is now cited in the
+% main article, because Methods moved out of the Supplementary Information on
+% 2026-09-04 and Methods-only citations (skani was the only one) joined the
+% main list with it. Printing this would emit an empty section, so it is
+% commented out rather than deleted: \maintextpartfalse and the "maincited"
+% category are still in place above, so restoring the second list is a
+% one-line change if Supplementary Text later cites something of its own.
+% \printbibliography[notcategory=maincited,title={Supplementary References}]
 
 \end{document}

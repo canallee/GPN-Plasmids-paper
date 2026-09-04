@@ -13,6 +13,13 @@
 %      annotation, and generation [ref, GPN; ref, Evo]."
 %    - paragraph 4: "generalizes ab initio" -> "generalizes to unseen origins"
 %      (standing instruction: avoid the term "ab initio").
+%
+%  2026-09-04: IMG/PR is now expanded on its first appearance in the body,
+%  which is here. It was previously used unexpanded in the Abstract and twice
+%  in this paragraph, and first expanded only in Results. The Abstract no
+%  longer names it at all. This is the only change to the author-provided
+%  Introduction text; the section is otherwise untouched and remains within
+%  the Nature Biotechnology main-text budget.
 %======================================================================
 
 \section*{Introduction}
@@ -47,12 +54,8 @@ largely unannotated, and origins are among the hardest features to find.
 defined less by conserved sequence motifs than by architecture --- iterons,
 inverted repeats, and paired promoter boxes whose spacing and symmetry,
 rather than their exact bases, carry function. The tools used to annotate
-them (oriTfinder2
-% TODO cite: oriTfinder2. Named in the origin artifact but that artifact
-% ships no bibliography, and no entry exists in songlab.bib.
-, OriV-Finder
-% TODO cite: OriV-Finder. Same as above.
-) are reference- and alignment-based: they recognize an origin by its
+them (oriTfinder2 \cite{liu2025oritdb,li2018oritfinder}, OriV-Finder
+\cite{li2025orivfinder}) are reference- and alignment-based: they recognize an origin by its
 similarity to a curated set of experimentally characterized examples, so they
 degrade sharply on the divergent origins that dominate metagenomic plasmids
 and are effectively blind to origins unlike the reference set. The result is
@@ -76,7 +79,8 @@ than biological diversity, so naive training would over-fit a handful of
 heavily sequenced clades.
 
 Here we present \model, a genomic language model trained by masked-nucleotide
-prediction on the plasmid sequences of the IMG/PR database. To learn from the
+prediction on the plasmid sequences of the Integrated Microbial Genomes /
+Plasmid Repository (IMG/PR). To learn from the
 true diversity of the metagenomic plasmid universe rather than its sequencing
 depth, we designed a diversity-aware sampling scheme that weights training
 toward the breadth of plasmid diversity rather than sequencing depth

@@ -84,3 +84,73 @@ Embedding projection coloured by coarse functional annotation. Two-dimensional U
 \label{fig:ed-umap-feature}
 \end{figure}
 
+
+%======================================================================
+%  Extended Data Table 1 -- origin task / training / inference parameters
+%
+%  Moved here from the main text 2026-09-04. It was main-text Table 3, a
+%  32-row longtable of Methods parameters. Nature Biotechnology allows six
+%  main display items and the manuscript had seven (Figures 1-4, Tables 1-3);
+%  a parameter table is the one that least needs a main-text slot. Extended
+%  Data allows ten items and carried only five, so this costs nothing.
+%  \beginextendeddata has already reset the table counter, so this typesets as
+%  "Extended Data Table 1". The caption lost its pointer to main-text Table 3
+%  and its "Design-critical values appear inline" clause, which described the
+%  old split between this table and the Results prose; that prose is now in
+%  Methods. The \label is unchanged, so \edtref{tab:origin-params} resolves.
+%======================================================================
+
+{\small
+\begin{longtable}{p{0.40\textwidth}p{0.30\textwidth}p{0.20\textwidth}}
+\caption{
+Key task, training and inference parameters for the origin classifier. The provenance column distinguishes values set at run time from values fixed in the analysis source and from library defaults. These parameters accompany the corresponding \nameref{sec:methods} subsections.
+}\label{tab:origin-params}\\
+\toprule
+Parameter & Value & Provenance \\
+\midrule
+\endfirsthead
+\multicolumn{3}{l}{\emph{\tablename~\thetable{} (continued)}}\\
+\toprule
+Parameter & Value & Provenance \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{3}{l}{\textit{Reference curation \& detection}} \\
+Curated origins (\emph{oriT} / \emph{oriV}) & 112 / 224 & derived (MMseqs2 dedup) \\
+MMseqs2 dedup (id / cov / mode) & 90\% / 90\% / shorter & set at run time \\
+BLASTN detection (word size / dust) & 7 / off & set at run time \\
+Detection thresholds (identity / subj.\ coverage) & 80\% / 80\% & fixed in source \\
+\midrule
+\multicolumn{3}{l}{\textit{Regions \& selection}} \\
+CDS caller & Pyrodigal-gv (meta) & library default \\
+Min intergenic length / min regions per plasmid & 50 bp / 3 & fixed in source \\
+Origin--region assignment & $\geq$ 50\% origin length, summed across intersecting regions & fixed in source \\
+Plasmids per unique origin / max origins per plasmid & top 5 / $\leq$ 5 & fixed in source \\
+\midrule
+\multicolumn{3}{l}{\textit{Splits}} \\
+Similarity (EMBOSS Water gap open / extend) & 10 / 0.5 & set at run time \\
+GraphPart folds / threshold & 5 / 0.3 & set at run time \\
+\midrule
+\multicolumn{3}{l}{\textit{Windowing \& imbalance}} \\
+Window size / training step / inference step & 512 / 256 / 16 bp & set at run time \\
+Positive-window rule & $\geq$ 50\% origin or $\geq$ 256 bp & fixed in source \\
+Downsample neg:pos (\emph{oriT} / \emph{oriV}) & 20:1 / 20:1 & set at run time \\
+Positive-class loss weight (\emph{oriT} / \emph{oriV}) & 20$\times$ / 20$\times$ & set at run time \\
+Reverse-complement augmentation & enabled & fixed in source \\
+\midrule
+\multicolumn{3}{l}{\textit{Probes \& training}} \\
+MLP probe input & mean-pooled window & fixed in source \\
+One-hot probe (hidden / kernel / dropout) & 64 / 16 / 0.15 & set at run time \\
+Stochastic runs $\times$ splits per (embedder, layer) & $5 \times 5 = 25$ & set at run time \\
+Optimizer / learning rate / weight decay & AdamW / $5\times10^{-4}$ / 0.01 & set at run time \\
+Schedule / epochs / batch size & cosine / 30 / 256 & set at run time \\
+Model selection & best val AUPRC & fixed in source \\
+Layer selection & mean val AUPRC, both tasks & derived \\
+\midrule
+\multicolumn{3}{l}{\textit{Calibration \& aggregation}} \\
+Calibrator & isotonic (clip) & fixed in source \\
+Ensembling & probability soft-vote (5 runs) & fixed in source \\
+Region aggregator & percentile-75 & set at run time \\
+\end{longtable}
+}

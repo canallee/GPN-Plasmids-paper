@@ -1,0 +1,92 @@
+%======================================================================
+%  Discussion
+%
+%  NEW 2026-09-04. No companion artifact supplies Discussion prose, so this
+%  section was assembled from material that already existed in the manuscript
+%  and was sitting in the wrong place. Provenance of each paragraph:
+%
+%   P1  summary of contribution -- restates Results, no new claim.
+%   P2  ensemble mechanism. Moved out of old 03_origin.tex 3.4 P2. The author
+%       corrected the framing on 2026-09-04: that bacterial chromosomes carry
+%       integrated plasmids and other MGEs is an ESTABLISHED FINDING, not a
+%       hypothesis, and must be cited as such. The hypothesis is the narrower
+%       one that Evo2 learned signal from well-sampled bacterial genomes that
+%       IMG/PR does not contain. Rewritten accordingly.
+%   P3  interpretation limitations. Consolidated from six passages that were
+%       scattered through 05_interpretation.tex.
+%   P4  benchmark and deployment limitations. The first three are the
+%       "Limitations (state proactively)" bullets from the origin artifact's
+%       "Open items" band. CONVERSION_NOTES.md flagged them as reading closer
+%       to manuscript material than to memo and said they "may deserve a home
+%       in the Discussion". This is that home. Author sign-off requested.
+%   P5  outlook.
+%
+%  Nature Biotechnology does not use subheadings in the Discussion.
+%======================================================================
+
+\section*{Discussion}
+\label{sec:discussion}
+
+\model shows that a genomic language model trained only on plasmids, and
+sampled for the breadth of plasmid diversity rather than for sequencing
+depth, learns representations from which the non-coding elements governing
+plasmid transfer and replication can be read out by a lightweight probe. The
+practical consequence is a deployable annotation route rather than a
+benchmark score: the same two-stage pipeline that we evaluate on curated
+origins runs unchanged across IMG/PR, reduces each plasmid to a short ranked
+list of candidate regions, and does so at a cost that makes exhaustive
+application to a metagenomic database tractable.
+
+Combining \model with Evo2-7B improved on either model alone, which indicates
+that the two carry partly non-redundant predictive information. Two
+differences in pretraining corpus could produce that. \model was pretrained on
+plasmids with diversity-aware sampling that preserves within-PTU variation,
+whereas Evo's published OpenGenome construction retained a single IMG/PR
+representative per PTU, so the two models saw different amounts of
+within-clade structure. Evo2 was also pretrained on whole prokaryotic genomes,
+and bacterial chromosomes are well documented to carry integrated plasmids,
+integrative and conjugative elements, and other mobile genetic elements
+% TODO cite: integrated MGEs in bacterial chromosomes. Author-supplied
+% starting reference: "Revealing the pervasive landscape of MGE-host
+% interactions in situ with single-cell genomics", bioRxiv 2025. Verification
+% and additional supporting references in progress.
+, so a chromosomal corpus is not free of origin-like and transfer-associated
+sequence. Our hypothesis is therefore the narrower one that Evo2 acquired
+signal from well-sampled bacterial genomes that the IMG/PR plasmid corpus does
+not contain. Testing it would mean stratifying the ensemble gain by the
+presence of related chromosomally integrated elements, or by other proxies for
+corpus-specific coverage.
+
+The interpretation analyses should be read as illustrative rather than as a
+systematic survey. The loci shown were selected because their architecture is
+documented, no quantitative test was run across a defined denominator of loci,
+and each dependency map carries its own local colour scale, so pattern
+intensities cannot be compared between panels. Two case studies do not
+establish that the correspondence holds for origins generally, the four
+promoters were chosen as visually clean examples from a motif scan and do not
+support a promoter-wide recovery rate, and no element-recovery rate is claimed
+anywhere. The same applies to the embedding projection: no separation metric
+or classifier was computed, the cohort was selected for curated hits and is
+not a representative sample of plasmids, and because the projection varies
+strongly with GC content, sequence composition may contribute to the apparent
+annotation structure.
+
+Three limitations bound the origin results themselves. Circular plasmids are
+linearized for windowing, so a small number of origins spanning the
+linearization point are represented differently from the way the replicating
+molecule presents them. The curated origin sets are drawn from databases with
+partly overlapping content, so redundancy between them is controlled by
+filtering and by similarity-aware partitioning rather than eliminated. And the
+pipeline ranks origin-containing regions rather than delimiting origins: a
+top-ranked region localizes an origin to an intergenic interval, not to its
+boundaries, and downstream use should treat a prediction as a candidate for
+experimental confirmation. On \emph{oriV} in particular, the margin over a
+baseline that ranks the longest intergenic region first is real but modest,
+and a reference-based tool remains competitive.
+
+The elements this model annotates are the two that determine whether a plasmid
+can be moved between hosts and maintained in one, which is precisely what
+makes an uncharacterized plasmid usable as an engineering vector. Applied at
+database scale to sequences whose hosts have never been cultured, an
+alignment-free route to those elements turns the metagenomic plasmid record
+from a catalogue of sequences into a searchable source of candidate parts.

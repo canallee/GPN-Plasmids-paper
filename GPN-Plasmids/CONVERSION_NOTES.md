@@ -355,3 +355,155 @@ analysis using it is actually reported).
 - Supplementary Text — nothing maps to it
 - Title, funding, acknowledgements, data/code availability, author
   contributions, correspondence — all inherited from the template
+
+---
+
+# Nature Biotechnology conformance pass (2026-09-04)
+
+Author-directed. The manuscript was audited against the Nature Biotechnology
+Article format and then edited. The venue's rules, taken from the journal's
+own content-types and submission pages: abstract up to 150 words and
+unreferenced; main text up to 3,000 words excluding abstract, Methods,
+references and figure legends; up to six main display items; up to ten
+Extended Data items; roughly 50 references; an **online Methods section** that
+carries everything needed to interpret and replicate the results; Results and
+Methods divided by topical subheadings, and no subheadings in the Discussion.
+
+## Where the manuscript stood before this pass
+
+| Constraint | Limit | Before |
+|---|---|---|
+| Abstract | 150 words | 203 |
+| Main text | 3,000 words | 4,107, with Discussion and §4 unwritten |
+| Main display items | 6 | 7 |
+| Extended Data items | 10 | 5 |
+| Distinct main-text citations | ~50 | 8 |
+
+## 1. Methods moved into the main article
+
+`\section*{Methods}` was a one-paragraph pointer to the Supplementary
+Information, with the real Methods under `\section*{Supplementary Methods}`.
+Nature Biotechnology publishes an online Methods section that must contain all
+elements for interpretation and replication, so the three `supp_methods_*.tex`
+files are now `\input` from the main `Methods` heading, and the
+`Supplementary Methods` section is gone. The filenames were left alone so the
+provenance rows earlier in this file still hold.
+
+Three consequences, all handled:
+
+- **Reference routing.** Methods now sits *before* `\maintextpartfalse`, so
+  works cited only in Methods join the main reference list, which is what
+  Nature-family journals require. skani was the only such work.
+- **The supplementary bibliography is now empty**, because nothing is cited
+  after `\maintextpartfalse`. Printing it would emit an empty section, so the
+  `\printbibliography[notcategory=maincited]` call is commented out rather
+  than deleted. The category machinery and `\maintextpartfalse` are still in
+  place, so restoring it is a one-line change if Supplementary Text later
+  cites something.
+- **A heading collision became visible.** Both Methods blocks had a
+  subsection called "Inference". They are now "Pretraining inference" and
+  "Origin inference and deployment".
+
+## 2. Results trimmed, with every fact preserved
+
+Methods-grade detail was moved out of the Results prose. **Nothing was
+deleted outright**: before each cut, the fact was confirmed present in
+Methods, and where it was not, it was added to Methods first. Four facts fell
+into that second category:
+
+| Fact | Was only in Results | Now in Methods under |
+|---|---|---|
+| Eight NVIDIA H200 GPUs | §2.3 | Batch schedule and training length |
+| Reference-tool database ablation (≤0.007) | §3.4 | Reference-tool baselines (new) |
+| Timing harness, 794 regions / 10 plasmids | §3.4 | Inference-cost measurement (new) |
+| IR4 shuffled-null test (*P* ≈ 0.08), loop sequence, interval | §5 | Uncurated interval search and its null (new) |
+
+Word counts by section, before and after:
+
+| Section | Before | After |
+|---|---|---|
+| Introduction | 655 | 655 |
+| Pretraining | 874 | 658 |
+| Origin classification | 1,541 | 982 |
+| Functional analysis (§4, unwritten) | 13 | 13 |
+| Model interpretation | 1,089 | 748 |
+| Discussion | 0 | 576 |
+| **Total** | **4,172** | **3,632** |
+
+Still above 3,000, and §4 is still to be written. The author has accepted
+running loose on the limit; Nature Biotechnology is format-flexible at initial
+submission, and the excess is now content rather than Methods detail.
+
+## 3. Framing changes
+
+- **A Discussion was written** (`sections/06_discussion.tex`). It is assembled
+  from material that already existed in the manuscript and was in the wrong
+  place; the file header gives the provenance of each paragraph. Two things
+  landed there: the ensemble-mechanism discussion, moved out of §3.4, and the
+  six scattered limitation passages from §5. It also picks up the three
+  "Limitations (state proactively)" bullets from the origin artifact's Open
+  Items band, which this file previously flagged as deserving a Discussion
+  home. **Author sign-off requested on the whole section.**
+- **The ensemble mechanism was re-framed, author-directed.** The transcribed
+  text presented integrated plasmids in bacterial chromosomes as an untested
+  possibility. That is wrong: it is an established finding and is now stated
+  as one, with a citation. The hypothesis is the narrower claim that Evo2
+  acquired signal from well-sampled bacterial genomes that the IMG/PR plasmid
+  corpus does not contain. The Results now point forward to the Discussion at
+  the ensemble result, also author-directed.
+- **§4 was retitled** from "Genome-wide application" to "Functional analysis
+  of GPN-Plasmids-discovered origins", author-directed. The `\label` is
+  deliberately unchanged, so the three existing `\secref` pointers keep
+  resolving and now render the new title.
+- **Subheadings are declarative.** Every Results subheading was a topic label;
+  the artifacts already carried declarative alternatives as comments, and
+  those are now the live headings. All nine Results subheadings now sit at one
+  level, which is the flat topical structure the venue asks for.
+
+## 4. Display items
+
+Main-text Table 3, the 32-row parameter longtable, became **Extended Data
+Table 1**. That brings the main count from seven to six, exactly at the limit,
+and Extended Data from five items to six of a permitted ten. The `\label` is
+unchanged. The Results lost their pointer to it during the trim and were given
+a new one, so it is not an orphan float.
+
+The `Source` provenance column was removed from main Tables 1 and 2. Two of
+its cells cited an internal analysis notebook by name. The information it
+carried is now a sentence in each caption.
+
+Two caption defects were fixed. Figure 1's caption documented that the artwork
+disagrees with the text, reading "displayed as ~160k in the supplied artwork"
+against the measured 166,192; a published caption cannot do that, so the
+parenthetical is gone and **an inline `ACTION FOR AUTHOR` comment now asks for
+the artwork to be corrected**. Figure 4's caption ended with a Methods
+sentence and the internal checkpoint identifier `v3_noflex_375k`; both were
+removed.
+
+## 5. Smaller corrections
+
+- Three citations in `02_pretraining.tex` sat orphaned after a closing comma,
+  breaking the appositive they belonged to. Reattached.
+- The abstract dropped from 203 to 144 words, and no longer uses an acronym.
+- IMG/PR is now expanded on its first appearance in the body, which is the
+  Introduction. It was previously expanded only in Results. This is the only
+  change to the author-provided Introduction text.
+- Decimal precision in §3 was unified to two places. The three-decimal
+  passages and the six-value slash construction are gone.
+- The fact that origins are characterized only in a few clinically important
+  families appeared three times; it is now stated once, in the Introduction.
+- A §5 sentence that took figure references as its grammatical subject was
+  recast, and its two hardcoded `\ref` calls now use the wrapper macros.
+- Supplementary Tables S1 and S4 were cited nowhere, leaving their numbering
+  undefined. Both are now cited from the Results.
+
+## 6. One number needs the author's eye
+
+`03_origin.tex` previously gave the best one-hot split on **novel** windows as
+0.28, which is exactly that method's overall test mean in Supplementary
+Table 3. A best split should exceed its own mean, so the value looks
+transposed. The comparison is now stated qualitatively and carries an inline
+`% FLAG`. Check it against the Figure 2c source data and restore the number.
+
+The `% FLAG` on the parameter-count claim in §3.4 is unchanged and still needs
+sign-off.

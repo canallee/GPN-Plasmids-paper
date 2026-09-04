@@ -6,20 +6,26 @@
 %    /home/canall/DNA_LM/plasmids_GPN/manuscript/artifact/page.html
 %    snapshot 2026-08-28 (page.html mtime 2026-08-28 13:27)
 %
-%  This prose is the artifact's "Main text" band (seven paragraphs). NOTE:
-%  manuscript/pretraining/01_results_sampling_design.md is a longer,
-%  section-headed narrative of the same material and is NOT what was
-%  transcribed here -- see CONVERSION_NOTES.md. The Methods files 02-05 and
-%  the parameter table 06 ARE used, in supp_methods_02_pretraining.tex and
-%  supp_tables.tex.
+%  2026-09-01, author-directed: the artifact's seven transcribed paragraphs
+%  were regrouped into three Results subsections. See CONVERSION_NOTES.md.
 %
-%  2026-09-01, author-directed: the seven transcribed paragraphs were
-%  REGROUPED into three Results subsections (2.1 IMG/PR processing,
-%  2.2 diversity-aware sampling, 2.3 pretraining and model architecture),
-%  laid out 2 / 3 / 3. Two sentences changed paragraph -- old P1 s2 opens
-%  2.3, and old P2 s1+s3 open 2.2 -- and three sentences were added: the
-%  Fig. 1c callout in 2.1, the closer to 2.1, and the second half of the
-%  2.2 opener. No transcribed clause was deleted. See CONVERSION_NOTES.md.
+%  2026-09-04, author-directed: TRIMMED to the Nature Biotechnology main-text
+%  limit (3,000 words for Introduction + Results + Discussion). Every value
+%  removed here survives in Methods; nothing was deleted outright. Removed
+%  from this file and now carried only by Methods:
+%    - the two ANI/alignment-fraction clustering thresholds
+%    - the allocation expression min(n_i, Q_0.95)^(1/T), the cap, and T = 1.5
+%    - the Unique subsample fraction, the 3.15 allocation ceiling, the 735
+%      sub-PTU maximum, the 35/15/50 category split, the ~102 epoch count
+%    - hidden dimension, the dilation cycle, one-hot input and the absence of
+%      positional encoding
+%    - the whole training-run paragraph (375,000 steps, constant LR with
+%      warmup, 217M windows / 4.5e11 tokens, BF16, eight NVIDIA H200 GPUs).
+%      The GPU model was the one fact not already in Methods; it was added to
+%      "Batch schedule and training length" before this paragraph was cut.
+%  Subheadings changed from topic labels to the declarative alternatives the
+%  artifact already carried as comments. Three citations that sat orphaned
+%  after a closing comma were reattached to their nouns.
 %
 %  Superscript citations 1-9 in the artifact map to the merged bibliography:
 %    1 camargo2024img  2 devlin2018bert  3 benegas2023dna
@@ -27,60 +33,55 @@
 %    7 kalchbrenner2016neural  8 mukherjee2023twenty  9 shaw2023fast
 %======================================================================
 
-% ---- 2.1  IMG/PR processing ------------------------------------------
-% \subsection*{A quality-filtered plasmid corpus resolved into a cluster hierarchy}
-\subsection*{IMG/PR processing}
+% ---- 2.1 --------------------------------------------------------------
+\subsection*{A plasmid corpus resolved into a cluster hierarchy}
 \label{sec:imgpr}
 
 \model is a genomic language model trained on 693,638 plasmid sequences drawn
-from the Integrated Microbial Genomes / Plasmid Repository (IMG/PR) collection
-\cite{camargo2024img}, after quality filtering and a PTU-level species holdout
-(\nameref{sec:methods}). Host assignments in the corpus span 48 phyla, and its
-ecosystem composition, annotated through GOLD, \cite{mukherjee2023twenty} is
-shown alongside that host phylogeny in \fref{fig:pretraining}c. In contrast to
-genomic language models trained across broad evolutionary timescales, \model is
-trained exclusively on mobile genetic elements, without an intentionally
-included chromosomal reference corpus.
+from the IMG/PR collection \cite{camargo2024img}, after quality filtering and
+a PTU-level species holdout (\nameref{sec:methods}). Host assignments span 48
+phyla, and the ecosystem composition of the corpus, annotated through GOLD
+\cite{mukherjee2023twenty}, is shown alongside that host phylogeny in
+\fref{fig:pretraining}c. In contrast to genomic language models trained
+across broad evolutionary timescales, \model is trained exclusively on mobile
+genetic elements, without an intentionally included chromosomal reference
+corpus.
 
-Plasmids have no universal hierarchical classification. The available grouping,
-the Plasmid Taxonomic Unit (PTU), \cite{redondosalvo2020pathways} is a broad
-partition of undefined phylogenetic rank that says nothing about structure
-within the group it names. To expose the missing structure we clustered every
-sequence at two levels --- dereplication clusters at $\geq$99\% average
-nucleotide identity (ANI) with $\geq$95\% bidirectional alignment fraction, and
-sub-PTUs at $\geq$95\% ANI \cite{jain2018high} with $\geq$95\% unidirectional
-alignment fraction --- which nest exactly inside PTUs
-(\edfref{fig:ed-corpus}f,g). Classifying each PTU by which levels it populates
-reveals a sharp asymmetry: singleton (Unique) PTUs, holding a single
-dereplication cluster, are 69\% of all PTUs but only 30\% of dereplicated
-sequences, whereas the 19\% of PTUs that resolve into multiple sub-PTUs (Major)
-hold 59\% (\fref{fig:pretraining}d). That asymmetry is what any sampling policy
-over this corpus must contend with.
+Plasmids have no universal hierarchical classification. The available
+grouping, the Plasmid Taxonomic Unit (PTU) \cite{redondosalvo2020pathways},
+is a broad partition of undefined phylogenetic rank that says nothing about
+structure within the group it names. To expose the missing structure we
+clustered every sequence at two nested levels, dereplication clusters and
+sub-PTUs, which nest exactly inside PTUs \cite{jain2018high}
+(\edfref{fig:ed-corpus}f,g; \nameref{sec:methods}). Classifying each PTU by
+which levels it populates reveals a sharp asymmetry: singleton (Unique) PTUs,
+holding a single dereplication cluster, are 69\% of all PTUs but only 30\% of
+dereplicated sequences, whereas the 19\% of PTUs that resolve into multiple
+sub-PTUs (Major) hold 59\% (\fref{fig:pretraining}d). That asymmetry is what
+any sampling policy over this corpus must contend with.
 
 
-% ---- 2.2  Diversity-aware sampling for pretraining --------------------
-% \subsection*{A diversity-aware epoch policy between two unsatisfactory extremes}
-\subsection*{Diversity-aware sampling for pretraining}
+% ---- 2.2 --------------------------------------------------------------
+\subsection*{Diversity-aware sampling between two unsatisfactory extremes}
 \label{sec:sampling}
 
 Training a language model on this corpus raises a sampling problem that does
-not arise for cellular genomes. With no taxonomy to sample across, abundance in
-a plasmid database reflects sequencing effort rather than diversity, so a
-training budget spent in proportion to abundance is spent in proportion to how
-often a clade has been sequenced.
+not arise for cellular genomes. With no taxonomy to sample across, abundance
+in a plasmid database reflects sequencing effort rather than diversity, so a
+training budget spent in proportion to abundance is spent in proportion to
+how often a clade has been sequenced.
 
 Near-identical sequences are first collapsed by dereplication, so no plasmid
-sequence is over-weighted merely for having been resequenced; even so, the
-two obvious sampling policies are unsatisfactory extremes
-(\fref{fig:pretraining}e). After dereplication, sampling every remaining
-sequence with equal probability concentrates the budget on the largest clades
---- the most diverse PTU is drawn 715$\times$ more often than under an even
-one-sequence-per-PTU budget, and the top 1\% of PTUs absorb 24\% of all
-sampled sequences --- so the model is optimized largely on a handful of
-well-sampled clades. Sampling exactly one sequence per PTU, the strategy Evo
-applies to IMG/PR, \cite{nguyen2024sequence} removes that imbalance but
-discards all within-clade variation and carries a robustness cost specific to
-a metagenomic corpus. Plasmid identity in IMG/PR is assigned computationally,
+is over-weighted merely for having been resequenced; even so, the two obvious
+sampling policies are unsatisfactory extremes (\fref{fig:pretraining}e).
+Sampling every remaining sequence with equal probability concentrates the
+budget on the largest clades, drawing the most diverse PTU 715$\times$ more
+often than an even one-sequence-per-PTU budget would, so the model is
+optimized largely on a handful of well-sampled clades. Sampling exactly one
+sequence per PTU, the strategy Evo applies to IMG/PR
+\cite{nguyen2024sequence}, removes that imbalance but discards all
+within-clade variation and carries a robustness cost specific to a
+metagenomic corpus. Plasmid identity in IMG/PR is assigned computationally,
 and a misclassified chromosomal fragment has no genuine plasmid sequence to
 group with, so it tends to survive clustering as its own singleton. Because
 Unique PTUs are 69\% of all PTUs, a one-sequence-per-PTU budget would spend
@@ -88,66 +89,39 @@ the majority of training on single, uncorroborated sequences.
 
 We therefore constructed each training epoch by a diversity-aware policy that
 sits deliberately between these extremes (\fref{fig:pretraining}f,
-\nameref{sec:methods}). For Major PTUs we implemented a sampling scheme that
-scales sub-linearly with the size of the individual Major PTU, measured by
-its number of sub-PTU clusters $n_i$: the per-PTU allocation grows as
-$\min(n_i, Q_{0.95})^{1/T}$, where the cap $Q_{0.95}$ at the 95th percentile
-of sub-PTU count controls for the sequencing bias inherent in metagenomic
-databases such as IMG/PR, and the temperature $T = 1.5$ sets the sub-linear
-scaling, so that additional sequences from an already well-sampled clade
-yield diminishing returns (\edfref{fig:ed-corpus}i,
-\nameref{sec:methods}). A floor of one guarantees every Major PTU a
-representative, so within-clade variation is retained without any clade
-dominating; Moderate PTUs contribute exactly one sequence, and Unique PTUs
-are uniformly subsampled each epoch, with 56.4\% drawn. The cap fixes an
-expected-allocation ceiling of 3.15 representatives per epoch for any PTU
-regardless of size --- including the PTU containing 735 sub-PTUs.
-% Next sentence, 2026-09-01, author-directed: the epoch size read
-% "approximately 170,000" in the transcribed artifact. Reconciled to the
-% measured value, which matches supp_methods_02_pretraining.tex (mean total
-% 166,192, s.d. 2.9) and the Fig. 1d caption. See CONVERSION_NOTES.md.
-The resulting epoch, a mean of 166,192 sequence representatives, is
-partitioned 35\% / 15\% / 50\% across the three categories: this pulls the
-most over-represented PTU from 715$\times$ its even per-PTU share to
-4.0$\times$ and the top 1\% of PTUs from 24\% of sampled sequences to 4\%
-(\fref{fig:pretraining}e), redistributing budget toward internally diverse
-Major clades while reserving half for the Unique majority. The whole
-procedure is re-executed at every epoch boundary, so representatives,
-allocations, window phases and masks are redrawn across approximately 102
-epochs of training.
+\edfref{fig:ed-corpus}i, \nameref{sec:methods}). Each Major PTU receives an
+allocation that grows sublinearly with the number of sub-PTU clusters it
+contains, capped so that no clade can dominate however deeply it has been
+sequenced, and floored at one so that every Major PTU keeps a representative
+and within-clade variation is retained. Moderate PTUs contribute one sequence
+each, and Unique PTUs are uniformly subsampled afresh at every epoch. The
+policy pulls the most over-represented PTU from 715$\times$ its even per-PTU
+share to 4.0$\times$, and the top 1\% of PTUs from 24\% of sampled sequences
+to 4\% (\fref{fig:pretraining}e), redistributing budget toward internally
+diverse Major clades while reserving half for the Unique majority.
+Representatives, allocations, window phases and masks are all redrawn at
+every epoch boundary.
 
 
-% ---- 2.3  Pretraining and model architecture --------------------------
-% \subsection*{A 468M-parameter dilated convolutional encoder trained by masked prediction}
-\subsection*{Pretraining and model architecture}
+% ---- 2.3 --------------------------------------------------------------
+\subsection*{Masked-nucleotide pretraining on a dilated convolutional encoder}
 \label{sec:pretraining}
 
 \model is trained by masked language modelling \cite{devlin2018bert} in a
-convolutional framework adapted from GPN \cite{benegas2023dna} to learn a
+convolutional framework adapted from GPN \cite{benegas2023dna}, learning a
 nucleotide probability distribution conditioned on surrounding sequence
-(\fref{fig:pretraining}g). The model is a 467.9M-parameter encoder of 72
-residual blocks of dilated, non-causal convolutions adapted from ByteNet,
-\cite{kalchbrenner2016neural} with a hidden dimension of 768. Dilation cycles
-through 1 to 32 every six layers, giving a receptive field of 6,049 bp ---
-roughly three times the 2,048 bp input window, so every output position
-conditions on the whole window without attention (\fref{fig:pretraining}g).
-Nucleotides enter as one-hot vectors with no learned embedding and no
-positional encoding, since the convolutional stack is translation-equivariant
-by construction. Complete plasmids are circularized before windowing so that
-predictions near a window edge are informed by genuine flanking sequence
-rather than an artefact of linearization (\suppfref{fig:supp-windowing}).
-Full architectural and training details are provided in
-\nameref{sec:methods}.
-
-\model was trained from random initialization for 375,000 optimizer steps
-under a constant learning rate with warmup, consuming approximately 217
-million sequence windows or $4.5\times10^{11}$ nucleotide tokens in BF16
-across up to eight NVIDIA H200 GPUs.
+(\fref{fig:pretraining}g). The model is a 468M-parameter encoder of 72
+residual blocks of dilated, non-causal convolutions adapted from ByteNet
+\cite{kalchbrenner2016neural}, giving a receptive field of 6,049 bp, roughly
+three times the 2,048 bp input window, so every output position conditions on
+the whole window without attention. Complete plasmids are circularized before
+windowing so that predictions near a window edge are informed by genuine
+flanking sequence rather than an artefact of linearization
+(\suppfref{fig:supp-windowing}). Architecture, training schedule and compute
+are given in full in \nameref{sec:methods}, with the complete parameter set in
+\supptref{tab:supp-pretrain-params}.
 
 The purpose of modelling plasmid sequence space in this way is discovery in
-the parts of it that are least well characterized. Origins of transfer and
-replication, and the accessory modules that accompany them, are best
-described in a handful of clinically important families and remain largely
-uncharacterized in the metagenomic majority. We next evaluate whether these
+the parts of it that are least well characterized. We next ask whether these
 representations identify origins of transfer and replication across diverse
-plasmid sequences.
+plasmids.

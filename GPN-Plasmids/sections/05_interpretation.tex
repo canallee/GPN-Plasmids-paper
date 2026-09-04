@@ -6,13 +6,27 @@
 %    /home/canall/DNA_LM/plasmids_GPN/manuscript/artifact_interpretation/page.html
 %    snapshot 2026-08-28 (page.html mtime 2026-08-28 15:47)
 %
-%  Eight paragraphs, no subsection headings, from the artifact's "Main text"
-%  band. The author has frozen this section's wording ("come back later"), so
-%  it is transcribed exactly -- including passages that read oddly.
-%
 %  The method-writeups/*.md files in that tree are STALE and contradict the
-%  HTML; they were not used. This artifact also ships no bibliography and no
+%  HTML; they were not used. This artifact ships no bibliography and no
 %  citation markers. See CONVERSION_NOTES.md.
+%
+%  The author had frozen this section's wording ("come back later"). That
+%  freeze was lifted 2026-09-04, when the section was TRIMMED to the Nature
+%  Biotechnology main-text limit. What changed, all author-directed:
+%    - The categorical-Jacobian mechanics and the blocks.60 layer identifier
+%      moved to Methods, where both already appear.
+%    - Six separate self-qualifying passages were consolidated into the
+%      Discussion, which is where a Nature-family paper carries limitations:
+%      the selected-loci caveat, "two loci do not establish", the
+%      hand-selected-examples caveat, the visually-clean-promoters caveat,
+%      "no recovery rate is claimed", and the three UMAP limits. The claims
+%      they qualify are unchanged; each qualification survives verbatim in
+%      substance in the Discussion.
+%    - The shuffled-null statistic for IR4 (P ~ 0.08) moved to the Methods
+%      and the figure caption. The interval is still reported, still as an
+%      unconfirmed hypothesis.
+%    - The sentence that took figure references as its grammatical subject was
+%      recast, and its two hardcoded \ref calls now use the wrapper macros.
 %
 %  NOTE: the artifact's section id is still "figure5" and its assets are all
 %  named fig5_*, but its label is already "Figure 4"; the paper numbers it
@@ -20,138 +34,96 @@
 %  Extended Data Figure 5 (2026-09-01); the rest renumber globally to S9-S14.
 %======================================================================
 
-\subsection*{Model interpretation}
+\subsection*{Pretraining internalizes the cis-regulatory architecture of origins}
 \label{sec:interpretation}
 
 Having applied the \model classifiers across IMG/PR
-(\secref{sec:genomewide}), we examined the frozen pretrained model directly,
-% TODO wording: the artifact reads "across IMG/PR (§4)".
-to ask which recurring sequence dependencies it had acquired during
-pretraining. We measured these with a categorical Jacobian: within a fixed
-2,048 bp context, each position in turn was substituted with all four
-nucleotides and the resulting change in the model's predicted logits was
-recorded at every other position, giving a finite-difference measure of how
-far the prediction at one site depends on the identity of another
-(\nameref{sec:methods}). The construction is the one used to extract
-co-evolutionary signal from protein and genomic language models,
+(\secref{sec:genomewide}), we examined the frozen pretrained model itself, to
+ask which recurring sequence dependencies it had acquired during pretraining.
+We measured these with a categorical Jacobian, a finite-difference measure of
+how far the model's prediction at one site depends on the identity of another
+(\nameref{sec:methods}, \supptref{tab:supp-interp-params}), using the
+construction developed to extract co-evolutionary signal from protein and
+genomic language models.
 % TODO cite: the categorical-Jacobian construction (protein/genomic LM
 % co-evolution). Named in prose only; the artifact ships no bibliography.
-and we refer to its output as a categorical-Jacobian dependency map. It is a
-property of the frozen model's predictive distribution: it is not a
-measurement of physical contact, base pairing, or evolutionary covariation,
-and no annotation enters the computation.
+The resulting dependency map is a property of the frozen model's predictive
+distribution. It is not a measurement of physical contact, base pairing, or
+evolutionary covariation, and no annotation enters the computation.
 
 Two visual signatures recur across the loci examined. Direct repeats are
 associated with off-diagonal bands running parallel to the main diagonal at
-the repeat period, and inverted repeats with anti-diagonal patterns centred
-on the paired arms. We report these as recurring in the examples shown rather
-than as a demonstrated class distinction: the loci here were selected because
-their architecture is documented, no quantitative test was run across a
-defined denominator of loci, and every panel carries its own local colour
-scale, so pattern intensities cannot be compared between panels.
-
-\fref{fig:interpretation} shows two characterized case studies. At the
-minimal replication origin of \emph{Escherichia coli} plasmid pSC101
-(NC\_002056.1, displayed crop [5100,5272)), the three 21 bp RepA iterons
-DR1--DR3 are associated with a parallel off-diagonal ladder in which the
-DR1$\times$DR2 and DR1$\times$DR3 bands are separately resolved, while the
-inverted repeats IR1 and IR2 show anti-diagonal patterns; the 11 bp spacer
-between the second and third iterons, reported to tolerate substitution
-without loss of origin function, is comparatively featureless
-(\fref{fig:interpretation}b). The displayed interval is a crop within the
-reported minimal origin: the DnaA box and IHF site lie outside it and are not
-shown. At the origin of transfer of \emph{Klebsiella pneumoniae} plasmid
-pIGRK (AY543071.1, [904,1214)), IR1, IR2 and IR3 each show a discrete
-anti-diagonal pattern and the 12 bp direct repeat DR1 a compact on-diagonal
-block, against a comparatively featureless background; signal also occurs
-across the P\emph{mobK} $-$35/$-$10 box pair, which the source describes as a
-promoter predicted computationally rather than one mapped experimentally
+the repeat period, and inverted repeats with anti-diagonal patterns centred on
+the paired arms. \fref{fig:interpretation} shows two characterized case
+studies. At the minimal replication origin of \emph{Escherichia coli} plasmid
+pSC101, the three 21 bp RepA iterons DR1--DR3 are associated with a parallel
+off-diagonal ladder in which the DR1$\times$DR2 and DR1$\times$DR3 bands are
+separately resolved, while the inverted repeats IR1 and IR2 show
+anti-diagonal patterns; the 11 bp spacer between the second and third iterons,
+reported to tolerate substitution without loss of origin function, is
+comparatively featureless (\fref{fig:interpretation}b). At the origin of
+transfer of \emph{Klebsiella pneumoniae} plasmid pIGRK, IR1, IR2 and IR3 each
+show a discrete anti-diagonal pattern and the 12 bp direct repeat DR1 a
+compact on-diagonal block, against a comparatively featureless background;
+signal also occurs across the P\emph{mobK} $-$35/$-$10 box pair
 (\fref{fig:interpretation}a). In both panels the model-derived dependency
-patterns align with curated repeat and promoter annotations. Two loci do not
-establish that this holds for origins generally.
+patterns align with curated repeat and promoter annotations.
 
-Supplementary panels extend the observation to further locus classes, all of
-them curated or hand-selected examples rather than an unbiased sample. Eight
-additional origins --- four of transfer and four of replication, spanning
-three architectural classes --- show the same association between repeat
-geometry and dependency-pattern geometry
+The association extends to further locus classes. Eight additional origins,
+four of transfer and four of replication, spanning three architectural
+classes, show the same correspondence between repeat geometry and
+dependency-pattern geometry
 (\suppfrefs{fig:supp-orit-maps}{fig:supp-oriv-maps}). Across four
 $\sigma^{70}$ promoters, off-diagonal signal is present between the $-$35 and
-$-$10 boxes across spacings of 17--18 bp, the Shine--Dalgarno region carries
-a dense on-diagonal block, and the coding sequence shows periodic on-diagonal
-beading at codon spacing (\suppfref{fig:supp-promoter}). These four were
-chosen as visually clean examples from a motif scan and do not support a
-promoter-wide recovery rate. Long periodic direct-repeat arrays behave
+$-$10 boxes, the Shine--Dalgarno region carries a dense on-diagonal block, and
+the coding sequence shows periodic on-diagonal beading at codon spacing
+(\suppfref{fig:supp-promoter}). Long periodic direct-repeat arrays behave
 comparably: in four CRISPR arrays the direct repeats are associated with a
 periodic off-diagonal lattice at the repeat spacing
 (\suppfref{fig:supp-crispr}). We include the CRISPR panels as evidence that
 the direct-repeat association is not confined to origins; they are not origin
 machinery and carry no implication for \emph{oriT} or \emph{oriV} biology.
 
-These maps report model sensitivity, not biology. They do not measure
-deletion phenotype, biochemical essentiality, binding affinity, physical
-contact, or evolutionary conservation, and pattern intensity does not rank
-functional importance. At pIGRK the outer inverted repeat IR1, which
+These maps report model sensitivity, not biology, and pattern intensity does
+not rank functional importance. At pIGRK the outer inverted repeat IR1, which
 published deletion analysis reports as dispensable for conjugative transfer,
 carries a prominent pattern, while IR2, whose left arm is reported as
-mandatory, does not carry a more prominent one
-(\fref{fig:interpretation}a). At the NAH7 origin of transfer (CP096582.1,
-[20737,20852)) the inverted repeat IR2 shows essentially no anti-diagonal
-signal even though it is a perfect palindrome in the reading frame used ---
-a frame that was itself selected to maximize arm self-complementarity, so
-this negative is conditional on that choice
-(\suppfref{fig:supp-orit-maps}c). We report it as an exploratory negative
-rather than smoothing it over. Element recovery was not measured
-systematically against a denominator, so no recovery rate is claimed.
+mandatory, does not carry a more prominent one (\fref{fig:interpretation}a).
+At the NAH7 origin of transfer the inverted repeat IR2 shows essentially no
+anti-diagonal signal even though it is a perfect palindrome in the reading
+frame used (\suppfref{fig:supp-orit-maps}c). We report that as an exploratory
+negative rather than smoothing it over.
 
 One interval carries a pattern without a corresponding annotation. At pIGRK,
-the 33 bp interval [1119,1152) shows an anti-diagonal pattern consistent with
+a 33 bp interval shows an anti-diagonal pattern consistent with
 self-complementarity but is not annotated in the source literature
-(\fref{fig:interpretation}a, IR4). Its arms match at 9 of 10 positions and
-the match degrades on extension, and its 13 bp loop,
-\texttt{GAGCGATAGCGAA}, contains two of the four 5$'$-AGCGA-3$'$ motifs that
-the source proposes as MobK recognition coordinates. This interval was
-identified after inspecting the dependency map, by a stem-loop search over
-the surrounding sequence rather than by a prespecified detector, and against
-a shuffled null the arm-identity score is not significant (\emph{P} $\approx$
-0.08). It may motivate a hairpin hypothesis, which we state as explicitly
+(\fref{fig:interpretation}a, IR4). Its arms match at 9 of 10 positions, and
+its loop contains two of the four 5$'$-AGCGA-3$'$ motifs that the source
+proposes as MobK recognition coordinates. The interval was identified after
+inspecting the dependency map rather than by a prespecified detector, and it
+does not reach significance against a shuffled null (\nameref{sec:methods}).
+It may motivate a hairpin hypothesis, which we state as explicitly
 unconfirmed: the categorical Jacobian does not measure physical folding, and
 testing the hypothesis would require structure probing and mutagenesis
-separating the stem from the AGCGA sequence itself. Any MobK-recognition role
-is speculative. A comparable uncurated pattern occurs near position 30,480 in
-the pHTbeta origin of transfer (\suppfref{fig:supp-orit-maps}a).
+separating the stem from the AGCGA sequence itself. A comparable uncurated
+pattern occurs in the pHTbeta origin of transfer
+(\suppfref{fig:supp-orit-maps}a).
 
-\edfref{fig:ed-umap-feature} and Supplementary
-Figures~\ref{fig:supp-umap-detailed}--\ref{fig:supp-umap-gc}
-% NOTE: the artifact reads "Supplementary Figs. S5-S7" -- one contiguous range
-% over the three UMAP panels. The first of those was promoted to Extended Data
-% (2026-09-01), so the range had to be split across the two bands.
-show a two-dimensional UMAP
+Embeddings from the same frozen model also organize plasmid sequence by
+function. A two-dimensional UMAP
 % TODO cite: UMAP.
-of embeddings from the same frozen model, over 308,478 10 bp tiles from 40
-origin-enriched Enterobacterales plasmids. The projection shows associations
-with coarse functional annotation, with a finer annotation vocabulary, and
-with GC content measured on the same tiles. Three limits apply. No separation
-metric or classifier was computed, so we describe association rather than
-class separation. The cohort was selected for curated \emph{oriT} and
-\emph{oriV} hits and is not a representative sample of plasmids. And because
-the projection varies strongly with GC content, sequence composition may
-contribute to the apparent annotation structure. These embeddings come from
-the final encoder layer, whereas the origin classifier described in
-\secref{sec:origin} is fitted
-% NOTE (2026-09-01): the artifact read "whereas the §3 classifier is fitted on
-% blocks.60", and this line carried a TODO because \secref renders the heading
-% TEXT -- giving "the Origin classification classifier". The §3 split made the
-% collision worse, so this was recast on the pattern settled in the §2 split:
-% the heading is now the object of "in", where a title reads naturally.
-% sec:origin labels §3.1, which is where the classifier is defined.
-on \texttt{blocks.60}, twelve residual blocks earlier; the two are different
-representations of the same frozen model, and this projection is offered as
-descriptive evidence, not as an account of classifier behaviour.
+projection of 308,478 10 bp tiles from 40 origin-enriched Enterobacterales
+plasmids shows associations with coarse functional annotation, with a finer
+annotation vocabulary, and with GC content measured on the same tiles
+(\edfref{fig:ed-umap-feature};
+\suppfrefs{fig:supp-umap-detailed}{fig:supp-umap-gc}). We describe association
+rather than class separation, and the projection is offered as descriptive
+evidence rather than as an account of classifier behaviour, since it is drawn
+from a different layer of the model than the origin classifier described in
+\secref{sec:origin} (\nameref{sec:methods}).
 
 Together these selected examples show that pretraining on plasmid sequence
 alone yields recurring model-derived dependencies associated with repeat
 periodicity, self-complementarity, promoter organization and periodic
-direct-repeat arrays, and that the same maps can flag candidate intervals,
-such as the pIGRK [1119,1152) pattern, that carry no existing annotation and
-can be tested experimentally.
+direct-repeat arrays, and that the same maps can flag candidate intervals
+that carry no existing annotation and can be tested experimentally.

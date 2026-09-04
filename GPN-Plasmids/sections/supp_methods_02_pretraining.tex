@@ -440,7 +440,7 @@ of the model.
 
 Per-device batch size was held at 80, and at 76 after the first phase. The
 number of devices changed twice over the course of the run: training
-proceeded on eight devices through step 295,000, then on five, and finally on
+proceeded on eight NVIDIA H200 GPUs through step 295,000, then on five, and finally on
 four, giving effective batch sizes of 640, 380, and 304 windows in the three
 phases. The learning rate was held at $5 \times 10^{-4}$ across all three
 phases with no rescaling.
@@ -462,7 +462,7 @@ defined above.
 Checkpoints were written every 5,000 steps. The released model is the
 checkpoint at step 375,000.
 
-\subsubsection*{Inference}
+\subsubsection*{Pretraining inference}
 
 Inference operates on user-specified genomic positions or pre-defined
 windows. For nucleotide prediction at a specified position, a 2,048 bp window
