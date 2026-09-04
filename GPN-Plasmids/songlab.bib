@@ -8239,6 +8239,10 @@ article{paperno2016lambada,
   year={2016}
 }
 
+% SUPERSEDED 2026-09-04: this is the two-author bioRxiv preprint. The peer
+% reviewed version is Genome Biology 26(1):203, 2025, with four authors, and is
+% in this file as tang2025evaluating. Cite that one. Kept only in case another
+% manuscript already references this key.
 @Article{tang2024evaluating,
   author    = {Tang, Ziqi and Koo, Peter K},
   journal   = {bioRxiv preprint},
@@ -24734,3 +24738,49 @@ url={https://openreview.net/forum?id=rR03qFesqk}
   doi     = {10.1186/1748-7188-6-26}
 }
 
+
+%%% GPN-Plasmids -- pretraining transfer and negative transfer, added 2026-09-04.
+%%% Verified via Crossref REST, Europe PMC, arXiv, OpenReview, ACL Anthology and
+%%% the official NeurIPS BibTeX endpoints. See PEER_REVIEW.md for which half of
+%%% the manuscript's claim each entry actually supports -- they are not
+%%% interchangeable.
+
+% Published version of the work already in this file as tang2024evaluating,
+% which is the earlier TWO-author bioRxiv preprint. Cite this one. The strongest
+% published statement that from-scratch one-hot models match or beat pretrained
+% DNA language models on regulatory tasks.
+@article{tang2025evaluating,
+  author  = {Tang, Ziqi and Somia, Nirali and Yu, Yiyang and Koo, Peter K.},
+  title   = {Evaluating the representational power of pre-trained {DNA} language models for regulatory genomics},
+  journal = {Genome Biology},
+  year    = {2025}, volume = {26}, number = {1}, pages = {203},
+  doi     = {10.1186/s13059-025-03674-8}
+}
+
+@inproceedings{patel2024dart,
+  author        = {Patel, Aman and Singhal, Arpita and Wang, Austin and Pampari, Anusri and Kasowski, Maya and Kundaje, Anshul},
+  title         = {{DART-Eval}: A Comprehensive {DNA} Language Model Evaluation Benchmark on Regulatory {DNA}},
+  booktitle     = {Advances in Neural Information Processing Systems 37 (NeurIPS 2024), Datasets and Benchmarks Track},
+  year          = {2024},
+  eprint        = {2412.05430},
+  archivePrefix = {arXiv},
+  url           = {https://papers.nips.cc/paper_files/paper/2024/hash/71998bfc3217ffe1cca1ee084dfadadd-Abstract-Datasets_and_Benchmarks_Track.html}
+}
+
+% The cleanest published "a mismatched pretraining corpus is worse than starting
+% clean" result, though in biomedical NLP rather than genomics.
+@article{gu2022domain,
+  author  = {Gu, Yu and Tinn, Robert and Cheng, Hao and Lucas, Michael and Usuyama, Naoto and Liu, Xiaodong and Naumann, Tristan and Gao, Jianfeng and Poon, Hoifung},
+  title   = {Domain-Specific Language Model Pretraining for Biomedical Natural Language Processing},
+  journal = {ACM Transactions on Computing for Healthcare},
+  year    = {2022}, volume = {3}, number = {1}, pages = {1--23},
+  doi     = {10.1145/3458754}
+}
+
+@article{zhang2023survey,
+  author  = {Zhang, Wen and Deng, Lingfei and Zhang, Lei and Wu, Dongrui},
+  title   = {A Survey on Negative Transfer},
+  journal = {IEEE/CAA Journal of Automatica Sinica},
+  year    = {2023}, volume = {10}, number = {2}, pages = {305--329},
+  doi     = {10.1109/JAS.2022.106004}
+}

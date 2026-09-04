@@ -72,9 +72,20 @@ applications like variant effect prediction, annotation, and generation
 \cite{benegas2023dna,nguyen2024sequence}. General-purpose gLMs, however, are
 trained across broad evolutionary scales and dominated by chromosomal
 genomes; plasmids --- mobile, recombining, compositionally distinct, and
-lacking any universal taxonomy --- are underrepresented, and pretraining on
-the wrong sequence distribution can transfer worse than not pretraining at
-all. Building a gLM for plasmids also raises a sampling problem absent for
+lacking any universal taxonomy --- are underrepresented, and pretraining on a
+mismatched sequence distribution is not guaranteed to improve on training from
+scratch \cite{tang2025evaluating,patel2024dart,gu2022domain,zhang2023survey};
+we find below that it can be worse.
+% Reworded and cited 2026-09-04. The original read "pretraining on the wrong
+% sequence distribution can transfer worse than not pretraining at all",
+% asserted as established background with no citation. A literature check found
+% the claim splits in two. That gLM pretraining does not automatically beat
+% simple baselines IS established -- Tang 2025 and DART-Eval both show
+% from-scratch models matching or beating pretrained ones. That a MISMATCHED
+% corpus is worse than no pretraining is NOT established anywhere in genomics;
+% the closest published result is Gu 2022, in biomedical NLP. So the sentence
+% now claims only the supported half and signposts the stronger half as this
+% paper's own finding, which the PlasmidGPT result then delivers. Building a gLM for plasmids also raises a sampling problem absent for
 cellular genomes: plasmids have no hierarchical classification to sample
 across, and abundance in sequence databases reflects sequencing effort rather
 than biological diversity, so naive training would over-fit a handful of

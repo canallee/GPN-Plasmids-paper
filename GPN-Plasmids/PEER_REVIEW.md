@@ -273,3 +273,63 @@ the 85× and 15× parameter ratios, the 44.8× latency ratio, the whole filterin
 chain down to 693,638, the PTU category percentages, and every crop interval in
 every interpretation caption were verified against the rendered artwork and are
 correct.
+
+---
+
+## 7. The uncited background claim, resolved (2026-09-04)
+
+The Introduction asserted, with no citation, that "pretraining on the wrong
+sequence distribution can transfer worse than not pretraining at all". A
+literature check found the claim **splits into two halves that are not equally
+supported**:
+
+- **"gLM pretraining does not automatically beat simple baselines"** — well
+  established. Tang et al. 2025 (*Genome Biology*) report that highly tuned
+  from-scratch one-hot models match or beat pretrained DNA language models on
+  regulatory tasks, and DART-Eval (NeurIPS 2024) finds current DNA language
+  models "do not offer compelling gains over alternative baseline models for
+  most tasks, while requiring significantly more computational resources".
+- **"A mismatched corpus is worse than no pretraining at all"** — **no published
+  genomics paper shows this.** The closest published result is Gu et al. 2022,
+  in biomedical NLP, where pretraining from scratch beats continual pretraining
+  from a general-domain model. Zoph et al. 2020 show pretraining actively
+  hurting, but that is a label-regime effect in vision, not corpus mismatch.
+
+The sentence now claims only the supported half, carries four verified
+citations, and signposts the stronger half as this paper's own finding. That is
+honest, and it is also better structure: your PlasmidGPT result currently
+arrives unheralded in a subsection about inference cost, and this sets it up.
+
+Your own manuscript is in fact the best available evidence for the strong half.
+`supp_methods_03_origin.tex` records that all PlasmidGPT layers were swept and
+its best still underperformed the from-scratch CNN, with PlasmidGPT pretrained
+on engineered Addgene constructs. Worth making that point explicitly rather than
+leaving it as a table row — subject to the confound noted in §3, that PlasmidGPT
+also differs in tokenization, objective and the embedding upsampling step.
+
+### Bibliography hygiene found along the way
+
+- **`tang2024evaluating` is the superseded two-author bioRxiv preprint** of the
+  Tang 2025 *Genome Biology* paper. It is now marked superseded in place and the
+  published four-author version added as `tang2025evaluating`. Nothing in this
+  manuscript cited the preprint, but another might.
+- **`robson2023guanine` is the superseded GUANinE v1.0 preprint**; v1.1 is
+  published in *Bioinformatics*. Not cited here.
+- **`marin2024bend` would be a stretch** for this claim. BEND's actual finding is
+  that gLM embeddings can *approach* expert methods, not that they lose to
+  simple baselines.
+
+### Optional addition
+
+ConvNova (ICLR 2025) shows a well-designed CNN outperforming DNA foundation
+models on more than half of the tasks across several benchmarks, with fewer
+parameters. That is directly relevant to your architecture choice, not just to
+this sentence. It is not added, because its author list differs between the
+arXiv and ICLR versions (Daniel vs Yanjun Shao) and that should be settled
+before citing.
+
+### Do not cite for this claim
+
+"Are Genomic Language Models All You Need?" matches the search pattern but its
+result is **positive** — gLMs are competitive with and sometimes beat protein
+language models. Citing it as negative evidence would be a misattribution.
