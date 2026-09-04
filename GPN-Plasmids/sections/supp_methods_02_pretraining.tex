@@ -19,10 +19,10 @@
 
 \model was pretrained on plasmid sequences from the Integrated Microbial
 Genomes / Plasmid Repository (IMG/PR), \cite{camargo2024img} comprising
-699,973 sequences distributed across 214,950 Plasmid Taxonomic Units (PTUs).
-\cite{redondosalvo2020pathways} Sequences were used together with their
-IMG/PR metadata, including GOLD ecosystem annotations,
-\cite{mukherjee2023twenty} host taxonomy, assembly completeness, topology
+699,973 sequences distributed across 214,950 Plasmid Taxonomic Units
+(PTUs) \cite{redondosalvo2020pathways}. Sequences were used together with
+their IMG/PR metadata, including GOLD ecosystem annotations
+\cite{mukherjee2023twenty}, host taxonomy, assembly completeness, topology
 annotation, and per-sequence composition statistics.
 
 \subsubsection*{Filtering}
@@ -53,8 +53,8 @@ stage.
 
 \subsubsection*{Sequence clustering}
 
-Pairwise sequence relationships were computed with skani,
-\cite{shaw2023fast} which estimates the average nucleotide identity (ANI) ---
+Pairwise sequence relationships were computed with skani
+\cite{shaw2023fast}, which estimates the average nucleotide identity (ANI) ---
 the mean identity across the aligned regions of two sequences --- together
 with the alignment fraction (AF) --- the proportion of a sequence spanned by
 that alignment. skani was run in all-versus-all (triangle) mode over the full

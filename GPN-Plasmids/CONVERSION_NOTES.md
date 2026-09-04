@@ -507,3 +507,111 @@ transposed. The comparison is now stated qualitatively and carries an inline
 
 The `% FLAG` on the parameter-count claim in §3.4 is unchanged and still needs
 sign-off.
+
+## 7. Citations resolved (2026-09-04)
+
+The manuscript carried 8 distinct citations and 33 `% TODO cite` markers. It
+now carries **53**, which is in the range Nature Biotechnology expects. Every
+entry was verified against Crossref, Europe PMC, PubMed, DBLP, arXiv, Zenodo
+or the publisher page before insertion. Where a field was absent from the
+fetched source it is **omitted rather than reconstructed** — GraphPart has no
+page range, pymemesuite has no verifiable year, the arXiv entries have no
+volume. The bibliography records the verification source for each group.
+
+### Three entries were already in `songlab.bib` under other keys
+
+Adding mine would have printed the same work twice. The pre-existing keys win,
+since GPN-Star may cite them:
+
+| Duplicate I added | Kept instead |
+|---|---|
+| `brixi2026evo2` | `brixi2026genome` |
+| `smith1981waterman` | `smith1981identification` |
+| `abdennur2024bioframe` | `open2c2024bioframe` |
+
+Two survivors gained a verified field they were missing: a DOI on Smith &
+Waterman, an issue number on Evo 2.
+
+### Two existing entries were defective and were corrected in place
+
+Both keys are unchanged, since this manuscript and GPN-Star cite them.
+
+- **`devlin2018bert`** was a malformed hybrid: an `@InProceedings` carrying
+  both a NAACL booktitle *and* an arXiv `journal` field, dated 2018 against
+  2019 proceedings, with an en-dash page range instead of `--`. Replaced with
+  the verified NAACL record.
+- **`kalchbrenner2016neural`** had its author list truncated to
+  "Kalchbrenner, Nal and others". Completed.
+
+### Things the lookups found that need the author
+
+1. **The count "87 experimentally validated *oriT*s" does not match its
+   source.** Ares-Arroyo 2023 states a final dataset of **91**, and no
+   *oriT*-network study reporting ~87 could be found. Either correct the
+   number or name the source you took 87 from. Carries a `% FLAG`.
+2. **The "six consensus *oriT* sequences from an *oriT*-diversity study" is
+   unresolved and deliberately left uncited.** Three candidates fit and
+   attaching the wrong one would be a mis-citation. Ares-Arroyo 2023 names six
+   *oriT* clusters, but that is the same paper as the transfer-network source,
+   which the text presents as separate. Zrimec 2020 frames six MOB groups.
+   Ares-Arroyo 2024 is a third possibility. The `% TODO cite` lists all three.
+3. **PA83 could not be verified and stays uncited.** In the literature PA83 is
+   a *Pseudomonas aeruginosa* **strain** with a type IV CRISPR-Cas system, not
+   a plasmid. That matches how this manuscript uses it, as a CRISPR array
+   locus rather than an origin, so the manuscript is not wrong — but the array
+   call needs its source named.
+4. **The pSC101 repeat labels are not the primary literature's.** Sugiura 1993
+   writes "iterons" and "IR-1"/"IR-2", not DR1--DR3 / IR1 / IR2. If the figure
+   labels come from a GenBank or SnapGene annotation of NC\_002056.1, the
+   caption should say so rather than attributing the nomenclature to that
+   paper. A `% NOTE` records this at the citation.
+5. **pSC101 needs two citations, not one.** Sugiura 1993 maps the minimal
+   origin and the repeats but does **not** map the IHF site; Stenzel 1987
+   does. Both are cited.
+6. **pTA1040 has no characterized *oriT*.** Meijer 1998 reports *oriT*-like
+   sequences for pTA1015 and pTA1060, not pTA1040, and pTA1040 is absent from
+   oriTDB. The manuscript presents it as a single-strand origin, which is
+   consistent, so the citation is attached at that sentence only.
+7. **Two works are now peer-reviewed** and cite their journal versions rather
+   than their preprints: Evo 2 in *Nature*, PlasmidGPT in *Science Advances*.
+   Both published titles differ slightly from the preprint titles.
+8. **oriTfinder2 has no standalone paper.** It is introduced inside the oriTDB
+   2025 article, whose abstract names it. oriTDB2 and oriTDB are therefore one
+   citation, not two.
+9. **Pyrodigal-gv has no publication.** Its README asks for three citations:
+   geNomad, Pyrodigal and Prodigal. All three are cited.
+10. **Two software tools have no paper at all**, and are cited as software with
+    a repository URL: torchdr (which does have a Zenodo DOI) and pymemesuite
+    (which has none). ViennaRNA is now cited: the artifact's note said to cite
+    it only if its use is reported, and the Methods do report its use while
+    stating no displayed panel depends on it.
+
+### Orphaned citations
+
+Five citations sat after a closing comma or a sentence period, stranded from
+the noun they belonged to. Three were pre-existing in the pretraining Methods
+(PTU, GOLD, skani); two were introduced when `% TODO cite` comments were
+replaced (bioframe, and the RegulonDB/FIMO/MEME/pymemesuite group, which is
+now four citations attached to their four separate tools rather than one block
+after the period). All reattached.
+
+## 8. Still outstanding
+
+- §4, "Functional analysis of \model-discovered origins", and its Figure 3.
+- Supplementary Text.
+- Title, funding, acknowledgements, data and code availability, author
+  contributions, correspondence, author list.
+- Figure 1 panel d artwork still reads "~160k" against the measured 166,192.
+- The two `% FLAG`s: the transposed-looking novel-window number, and the
+  parameter-count claim.
+- The three items above that need a source named: the 87/91 count, the
+  *oriT*-diversity study, and PA83.
+- The supplementary parameter tables (S1, S4) still use the internal
+  provenance vocabulary "code constant" / "command line", and supplementary
+  figure captions still name the checkpoint `v3_noflex_375k`. Extended Data
+  Table 1 was cleaned when it moved out of the main text; the supplementary
+  ones were left alone as out of scope for a main-text pass.
+- **Not rebuilt.** There is no TeX distribution on this machine, so
+  `main.pdf` is stale. Cross-references, citation keys, duplicate DOIs and
+  float citations were validated by script instead, all clean. Build on
+  Overleaf before circulating.

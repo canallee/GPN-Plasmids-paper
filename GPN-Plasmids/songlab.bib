@@ -5578,13 +5578,18 @@ Nous considÃ©rons un super-processus avec mouvement Brownien spatial coalescen
   url       = {https://proceedings.neurips.cc/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf},
 }
 
+% Corrected 2026-09-04: was an @InProceedings carrying both a NAACL booktitle
+% and an arXiv journal field, dated 2018 against 2019 proceedings, with an
+% en-dash page range. Verified against Crossref 10.18653/v1/N19-1423 and DBLP.
+% Key deliberately unchanged -- it is cited in this manuscript and in GPN-Star.
 @InProceedings{devlin2018bert,
   author    = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
-  booktitle = {Proceedings of NAACL-HLT 2019},
-  title     = {{BERT}: Pre-training of deep bidirectional transformers for language understanding},
-  year      = {2018},
-  pages     = {4171–4186},
-  journal   = {arXiv preprint arXiv:1810.04805},
+  title     = {{BERT}: Pre-training of Deep Bidirectional Transformers for Language Understanding},
+  booktitle = {Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)},
+  year      = {2019},
+  pages     = {4171--4186},
+  publisher = {Association for Computational Linguistics},
+  doi       = {10.18653/v1/N19-1423},
 }
 
 
@@ -18865,7 +18870,9 @@ inproceedings{hendrycks2021aligning,
   timestamp = {2014.06.27},
 }
 
+% DOI added 2026-09-04, verified at Crossref 10.1016/0022-2836(81)90087-5.
 @Article{smith1981identification,
+  doi           = {10.1016/0022-2836(81)90087-5},
   author        = {TF Smith and MS Waterman},
   journal       = {Journal of Molecular Biology},
   title         = {Identification of Common Molecular Subsequences},
@@ -24169,6 +24176,7 @@ url={https://openreview.net/forum?id=rR03qFesqk}
 	isbn = {1476-4687},
 	journal = {Nature},
  	volume = {652},
+ 	number = {8112},
  	pages = {1349--1361},
 	title = {Genome modelling and design across all domains of life with Evo 2},
 	year = {2026},
@@ -24276,7 +24284,8 @@ url={https://openreview.net/forum?id=rR03qFesqk}
 
 @Online{kalchbrenner2016neural,
   ids        = {bytenet},
-  author     = {Kalchbrenner, Nal and others},
+  % Author list completed 2026-09-04; was truncated to "and others".
+  author     = {Kalchbrenner, Nal and Espeholt, Lasse and Simonyan, Karen and van den Oord, A{\"a}ron and Graves, Alex and Kavukcuoglu, Koray},
   title      = {Neural machine translation in linear time},
   year       = {2016},
   eprint     = {1610.10099},
@@ -24324,16 +24333,6 @@ url={https://openreview.net/forum?id=rR03qFesqk}
 %%% publisher page before insertion; no field was inferred. See
 %%% CONVERSION_NOTES.md for the verification record.
 
-@article{brixi2026evo2,
-  author  = {Brixi, Garyk and Durrant, Matthew G. and Ku, Jerome and Naghipourfar, Mohsen and Poli, Michael and Sun, Gwanggyu and Brockman, Greg and Chang, Daniel and Fanton, Alison and Gonzalez, Gabriel A. and King, Samuel H. and Li, David B. and Merchant, Aditi T. and Nguyen, Eric and Ricci-Tam, Chiara and Romero, David W. and Schmok, Jonathan C. and Taghibakhshi, Ali and Vorontsov, Anton and Yang, Brandon and Deng, Myra and Gorton, Liv and Nguyen, Nam and Wang, Nicholas K. and Pearce, Michael T. and Simon, Elana and Adams, Etowah and Amador, Zachary J. and Ashley, Euan A. and Baccus, Stephen A. and Dai, Haoyu and Dillmann, Steven and Ermon, Stefano and Guo, Daniel and Herschl, Michael H. and Ilango, Rajesh and Janik, Ken and Lu, Amy X. and Mehta, Reshma and Mofrad, Mohammad R. K. and Ng, Madelena Y. and Pannu, Jaspreet and R{\'e}, Christopher and St John, John and Sullivan, Jeremy and Tey, Joseph and Viggiano, Ben and Zhu, Kevin and Zynda, Greg and Balsam, Daniel and Collison, Patrick and Costa, Anthony B. and Hernandez-Boussard, Tina and Ho, Eric and Liu, Ming-Yu and McGrath, Thomas and Powell, Kimberly and Pinglay, Sudarshan and Burke, Dave P. and Goodarzi, Hani and Hsu, Patrick D. and Hie, Brian L.},
-  title   = {Genome modelling and design across all domains of life with {Evo} 2},
-  journal = {Nature},
-  year    = {2026},
-  volume  = {652},
-  number  = {8112},
-  pages   = {1349--1361},
-  doi     = {10.1038/s41586-026-10176-5}
-}
 
 @article{shao2026plasmidgpt,
   author  = {Shao, Bin and Han, Zequan and Liang, Zeyu and Huo, Yi-Xin},
@@ -24463,3 +24462,275 @@ url={https://openreview.net/forum?id=rR03qFesqk}
   pages   = {D1152--D1157},
   doi     = {10.1093/nar/gku893}
 }
+
+%%% GPN-Plasmids -- biology primary sources and reviews, added 2026-09-04.
+%%% Verified against Crossref, Europe PMC, PubMed or the publisher page.
+%%% See CONVERSION_NOTES.md for the verification record and for four
+%%% attribution problems this lookup surfaced.
+
+@article{rodriguezbeltran2021beyond,
+  author  = {Rodr{\'i}guez-Beltr{\'a}n, Jer{\'o}nimo and DelaFuente, Javier and Le{\'o}n-Sampedro, Ricardo and MacLean, R. Craig and San Mill{\'a}n, {\'A}lvaro},
+  title   = {Beyond horizontal gene transfer: the role of plasmids in bacterial evolution},
+  journal = {Nature Reviews Microbiology},
+  year    = {2021}, volume = {19}, number = {6}, pages = {347--359},
+  doi     = {10.1038/s41579-020-00497-1}
+}
+
+@article{castanedabarba2024plasmids,
+  author  = {Casta{\~n}eda-Barba, Salvador and Top, Eva M. and Stalder, Thibault},
+  title   = {Plasmids, a molecular cornerstone of antimicrobial resistance in the {One} {Health} era},
+  journal = {Nature Reviews Microbiology},
+  year    = {2024}, volume = {22}, number = {1}, pages = {18--32},
+  doi     = {10.1038/s41579-023-00926-x}
+}
+
+@article{frost2005mobile,
+  author  = {Frost, Laura S. and Leplae, Raphael and Summers, Anne O. and Toussaint, Ariane},
+  title   = {Mobile genetic elements: the agents of open source evolution},
+  journal = {Nature Reviews Microbiology},
+  year    = {2005}, volume = {3}, number = {9}, pages = {722--732},
+  doi     = {10.1038/nrmicro1235}
+}
+
+% The paper that introduces and names the "categorical Jacobian". Its abstract
+% reads: "We demonstrate by use of a 'categorical Jacobian' calculation that
+% ESM-2 stores statistics of coevolving residues".
+@article{zhang2024protein,
+  author  = {Zhang, Zhidian and Wayment-Steele, Hannah K. and Brixi, Garyk and Wang, Haobo and Kern, Dorothee and Ovchinnikov, Sergey},
+  title   = {Protein language models learn evolutionary statistics of interacting sequence motifs},
+  journal = {Proceedings of the National Academy of Sciences},
+  year    = {2024}, volume = {121}, number = {45}, pages = {e2406285121},
+  doi     = {10.1073/pnas.2406285121}
+}
+
+% Applies the categorical Jacobian to a GENOMIC language model. Page numbers
+% omitted deliberately: the ICLR proceedings pagination was not verified.
+% Preprint of the same work: bioRxiv 10.1101/2024.08.14.607850.
+@inproceedings{cornman2025omg,
+  author    = {Cornman, Andre and West-Roberts, Jacob and Camargo, Antonio Pedro and Roux, Simon and Beracochea, Martin and Mirdita, Milot and Ovchinnikov, Sergey and Hwang, Yunha},
+  title     = {The {OMG} dataset: An {Open} {MetaGenomic} corpus for mixed-modality genomic language modeling},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025}
+}
+
+@article{aresarroyo2023origins,
+  author  = {Ares-Arroyo, Manuel and Coluzzi, Charles and Rocha, Eduardo P. C.},
+  title   = {Origins of transfer establish networks of functional dependencies for plasmid transfer by conjugation},
+  journal = {Nucleic Acids Research},
+  year    = {2023}, volume = {51}, number = {7}, pages = {3001--3016},
+  doi     = {10.1093/nar/gkac1079}
+}
+
+@article{aresarroyo2024expanding,
+  author  = {Ares-Arroyo, Manuel and Nucci, Amandine and Rocha, Eduardo P. C.},
+  title   = {Expanding the diversity of origin of transfer-containing sequences in mobilizable plasmids},
+  journal = {Nature Microbiology},
+  year    = {2024}, volume = {9}, number = {12}, pages = {3240--3253},
+  doi     = {10.1038/s41564-024-01844-1}
+}
+
+@article{zrimec2020multiple,
+  author  = {Zrimec, Jan},
+  title   = {Multiple plasmid origin-of-transfer regions might aid the spread of antimicrobial resistance to human pathogens},
+  journal = {MicrobiologyOpen},
+  year    = {2020}, volume = {9}, number = {12}, pages = {e1129},
+  doi     = {10.1002/mbo3.1129}
+}
+
+@article{sugiura1993minimal,
+  author  = {Sugiura, S. and Ohkubo, S. and Yamaguchi, K.},
+  title   = {Minimal essential origin of plasmid {pSC101} replication: requirement of a region downstream of iterons},
+  journal = {Journal of Bacteriology},
+  year    = {1993}, volume = {175}, number = {18}, pages = {5993--6001},
+  doi     = {10.1128/jb.175.18.5993-6001.1993}
+}
+
+@article{stenzel1987integration,
+  author  = {Stenzel, T. T. and Patel, P. and Bastia, D.},
+  title   = {The integration host factor of {Escherichia} {coli} binds to bent {DNA} at the origin of replication of the plasmid {pSC101}},
+  journal = {Cell},
+  year    = {1987}, volume = {49}, number = {5}, pages = {709--717},
+  doi     = {10.1016/0092-8674(87)90547-2}
+}
+
+@article{nowak2021molecular,
+  author  = {Nowak, Katarzyna Paulina and Sobolewska-Ruta, Agnieszka and Jagie{\l}{\l}o, Agata and Bierczy{\'n}ska-Krzysik, Anna and Kiery{\l}, Piotr and Wawrzyniak, Pawe{\l}},
+  title   = {Molecular and functional characterization of {MobK} protein---a novel-type relaxase involved in mobilization for conjugational transfer of {Klebsiella} {pneumoniae} plasmid {pIGRK}},
+  journal = {International Journal of Molecular Sciences},
+  year    = {2021}, volume = {22}, number = {10}, pages = {5152},
+  doi     = {10.3390/ijms22105152}
+}
+
+@article{tomita2005genetic,
+  author  = {Tomita, Haruyoshi and Ike, Yasuyoshi},
+  title   = {Genetic analysis of transfer-related regions of the vancomycin resistance {Enterococcus} conjugative plasmid {pHT}$\beta$: identification of {oriT} and a putative relaxase gene},
+  journal = {Journal of Bacteriology},
+  year    = {2005}, volume = {187}, number = {22}, pages = {7727--7737},
+  doi     = {10.1128/JB.187.22.7727-7737.2005}
+}
+
+@article{kishida2017host,
+  author  = {Kishida, Kouhei and Inoue, Kei and Ohtsubo, Yoshiyuki and Nagata, Yuji and Tsuda, Masataka},
+  title   = {Host range of the conjugative transfer system of {IncP-9} naphthalene-catabolic plasmid {NAH7} and characterization of its {oriT} region and relaxase},
+  journal = {Applied and Environmental Microbiology},
+  year    = {2017}, volume = {83}, number = {1}, pages = {e02359-16},
+  doi     = {10.1128/AEM.02359-16}
+}
+
+@article{llosa1991structural,
+  author  = {Llosa, M. and Bolland, S. and de la Cruz, F.},
+  title   = {Structural and functional analysis of the origin of conjugal transfer of the broad-host-range {IncW} plasmid {R388} and comparison with the related {IncN} plasmid {R46}},
+  journal = {Molecular and General Genetics},
+  year    = {1991}, volume = {226}, number = {3}, pages = {473--483},
+  doi     = {10.1007/BF00260661}
+}
+
+@article{meijer1998rolling,
+  author  = {Meijer, W. J. and Wisman, G. B. and Terpstra, P. and Thorsted, P. B. and Thomas, C. M. and Holsappel, S. and Venema, G. and Bron, S.},
+  title   = {Rolling-circle plasmids from {Bacillus} {subtilis}: complete nucleotide sequences and analyses of genes of {pTA1015}, {pTA1040}, {pTA1050} and {pTA1060}, and comparisons with related plasmids from gram-positive bacteria},
+  journal = {FEMS Microbiology Reviews},
+  year    = {1998}, volume = {21}, number = {4}, pages = {337--368},
+  doi     = {10.1111/j.1574-6976.1998.tb00357.x}
+}
+
+@article{guglielmini2011repertoire,
+  author  = {Guglielmini, Julien and Quintais, Leonor and Garcill{\'a}n-Barcia, Maria Pilar and de la Cruz, Fernando and Rocha, Eduardo P. C.},
+  title   = {The repertoire of {ICE} in prokaryotes underscores the unity, diversity, and ubiquity of conjugation},
+  journal = {PLoS Genetics},
+  year    = {2011}, volume = {7}, number = {8}, pages = {e1002222},
+  doi     = {10.1371/journal.pgen.1002222}
+}
+
+@article{johnson2015integrative,
+  author  = {Johnson, Christopher M. and Grossman, Alan D.},
+  title   = {Integrative and conjugative elements ({ICEs}): what they do and how they work},
+  journal = {Annual Review of Genetics},
+  year    = {2015}, volume = {49}, pages = {577--601},
+  doi     = {10.1146/annurev-genet-112414-055018}
+}
+
+@article{cury2018host,
+  author  = {Cury, Jean and Oliveira, Pedro H. and de la Cruz, Fernando and Rocha, Eduardo P. C.},
+  title   = {Host range and genetic plasticity explain the coexistence of integrative and extrachromosomal mobile genetic elements},
+  journal = {Molecular Biology and Evolution},
+  year    = {2018}, volume = {35}, number = {9}, pages = {2230--2239},
+  doi     = {10.1093/molbev/msy123}
+}
+
+% Author-supplied reference. Confirmed a PREPRINT with no peer-reviewed
+% version: the bioRxiv API "published" field is "NA" and Crossref lists no
+% relation. DOI prefix 10.64898 is correct -- it is openRxiv's new prefix,
+% not the older 10.1101.
+@article{yan2025revealing,
+  author  = {Yan, Ming and Banfield, Jill and Sachdeva, Rohan},
+  title   = {Revealing the pervasive landscape of {MGE}-host interactions in situ with single-cell genomics},
+  journal = {bioRxiv},
+  year    = {2025},
+  doi     = {10.64898/2025.12.20.690322},
+  note    = {Preprint}
+}
+
+%%% GPN-Plasmids -- methods and software, added 2026-09-04.
+%%% Verified via Crossref REST, DBLP .bib endpoints, arXiv, Zenodo and raw
+%%% repository files. Where a field was absent from the fetched source it is
+%%% omitted rather than reconstructed. BERT, ByteNet and UMAP already existed
+%%% in this file and were not duplicated; the first two were corrected above.
+
+@article{rice2000emboss,
+  author  = {Rice, Peter and Longden, Ian and Bleasby, Alan},
+  title   = {{EMBOSS}: The European Molecular Biology Open Software Suite},
+  journal = {Trends in Genetics},
+  year    = {2000}, volume = {16}, number = {6}, pages = {276--277},
+  doi     = {10.1016/S0168-9525(00)02024-2}
+}
+
+
+% OUP deposits an article number, not a page range.
+@article{teufel2023graphpart,
+  author  = {Teufel, Felix and G{\'i}slason, Magn{\'u}s Halld{\'o}r and Almagro Armenteros, Jos{\'e} Juan and Johansen, Alexander Rosenberg and Winther, Ole and Nielsen, Henrik},
+  title   = {{GraphPart}: homology partitioning for biological sequence analysis},
+  journal = {NAR Genomics and Bioinformatics},
+  year    = {2023}, volume = {5}, number = {4}, pages = {lqad088},
+  doi     = {10.1093/nargab/lqad088}
+}
+
+@inproceedings{loshchilov2019adamw,
+  author    = {Loshchilov, Ilya and Hutter, Frank},
+  title     = {Decoupled Weight Decay Regularization},
+  booktitle = {7th International Conference on Learning Representations (ICLR)},
+  year      = {2019},
+  publisher = {OpenReview.net},
+  url       = {https://openreview.net/forum?id=Bkg6RiCqY7}
+}
+
+@inproceedings{zadrozny2002isotonic,
+  author    = {Zadrozny, Bianca and Elkan, Charles},
+  title     = {Transforming classifier scores into accurate multiclass probability estimates},
+  booktitle = {Proceedings of the Eighth {ACM} {SIGKDD} International Conference on Knowledge Discovery and Data Mining},
+  year      = {2002}, pages = {694--699},
+  publisher = {ACM},
+  doi       = {10.1145/775047.775151}
+}
+
+% No paper exists. Author list from the repository CITATION.cff; the year is
+% the Zenodo v0.3 release date, since CITATION.cff carries no year field.
+@misc{vanassel2025torchdr,
+  author       = {Van Assel, Hugues and Courty, Nicolas and Flamary, R{\'e}mi and Garivier, Aur{\'e}lien and Massias, Mathurin and Vayer, Titouan and Vincent-Cuaz, C{\'e}dric},
+  title        = {{TorchDR}: {PyTorch} Dimensionality Reduction},
+  year         = {2025},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.13772088},
+  howpublished = {\url{https://github.com/TorchDR/TorchDR}}
+}
+
+% v12.0 is the most recent RELEASE paper; the live database is at v14. If the
+% Methods name a data version, cite this and give the version in the text.
+@article{salgado2024regulondb,
+  author  = {Salgado, Heladia and Gama-Castro, Socorro and Lara, Paloma and Mejia-Almonte, Citlalli and Alarc{\'o}n-Carranza, Gabriel and L{\'o}pez-Almazo, Andr{\'e}s G. and Betancourt-Figueroa, Felipe and Pe{\~n}a-Loredo, Pablo and Alquicira-Hern{\'a}ndez, Shirley and Ledezma-Tejeida, Daniela and Arizmendi-Zagal, Lizeth and Mendez-Hernandez, Francisco and Diaz-Gomez, Ana K. and Ochoa-Praxedis, Elizabeth and Mu{\~n}iz-Rascado, Luis J. and Garc{\'i}a-Sotelo, Jair S. and Flores-Gallegos, Fanny A. and G{\'o}mez, Laura and Bonavides-Mart{\'i}nez, C{\'e}sar and del Moral-Ch{\'a}vez, V{\'i}ctor M. and Hern{\'a}ndez-Alvarez, Alfredo J. and Santos-Zavaleta, Alberto and Capella-Gutierrez, Salvador and Gelpi, Josep Lluis and Collado-Vides, Julio},
+  title   = {{RegulonDB} v12.0: a comprehensive resource of transcriptional regulation in \emph{{E}. coli} {K}-12},
+  journal = {Nucleic Acids Research},
+  year    = {2024}, volume = {52}, number = {D1}, pages = {D255--D264},
+  doi     = {10.1093/nar/gkad1072}
+}
+
+@article{grant2011fimo,
+  author  = {Grant, Charles E. and Bailey, Timothy L. and Noble, William Stafford},
+  title   = {{FIMO}: scanning for occurrences of a given motif},
+  journal = {Bioinformatics},
+  year    = {2011}, volume = {27}, number = {7}, pages = {1017--1018},
+  doi     = {10.1093/bioinformatics/btr064}
+}
+
+@article{bailey2015meme,
+  author  = {Bailey, Timothy L. and Johnson, James and Grant, Charles E. and Noble, William S.},
+  title   = {The {MEME} Suite},
+  journal = {Nucleic Acids Research},
+  year    = {2015}, volume = {43}, number = {W1}, pages = {W39--W49},
+  doi     = {10.1093/nar/gkv416}
+}
+
+% No paper, no DOI, no citation section in the README. Year deliberately
+% omitted: no release year could be verified from a fetched source.
+@misc{larralde2022pymemesuite,
+  author       = {Larralde, Martin},
+  title        = {{PyMEMEsuite}: {Cython} bindings and {Python} interface to the {MEME} suite},
+  howpublished = {\url{https://github.com/althonos/pymemesuite}},
+  note         = {Software}
+}
+
+@article{couvin2018crisprcasfinder,
+  author  = {Couvin, David and Bernheim, Aude and Toffano-Nioche, Claire and Touchon, Marie and Michalik, Juraj and N{\'e}ron, Bertrand and Rocha, Eduardo P. C. and Vergnaud, Gilles and Gautheret, Daniel and Pourcel, Christine},
+  title   = {{CRISPRCasFinder}, an update of {CRISRFinder}, includes a portable version, enhanced performance and integrates search for {Cas} proteins},
+  journal = {Nucleic Acids Research},
+  year    = {2018}, volume = {46}, number = {W1}, pages = {W246--W251},
+  doi     = {10.1093/nar/gky425}
+}
+
+@article{lorenz2011viennarna,
+  author  = {Lorenz, Ronny and Bernhart, Stephan H. and H{\"o}ner zu Siederdissen, Christian and Tafer, Hakim and Flamm, Christoph and Stadler, Peter F. and Hofacker, Ivo L.},
+  title   = {{ViennaRNA} Package 2.0},
+  journal = {Algorithms for Molecular Biology},
+  year    = {2011}, volume = {6}, number = {1}, pages = {26},
+  doi     = {10.1186/1748-7188-6-26}
+}
+

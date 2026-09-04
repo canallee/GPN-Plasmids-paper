@@ -44,9 +44,7 @@ We measured these with a categorical Jacobian, a finite-difference measure of
 how far the model's prediction at one site depends on the identity of another
 (\nameref{sec:methods}, \supptref{tab:supp-interp-params}), using the
 construction developed to extract co-evolutionary signal from protein and
-genomic language models.
-% TODO cite: the categorical-Jacobian construction (protein/genomic LM
-% co-evolution). Named in prose only; the artifact ships no bibliography.
+genomic language models \cite{zhang2024protein,cornman2025omg}.
 The resulting dependency map is a property of the frozen model's predictive
 distribution. It is not a measurement of physical contact, base pairing, or
 evolutionary covariation, and no annotation enters the computation.
@@ -110,9 +108,7 @@ pattern occurs in the pHTbeta origin of transfer
 (\suppfref{fig:supp-orit-maps}a).
 
 Embeddings from the same frozen model also organize plasmid sequence by
-function. A two-dimensional UMAP
-% TODO cite: UMAP.
-projection of 308,478 10 bp tiles from 40 origin-enriched Enterobacterales
+function. A two-dimensional UMAP \cite{mcinnes2018umap} projection of 308,478 10 bp tiles from 40 origin-enriched Enterobacterales
 plasmids shows associations with coarse functional annotation, with a finer
 annotation vocabulary, and with GC content measured on the same tiles
 (\edfref{fig:ed-umap-feature};

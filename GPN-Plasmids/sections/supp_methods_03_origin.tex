@@ -12,10 +12,20 @@
 
 \emph{oriT} references were compiled from three sources: the oriTDB2 \cite{liu2025oritdb} database, six consensus \emph{oriT} sequences from an \emph{oriT}-diversity
 study,
-% TODO cite: the oriT-diversity study (six consensus oriTs).
+% TODO cite: the oriT-diversity study. NOT resolved -- two candidates fit and
+% attaching the wrong one would be a mis-citation, so this is left for the
+% author. Candidate A: aresarroyo2023origins, whose Methods name six oriT
+% clusters (F-like, R6K-like, R64-like, ColE1-like, RP4-like, R46-like) -- but
+% that is the same paper as the transfer-network source below, and the text
+% here presents them as two separate sources. Candidate B: zrimec2020multiple,
+% which frames six MOB groups {F,P,Q,V,C,T} over 112 oriT regions. A third
+% possibility is aresarroyo2024expanding. Pick the one you actually used.
 and 87 experimentally validated \emph{oriT}s from an
-\emph{oriT}-transfer-network study.
-% TODO cite: the oriT-transfer-network study (87 validated oriTs).
+\emph{oriT}-transfer-network study \cite{aresarroyo2023origins}.
+% FLAG (2026-09-04): the COUNT does not match the cited paper. Ares-Arroyo
+% 2023 states a final dataset of 91 origins of transfer, not 87, and no
+% oriT-network study reporting ~87 could be found. Either correct 87 to 91, or
+% name the source you took 87 from and this citation changes with it.
 Experimental oriTDB2 entries were manually curated against literature
 coordinates (for example oriT\_pIP421 extended from 7 to 194 bp spanning
 IHF1--IR3, oriT\_CloDF13 from 13 to 661 bp), and two entries were
@@ -67,14 +77,11 @@ assumed complete.
 
 To limit similarity leakage, parts were defined at the level of the origin
 sequences, not the plasmids. All-against-all pairwise similarity was computed
-with EMBOSS Water
-% TODO cite: EMBOSS Water / Smith-Waterman.
-(Smith--Waterman, gap open 10, gap extend 0.5) on both the forward and
+with EMBOSS Water \cite{rice2000emboss}
+(Smith--Waterman \cite{smith1981identification}, gap open 10, gap extend 0.5) on both the forward and
 reverse-complement orientations, keeping the higher-scoring alignment;
 distance was $1 - (\text{identity}/100)$, with pairs below 70\% identity or
-50\% coverage set to the maximum distance. GraphPart
-% TODO cite: GraphPart.
-partitioned the origins into five parts at a similarity threshold of 0.3 with
+50\% coverage set to the maximum distance. GraphPart \cite{teufel2023graphpart} partitioned the origins into five parts at a similarity threshold of 0.3 with
 no post-hoc node moving during partitioning. For \emph{oriT}, GraphPart
 retained 87 of 112 origins; the 25 removed origins were reinserted into the
 part of their nearest assigned neighbour (ties to the smaller part), giving
@@ -140,9 +147,7 @@ NumPy or PyTorch seeds, giving 25 probes per (embedder, layer). The loss was
 BCE-with-logits with the positive class up-weighted by a fixed factor of
 20$\times$ for both tasks; a per-window loss-weight mechanism exists but was
 disabled in the reported runs (all per-window weights were 1). Optimization
-used AdamW
-% TODO cite: AdamW.
-(learning rate $5\times10^{-4}$, weight decay 0.01) with cosine annealing
+used AdamW \cite{loshchilov2019adamw} (learning rate $5\times10^{-4}$, weight decay 0.01) with cosine annealing
 over 30 epochs and mixed precision, at batch size 256. Gradient accumulation
 remained at its default of one and was not used as an active technique. The
 best epoch per run was selected by validation AUPRC rather than validation
@@ -162,8 +167,7 @@ underperformed the from-scratch CNN.
 
 Raw logits under class imbalance are poorly calibrated and not comparable
 across runs, splits or embedders. Each probe's logits were mapped to
-probabilities by isotonic regression
-% TODO cite: isotonic regression / calibration.
+probabilities by isotonic regression \cite{zadrozny2002isotonic}
 (\texttt{Isotonic\allowbreak Regression(\allowbreak out\_of\_\allowbreak bounds=\allowbreak"clip")})
 fit on that probe's own
 validation logits. For region-level inference, each strand's logits were
