@@ -34,7 +34,7 @@
 %======================================================================
 
 % ---- 2.1 --------------------------------------------------------------
-\subsection*{A plasmid corpus resolved into a cluster hierarchy}
+\subsection*{Clustering resolves structure below the PTU}
 \label{sec:imgpr}
 
 \model is a genomic language model trained on 693,638 plasmid sequences drawn
@@ -62,7 +62,7 @@ any sampling policy over this corpus must contend with.
 
 
 % ---- 2.2 --------------------------------------------------------------
-\subsection*{Diversity-aware sampling between two unsatisfactory extremes}
+\subsection*{Sampling for diversity, not depth}
 \label{sec:sampling}
 
 Training a language model on this corpus raises a sampling problem that does
@@ -104,7 +104,7 @@ every epoch boundary.
 
 
 % ---- 2.3 --------------------------------------------------------------
-\subsection*{Masked-nucleotide pretraining on a dilated convolutional encoder}
+\subsection*{Pretraining by masked-nucleotide prediction}
 \label{sec:pretraining}
 
 \model is trained by masked language modelling \cite{devlin2018bert} in a

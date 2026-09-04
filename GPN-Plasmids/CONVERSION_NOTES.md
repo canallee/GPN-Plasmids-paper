@@ -615,3 +615,46 @@ after the period). All reattached.
   `main.pdf` is stale. Cross-references, citation keys, duplicate DOIs and
   float citations were validated by script instead, all clean. Build on
   Overleaf before circulating.
+
+## 9. Heading and caption length pass (2026-09-04, author-directed)
+
+**Results subheadings shortened.** The declarative headings introduced in the
+conformance pass were too long, averaging 7.3 words with four at eight or more.
+They are now short declaratives averaging 5.1 words. The findings they state
+are unchanged; only the padding is gone.
+
+| Before | After |
+|---|---|
+| A plasmid corpus resolved into a cluster hierarchy | Clustering resolves structure below the PTU |
+| Diversity-aware sampling between two unsatisfactory extremes | Sampling for diversity, not depth |
+| Masked-nucleotide pretraining on a dilated convolutional encoder | Pretraining by masked-nucleotide prediction |
+| A window-to-region pipeline scores intergenic regions for origins | From windows to ranked regions |
+| \model identifies origins of transfer where reference tools fail | \model detects divergent origins of transfer |
+| Origins of replication are harder to rank against strong baselines | Origins of replication are harder to rank |
+| Inference cost decides the genome-wide deployment | Inference cost decides deployment |
+| Functional analysis of \model-discovered origins | Functional analysis of discovered origins |
+| Pretraining internalizes the cis-regulatory architecture of origins | Pretraining internalizes origin architecture |
+
+**Two cross-references had to be recast.** `\secref` renders the heading text,
+so shortening a heading changes how every pointer at it reads. Two broke:
+"the pretraining described in Pretraining by masked-nucleotide prediction"
+repeated the word, and "the origin classifier described in From windows to
+ranked regions" did not parse. Both are now parentheticals, which is the
+construction that survives any future heading change. All six section pointers
+were re-checked against their rendered text.
+
+**Figure 4 caption cut from 261 words to 189**, in line with Figure 1 at 165;
+it had been more than twice Figure 2. Everything removed was already in
+Methods except the two crop intervals, which were added to "Locus curation and
+coordinate verification" first. Removed: the 2,048 bp context, the
+99th-percentile scaling mechanism, "measuring predictive specificity against a
+uniform background", the 1-based-axis / 0-based-interval convention, and the
+clause that DR2 lies within the P*mobK* spacer. **Kept deliberately:** the
+per-panel non-comparability caveat, which governs how the figure is read, and
+the arrow colour key, which is the legend proper.
+
+**On the `overleaf-2026-09-04-2037` branch.** It carries one change, a comma
+added after "unrelated bacteria" in the Introduction. `main` already supersedes
+it: that sentence now carries the three horizontal-transfer citations with the
+comma correctly placed after them. Merging the branch would reintroduce the
+orphaned-comma pattern, so it was not merged.

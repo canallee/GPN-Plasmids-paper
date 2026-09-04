@@ -35,15 +35,15 @@
 
 
 % ---- 3.1 --------------------------------------------------------------
-\subsection*{A window-to-region pipeline scores intergenic regions for origins}
+\subsection*{From windows to ranked regions}
 \label{sec:origin}
 
 Having pretrained \model on the diversity of IMG/PR, we asked whether its
 frozen representations could identify intergenic regions containing origins
 of transfer or replication. The task is to prioritize origin-containing
 regions rather than to recover exact origin boundaries, so we trained
-lightweight probes on frozen embeddings, without repeating the pretraining
-described in \secref{sec:pretraining}.
+lightweight probes on frozen embeddings, without repeating pretraining
+(\secref{sec:pretraining}).
 
 A probe that scores fixed-length windows does not by itself annotate a
 plasmid, because the unit of interest is a region rather than a window. We
@@ -79,7 +79,7 @@ the label does not establish biological novelty.
 
 
 % ---- 3.2 --------------------------------------------------------------
-\subsection*{\model identifies origins of transfer where reference tools fail}
+\subsection*{\model detects divergent origins of transfer}
 \label{sec:origin-orit}
 
 At the region level, a probe on frozen \model embeddings ranked the
@@ -118,7 +118,7 @@ origin and falls away across the flanking coding sequence
 
 
 % ---- 3.3 --------------------------------------------------------------
-\subsection*{Origins of replication are harder to rank against strong baselines}
+\subsection*{Origins of replication are harder to rank}
 \label{sec:origin-oriv}
 
 The \emph{oriV} task has a different shape, because origins of replication
@@ -147,7 +147,7 @@ within its region (\fref{fig:origin}e, bottom;
 
 
 % ---- 3.4 --------------------------------------------------------------
-\subsection*{Inference cost decides the genome-wide deployment}
+\subsection*{Inference cost decides deployment}
 \label{sec:origin-cost}
 
 Two features of the comparison hold across both origin types. Parameter count

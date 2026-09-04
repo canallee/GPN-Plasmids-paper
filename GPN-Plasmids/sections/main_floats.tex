@@ -69,13 +69,22 @@
 % "Locus curation and coordinate verification"; the internal checkpoint
 % identifier v3_noflex_375k should not appear in a published caption. The
 % released checkpoint is identified in Methods and in Code Availability.
+%
+% 2026-09-04: caption cut from 261 words to ~200, author-directed -- it was
+% more than twice the length of the Figure 2 caption. Moved to Methods, where
+% all of it already appeared except the crop intervals, which were added:
+% the 2,048 bp context, the 99th-percentile scaling mechanism (the resulting
+% non-comparability caveat is KEPT, since it governs how the figure is read),
+% "measuring predictive specificity against a uniform background", the
+% 1-based-axis / 0-based-interval convention, the two crop intervals, and the
+% clause that DR2 lies within the PmobK spacer.
 % (Filename still says fig5 from an earlier numbering.) The "Fig. 4a" and
 % "Fig. 4b" standalone component panels in that artifact are not reproduced.
 \begin{figure}[h]
     \centering
     \fitfig{figures/fig5_catjac}
 \caption{
-\textbf{Model-derived dependency patterns at a characterized origin of transfer and origin of replication.} Categorical-Jacobian dependency maps computed with frozen \model over a 2,048 bp context and cropped to the locus (heatmap; each panel scaled to its own crop with the upper limit at the crop's 99th percentile, so intensities are not comparable between panels). Above each map: a logo track of per-position information content from the model's masked predictive distribution, measuring predictive specificity against a uniform background, and annotation lanes carrying externally sourced features as arrows (blue, inverted repeats; orange, direct repeats; green, promoter boxes). Red boxes are annotation-driven overlays marking the extent of an annotated feature, not model-detected boundaries. Axes are labelled in 1-based coordinates; intervals below are 0-based half-open. \textbf{a}, Origin of transfer of \emph{Klebsiella pneumoniae} plasmid pIGRK (AY543071.1, [904,1214)). IR1--IR3 and the two identical 12 bp direct repeats DR1, DR2 are the repeats proposed in the source study, which mapped the minimal \emph{oriT} interval experimentally and predicted the individual elements; $-$35 and $-$10 mark a P\emph{mobK} promoter predicted computationally in that study, not one verified experimentally, and DR2 lies within their spacer. IR4 ([1119,1152)) is not annotated in the source literature and was identified after inspecting this map. \textbf{b}, Minimal origin of replication of \emph{Escherichia coli} plasmid pSC101 (NC\_002056.1, [5100,5272)), a crop within the reported minimal origin: the DnaA box and IHF site lie outside the displayed interval. DR1--DR3 are the three 21 bp RepA iterons; IR1 and IR2 are the two inverted repeats, with the $-$35 and $-$10 boxes of the \emph{rep} promoter inside IR1 and IR2 respectively.
+\textbf{Model-derived dependency patterns at a characterized origin of transfer and origin of replication.} Categorical-Jacobian dependency maps computed with frozen \model and cropped to the locus; each panel is scaled to its own crop, so intensities are not comparable between panels. Above each map: a logo track of per-position information content, and annotation lanes carrying externally sourced features as arrows (blue, inverted repeats; orange, direct repeats; green, promoter boxes). Red boxes mark an annotated feature's extent, not a model-detected boundary. Crops, coordinate conventions and feature sourcing are in \nameref{sec:methods}. \textbf{a}, Origin of transfer of \emph{Klebsiella pneumoniae} plasmid pIGRK (AY543071.1). IR1--IR3 and the 12 bp direct repeats DR1, DR2 are proposed in the source study, where the P\emph{mobK} $-$35 and $-$10 boxes are computational predictions rather than experimentally verified. IR4 is unannotated in that literature and was identified after inspecting this map. \textbf{b}, Minimal origin of replication of \emph{Escherichia coli} plasmid pSC101 (NC\_002056.1), cropped within the reported minimal origin, so the DnaA box and IHF site lie outside it. DR1--DR3 are the three 21 bp RepA iterons; IR1 and IR2 are the inverted repeats, containing the \emph{rep} promoter's $-$35 and $-$10 boxes respectively.
 }
 \label{fig:interpretation}
 \end{figure}
