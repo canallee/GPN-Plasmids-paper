@@ -453,7 +453,9 @@ constant learning rate, not from a partially completed annealing schedule.
 The invariant quantity across the batch-size changes is the amount of data
 consumed. Summing the three phases gives approximately 217 million windows,
 or about $4.5 \times 10^{11}$ nucleotide tokens. At approximately 2.14
-million windows per epoch, this corresponds to roughly 102 resampled epochs,
+million windows per epoch, this corresponds to roughly 101 resampled epochs,
+% Corrected 2026-09-04: 217 / 2.14 = 101.4. The value 102 is used elsewhere as
+% an exponent; check supp_tables.tex and the (1-q)^n calculation follow.
 each generated from a newly sampled subset of the IMG/PR training set as
 defined above.
 

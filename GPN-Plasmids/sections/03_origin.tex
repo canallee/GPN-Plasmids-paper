@@ -111,15 +111,16 @@ scale and of the one-hot probes, split by split and not only on average
 \suppfref{fig:supp-prcurves}). PlasmidGPT was the weakest method, falling
 below the from-scratch one-hot baselines despite being a pretrained plasmid
 model. The pretrained nucleotide models also retained more of their
-performance on novel windows than the from-scratch probes did: \model scored
-0.78 there against 0.77 for the larger Evo2 models, within split-to-split
-variation,
-% FLAG (2026-09-04): the transcribed sentence gave the best one-hot split on
-% NOVEL windows as 0.28, which is exactly that method's overall test mean in
-% tab:supp-window-auprc. A best split should exceed its own mean, so the value
-% looks transposed. The comparison is stated qualitatively here until the
-% author confirms the number against the Fig. 2c source data.
-and every \model split stayed above the best one-hot split
+% FLAG WITHDRAWN 2026-09-04. I had flagged the 0.28 below as looking
+% transposed, because it equals the one-hot overall test mean of 0.277. That
+% comparison was wrong: 0.28 is the best one-hot split on NOVEL windows, and
+% Fig. 2c puts the one-hot novel means near 0.18-0.21, so a best novel split of
+% 0.28 sits correctly above its own novel mean. The match with 0.277 is a
+% coincidence. Both numbers restored as originally transcribed.
+performance on novel windows than the from-scratch probes did: the lowest
+\model split on novel windows scored 0.50, still above the best split of
+either one-hot probe at 0.28, and \model scored 0.78 there against 0.77 for
+the larger Evo2 models, within split-to-split variation
 (\fref{fig:origin}c, top). Because every method's window probabilities are
 placed on a common calibrated scale before aggregation
 (\suppfref{fig:supp-reliability}), these probabilities can be read directly
@@ -150,9 +151,13 @@ mAP, their differences well inside each model's split-to-split spread
 (\supptref{tab:supp-region-metrics}), whereas at the window level \model leads
 more clearly, AUPRC 0.67 against 0.62 for Evo2-7B (\fref{fig:origin}b, bottom;
 \tref{tab:window-auprc}). Robustness to novel windows followed the \emph{oriT}
-pattern (\fref{fig:origin}c, bottom), ranking accuracy is broadly stable
-across plasmid-length bins (\suppfref{fig:supp-regforest},
-\suppfref{fig:supp-maplen}), and calibrated profiles again localize the origin
+pattern (\fref{fig:origin}c, bottom), ranking accuracy is stable
+across plasmid-length bins up to 100 kb and falls in the largest bin
+(\suppfref{fig:supp-regforest}, \suppfref{fig:supp-maplen})
+% Corrected 2026-09-04: "broadly stable" was contradicted by the figure, which
+% shows oriT mAP of 0.93 / 0.95 / 0.89 / 0.69 across the four bins. A 0.26 drop
+% in the largest bin is not stability, and long plasmids are exactly where a
+% database-wide application spends its effort., and calibrated profiles again localize the origin
 within its region (\fref{fig:origin}e, bottom;
 \edfref{fig:ed-tracks8}e--h).
 

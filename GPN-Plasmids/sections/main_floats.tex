@@ -77,7 +77,8 @@
 % non-comparability caveat is KEPT, since it governs how the figure is read),
 % "measuring predictive specificity against a uniform background", the
 % 1-based-axis / 0-based-interval convention, the two crop intervals, and the
-% clause that DR2 lies within the PmobK spacer.
+% clause that DR2 lies within the PmobK spacer -- that clause was NOT in
+% Methods when this comment was written; it was added there on 2026-09-04.
 % (Filename still says fig5 from an earlier numbering.) The "Fig. 4a" and
 % "Fig. 4b" standalone component panels in that artifact are not reproduced.
 \begin{figure}[h]
@@ -95,7 +96,7 @@
 % ---- Table 1 ---------------------------------------------------------
 \begin{table}[h]
 \caption{
-\textbf{Region-level ranking, mean average precision (mAP)} averaged equally over the five similarity-aware splits. \emph{oriT} and \emph{oriV} evaluated separately; higher is better. mAP is per-plasmid average precision, macro-averaged within each split. Precision@1 is shown in \fref{fig:origin}d. Recall@1, NDCG and the per-split spread of every method are in \supptref{tab:supp-region-metrics}; P@1 and R@1 are not identical when a plasmid has more than one positive region. The reference-tool database ablation is described in \nameref{sec:methods}.
+\textbf{Region-level ranking, mean average precision (mAP)} averaged equally over the five similarity-aware splits. \emph{oriT} and \emph{oriV} evaluated separately; higher is better. mAP is per-plasmid average precision, macro-averaged within each split. Precision@1 is shown in \fref{fig:origin}d. Recall@1, NDCG and the per-split spread of every method except the train-plus-validation reference-tool variant are in \supptref{tab:supp-region-metrics}; P@1 and R@1 are not identical when a plasmid has more than one positive region. The reference-tool database ablation is described in \nameref{sec:methods}.
 }
 \label{tab:region-map}
 \begin{center}

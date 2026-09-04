@@ -234,8 +234,13 @@ against a curated database rather than learning from a training fold, their
 exposure to the benchmark is controlled by which origins that database is
 allowed to contain. Restricting each tool's database to the training fold
 alone, rather than to the training and validation folds together, changed its
-scores by at most 0.007 on either task, so the reported comparison is not
-sensitive to that choice.
+mean score by at most 0.007 on either task, so the reported comparison is not
+sensitive to that choice. Individual splits move further, by up to 0.024 for
+\emph{oriT}.
+% Corrected 2026-09-04: the bound was stated without saying it applies to the
+% mean. Per-split differences reach 0.024 (oriT split 0) and 0.008 (oriV split
+% 4), both above the stated bound, and the supplementary figure this cites is a
+% per-split heatmap, so a reader checks it per split.
 
 \subsection*{Inference-cost measurement}
 
